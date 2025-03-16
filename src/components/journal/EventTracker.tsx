@@ -5,12 +5,11 @@ import {
   UtensilsCrossed, 
   Coffee, 
   Home, 
-  Film, 
-  Book, 
-  Music, 
-  Gamepad, 
   ShoppingBag, 
-  TreeDeciduous 
+  TreeDeciduous,
+  Briefcase,
+  Plane,
+  Users
 } from "lucide-react";
 import { 
   ToggleGroup, 
@@ -25,12 +24,12 @@ export type EventType =
   | "restaurant" 
   | "cafe" 
   | "home" 
-  | "movie" 
-  | "reading" 
-  | "music" 
-  | "gaming" 
   | "shopping" 
   | "outdoors" 
+  | "office"
+  | "workFromHome"
+  | "travel"
+  | "hangout"
   | "other";
 
 interface EventTrackerProps {
@@ -50,12 +49,12 @@ const EventTracker: React.FC<EventTrackerProps> = ({ values, onChange }) => {
     { value: "restaurant", label: "Restaurant", icon: <UtensilsCrossed className="h-4 w-4" /> },
     { value: "cafe", label: "Cafe", icon: <Coffee className="h-4 w-4" /> },
     { value: "home", label: "Staying Home", icon: <Home className="h-4 w-4" /> },
-    { value: "movie", label: "Movie", icon: <Film className="h-4 w-4" /> },
-    { value: "reading", label: "Reading", icon: <Book className="h-4 w-4" /> },
-    { value: "music", label: "Music", icon: <Music className="h-4 w-4" /> },
-    { value: "gaming", label: "Gaming", icon: <Gamepad className="h-4 w-4" /> },
     { value: "shopping", label: "Shopping", icon: <ShoppingBag className="h-4 w-4" /> },
     { value: "outdoors", label: "Outdoors", icon: <TreeDeciduous className="h-4 w-4" /> },
+    { value: "office", label: "Office", icon: <Briefcase className="h-4 w-4" /> },
+    { value: "workFromHome", label: "WFH", icon: <Home className="h-4 w-4" /> },
+    { value: "travel", label: "Travel", icon: <Plane className="h-4 w-4" /> },
+    { value: "hangout", label: "Hangout", icon: <Users className="h-4 w-4" /> },
   ];
 
   const handleToggleEvent = (event: EventType) => {

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import JournalEntry, { JournalEntryData } from "@/components/journal/JournalEntry";
 import { toast } from "@/components/ui/use-toast";
@@ -20,22 +19,19 @@ import {
   UtensilsCrossed, 
   Coffee, 
   Home, 
-  Film, 
-  Book, 
-  Music, 
-  Gamepad, 
   ShoppingBag, 
   TreeDeciduous,
-  Calendar 
+  Calendar,
+  Briefcase,
+  Plane,
+  Users
 } from "lucide-react";
 
-// Mock function to get entries - would be replaced by actual API call
 const getJournalEntries = (): JournalEntryData[] => {
   const savedEntries = localStorage.getItem("journalEntries");
   return savedEntries ? JSON.parse(savedEntries) : [];
 };
 
-// Mock function to save entries - would be replaced by actual API call
 const saveJournalEntries = (entries: JournalEntryData[]) => {
   localStorage.setItem("journalEntries", JSON.stringify(entries));
 };
@@ -46,7 +42,6 @@ const JournalLog = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Simulate API call delay
     const timer = setTimeout(() => {
       setEntries(getJournalEntries());
       setLoading(false);
@@ -74,7 +69,6 @@ const JournalLog = () => {
     });
   };
 
-  // Function to get a mood emoji based on the mood type
   const getMoodEmoji = (mood: string) => {
     switch (mood) {
       case "great": return "😄";
@@ -86,19 +80,18 @@ const JournalLog = () => {
     }
   };
 
-  // Function to get an event icon based on the event type
   const getEventIcon = (eventType: string) => {
     switch (eventType) {
       case "party": return <PartyPopper className="h-4 w-4" />;
       case "restaurant": return <UtensilsCrossed className="h-4 w-4" />;
       case "cafe": return <Coffee className="h-4 w-4" />;
       case "home": return <Home className="h-4 w-4" />;
-      case "movie": return <Film className="h-4 w-4" />;
-      case "reading": return <Book className="h-4 w-4" />;
-      case "music": return <Music className="h-4 w-4" />;
-      case "gaming": return <Gamepad className="h-4 w-4" />;
       case "shopping": return <ShoppingBag className="h-4 w-4" />;
       case "outdoors": return <TreeDeciduous className="h-4 w-4" />;
+      case "office": return <Briefcase className="h-4 w-4" />;
+      case "workFromHome": return <Home className="h-4 w-4" />;
+      case "travel": return <Plane className="h-4 w-4" />;
+      case "hangout": return <Users className="h-4 w-4" />;
       default: return <Calendar className="h-4 w-4" />;
     }
   };
