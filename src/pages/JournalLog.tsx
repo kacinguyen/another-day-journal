@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/table";
 import { format } from "date-fns";
 import { Card } from "@/components/ui/card";
+import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 
 // Mock function to get entries - would be replaced by actual API call
 const getJournalEntries = (): JournalEntryData[] => {
@@ -73,25 +74,23 @@ const JournalLog = () => {
 
   return (
     <div className="page-container animate-fade-up">
-      <div className="flex flex-col gap-8">
-        <div className="space-y-1">
-          <div className="inline-block">
-            <span className="text-xs font-medium text-journal-accent-foreground bg-journal-accent/10 px-2 py-0.5 rounded-full">
-              Today's Entry
-            </span>
-          </div>
-          <h1 className="text-3xl font-bold tracking-tight">Journal Log</h1>
-          <p className="text-muted-foreground max-w-2xl">
-            Reflect on your day, record your mood, energy levels, activities, and social interactions.
-          </p>
+      <div className="space-y-1 mb-8">
+        <div className="inline-block">
+          <span className="text-xs font-medium text-journal-accent-foreground bg-journal-accent/10 px-2 py-0.5 rounded-full">
+            Today's Entry
+          </span>
         </div>
-        
-        <JournalEntry onSave={handleSaveEntry} />
-        
-        {entries.length > 0 ? (
-          <div className="pt-6 border-t">
-            <h2 className="text-xl font-semibold mb-4">Previous Entries</h2>
-            
+        <h1 className="text-3xl font-bold tracking-tight">Journal Log</h1>
+        <p className="text-muted-foreground max-w-2xl">
+          Reflect on your day, record your mood, energy levels, activities, and social interactions.
+        </p>
+      </div>
+      
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div className="lg:col-span-5 order-2 lg:order-1">
+          <h2 className="text-xl font-semibold mb-4">Previous Entries</h2>
+          
+          {entries.length > 0 ? (
             <Card className="overflow-hidden">
               <div className="overflow-x-auto">
                 <Table>
@@ -124,15 +123,16 @@ const JournalLog = () => {
                 </Table>
               </div>
             </Card>
-          </div>
-        ) : (
-          <div className="pt-6 border-t">
-            <h2 className="text-xl font-semibold mb-4">Previous Entries</h2>
+          ) : (
             <div className="text-sm text-muted-foreground">
               Your previous journal entries will appear here.
             </div>
-          </div>
-        )}
+          )}
+        </div>
+        
+        <div className="lg:col-span-7 order-1 lg:order-2">
+          <JournalEntry onSave={handleSaveEntry} />
+        </div>
       </div>
     </div>
   );
