@@ -9,12 +9,12 @@ import { useToast } from "@/hooks/use-toast";
 export function useConversation() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const { user } = useAuth();
+  const { user, session } = useAuth();
   const { toast } = useToast();
 
   // This function sends a message to the AI and gets a response
   const sendMessage = useCallback(async (content: string) => {
-    if (!user) {
+    if (!user || !session) {
       toast({
         title: "Authentication required",
         description: "Please sign in to use the conversation feature.",
@@ -43,12 +43,18 @@ export function useConversation() {
           content: msg.content
         }));
 
-      // Call the edge function
+      // Get access token from the current session
+      const accessToken = session.access_token;
+      
+      // Call the edge function with authorization header
       const { data, error } = await supabase.functions.invoke("chat", {
         body: {
           message: content,
           history: historyFormatted,
           userId: user.id,
+        },
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
         },
       });
 
@@ -79,7 +85,7 @@ export function useConversation() {
     } finally {
       setIsLoading(false);
     }
-  }, [messages, user, toast]);
+  }, [messages, user, session, toast]);
 
   // Function to clear the conversation
   const clearConversation = useCallback(() => {

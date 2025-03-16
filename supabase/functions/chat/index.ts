@@ -12,13 +12,21 @@ const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL') || 'REDACTED_SUPABASE_URL';
 const SUPABASE_ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY') || 'REDACTED_SUPABASE_ANON_KEY';
 
-// Create a Supabase client
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
 // Function to fetch journal entries for a user
-async function fetchJournalEntries(userId: string) {
+async function fetchJournalEntries(userId: string, authorization: string) {
   try {
     console.log(`FETCH: Starting to fetch journal entries for user ${userId}`);
+    console.log(`AUTHZ: Using authorization token from user request`);
+    
+    // Create a Supabase client with the user's token
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      global: {
+        headers: {
+          Authorization: authorization,
+        },
+      },
+    });
+    
     const { data, error } = await supabase
       .from('journal_entries')
       .select('*')
@@ -198,8 +206,19 @@ serve(async (req) => {
     
     console.log(`REQUEST: Processing request for user ${userId}`);
     
+    // Extract authorization header from request
+    const authorization = req.headers.get('Authorization') || '';
+    console.log('AUTHZ: Authorization header present:', !!authorization);
+    
+    if (!authorization) {
+      return new Response(
+        JSON.stringify({ error: 'No authorization header provided' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    
     // Fetch journal entries for context
-    const journalEntries = await fetchJournalEntries(userId);
+    const journalEntries = await fetchJournalEntries(userId, authorization);
     const journalContext = formatJournalContext(journalEntries);
     
     // Build messages for OpenAI
