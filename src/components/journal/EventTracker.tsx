@@ -159,25 +159,6 @@ const EventTracker: React.FC<EventTrackerProps> = ({ values, onChange }) => {
           </Tooltip>
         </TooltipProvider>
       </div>
-      
-      {values.length > 0 && (
-        <div className="flex flex-wrap gap-1.5 mt-2">
-          <span className="text-xs text-muted-foreground">Selected: </span>
-          {values.map(value => {
-            const eventOption = allEventOptions.find(o => o.value === value);
-            return (
-              <Badge 
-                key={value} 
-                variant="secondary"
-                className="flex items-center gap-1"
-              >
-                {eventOption?.icon}
-                {eventOption?.label || value}
-              </Badge>
-            );
-          })}
-        </div>
-      )}
 
       {/* Add new tag dialog */}
       <Dialog open={isAddingTag} onOpenChange={setIsAddingTag}>
