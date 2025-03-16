@@ -2,12 +2,13 @@
 import React, { useState, useEffect } from "react";
 import JournalEntry, { JournalEntryData } from "@/components/journal/JournalEntry";
 import { useToast } from "@/hooks/use-toast";
-import { getJournalEntries, saveJournalEntries } from "@/utils/journalUtils";
 import JournalEntriesTable from "@/components/journal/JournalEntriesTable";
 import ExampleJournalEntry from "@/components/journal/ExampleJournalEntry";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent } from "@/components/ui/card";
 import { format } from "date-fns";
+import { fetchJournalEntries, saveJournalEntry } from "@/services/journalService";
+import { useAuth } from "@/context/AuthContext";
 
 /**
  * JournalLog Component
@@ -20,34 +21,42 @@ const JournalLog: React.FC = () => {
   const [entries, setEntries] = useState<JournalEntryData[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
+  const { user } = useAuth();
 
-  // Load journal entries from localStorage on component mount
+  // Load journal entries from Supabase when the component mounts or user changes
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setEntries(getJournalEntries());
+    const loadEntries = async () => {
+      if (!user) return;
+      
+      setLoading(true);
+      const journalEntries = await fetchJournalEntries();
+      setEntries(journalEntries);
       setLoading(false);
-    }, 600);
-    return () => clearTimeout(timer);
-  }, []);
+    };
+
+    loadEntries();
+  }, [user]);
 
   /**
    * Handles saving a new journal entry or updating an existing one
    */
-  const handleSaveEntry = (entryData: JournalEntryData) => {
-    const newEntry = {
-      ...entryData,
-      id: entryData.id || Date.now().toString()
-    };
-    const updatedEntries = entryData.id ? entries.map(entry => entry.id === entryData.id ? newEntry : entry) : [newEntry, ...entries];
-    setEntries(updatedEntries);
-    saveJournalEntries(updatedEntries);
-    toast({
-      title: entryData.id ? "Entry Updated" : "Entry Created",
-      description: "Your journal entry has been saved successfully."
-    });
+  const handleSaveEntry = async (entryData: JournalEntryData) => {
+    const savedEntry = await saveJournalEntry(entryData);
+    
+    if (savedEntry) {
+      // Update the entries list
+      const updatedEntries = entryData.id
+        ? entries.map(entry => entry.id === entryData.id ? savedEntry : entry)
+        : [savedEntry, ...entries];
+      
+      setEntries(updatedEntries);
+      
+      toast({
+        title: entryData.id ? "Entry Updated" : "Entry Created",
+        description: "Your journal entry has been saved successfully."
+      });
+    }
   };
 
   /**
@@ -93,7 +102,9 @@ const JournalLog: React.FC = () => {
 
   // Determine whether to show the example entry
   const showDummyEntry = entries.length === 0 && !loading;
-  return <div className="page-container animate-fade-up">
+  
+  return (
+    <div className="page-container animate-fade-up">
       <div className="space-y-1 mb-8">
         <div className="inline-block">
           <span className="text-xs font-medium text-journal-accent-foreground bg-journal-accent/10 px-2 py-0.5 rounded-full">Today</span>
@@ -112,15 +123,22 @@ const JournalLog: React.FC = () => {
             <Card className="border rounded-lg p-4 bg-card shadow-sm">
               <div className="space-y-4">
                 <h2 className="text-xl font-semibold">Calendar</h2>
-                <Calendar mode="single" selected={selectedDate} onSelect={handleDateSelect} className="rounded-md bg-white mx-auto w-full" modifiers={{
-                hasEntry: entries.map(entry => new Date(entry.date))
-              }} modifiersStyles={{
-                hasEntry: {
-                  fontWeight: 'bold',
-                  border: '2px solid currentColor',
-                  color: 'var(--primary)'
-                }
-              }} />
+                <Calendar 
+                  mode="single" 
+                  selected={selectedDate} 
+                  onSelect={handleDateSelect} 
+                  className="rounded-md bg-white mx-auto w-full" 
+                  modifiers={{
+                    hasEntry: entries.map(entry => new Date(entry.date))
+                  }} 
+                  modifiersStyles={{
+                    hasEntry: {
+                      fontWeight: 'bold',
+                      border: '2px solid currentColor',
+                      color: 'var(--primary)'
+                    }
+                  }} 
+                />
               </div>
             </Card>
             
@@ -129,11 +147,19 @@ const JournalLog: React.FC = () => {
               <div className="space-y-4">
                 <h2 className="text-xl font-semibold">Previous Entries</h2>
                 
-                {entries.length > 0 ? <JournalEntriesTable entries={entries} /> : <div>
-                    {showDummyEntry ? <ExampleJournalEntry /> : <div className="text-sm text-muted-foreground">
-                        Your previous journal entries will appear here.
-                      </div>}
-                  </div>}
+                {entries.length > 0 ? (
+                  <JournalEntriesTable entries={entries} />
+                ) : (
+                  <div>
+                    {showDummyEntry ? (
+                      <ExampleJournalEntry />
+                    ) : (
+                      <div className="text-sm text-muted-foreground">
+                        {loading ? "Loading entries..." : "Your previous journal entries will appear here."}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </Card>
           </div>
@@ -142,10 +168,15 @@ const JournalLog: React.FC = () => {
         {/* Journal Entry Form Section */}
         <div className="lg:col-span-8 order-1 lg:order-2">
           <div id="journal-form">
-            <JournalEntry onSave={handleSaveEntry} initialData={findEntryForDate(selectedDate)} />
+            <JournalEntry 
+              onSave={handleSaveEntry} 
+              initialData={findEntryForDate(selectedDate)} 
+            />
           </div>
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default JournalLog;

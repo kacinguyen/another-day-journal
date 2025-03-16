@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
@@ -11,9 +11,9 @@ import SocialTracker from "./SocialTracker";
 import EventTracker, { EventType } from "./EventTracker";
 import EmotionTracker from "./EmotionTracker";
 import { EmotionType } from "./types/emotion-types";
-import { cn } from "@/lib/utils";
-import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { useAuth } from "@/context/AuthContext";
 
 export type MoodType = "great" | "good" | "neutral" | "bad" | "awful";
 
@@ -47,6 +47,19 @@ const JournalEntry: React.FC<JournalEntryProps> = ({
   const [eventTypes, setEventTypes] = useState<EventType[]>(initialData.eventTypes || []);
   const [emotions, setEmotions] = useState<EmotionType[]>(initialData.emotions || []);
   const [isSaving, setIsSaving] = useState(false);
+  const { user } = useAuth();
+
+  // Update form when initialData changes
+  useEffect(() => {
+    if (initialData.date) setDate(initialData.date);
+    if (initialData.content !== undefined) setContent(initialData.content);
+    if (initialData.mood) setMood(initialData.mood);
+    if (initialData.energy !== undefined) setEnergy(initialData.energy);
+    if (initialData.activities) setActivities(initialData.activities);
+    if (initialData.people) setPeople(initialData.people);
+    if (initialData.eventTypes) setEventTypes(initialData.eventTypes);
+    if (initialData.emotions) setEmotions(initialData.emotions);
+  }, [initialData]);
 
   const handleAddActivity = (activity: string) => {
     setActivities([...activities, activity]);
@@ -65,24 +78,30 @@ const JournalEntry: React.FC<JournalEntryProps> = ({
   };
 
   const handleSave = () => {
+    if (!user) {
+      return; // Don't allow saving if not logged in
+    }
+    
     if (content.trim() === "") return;
     
     setIsSaving(true);
     
-    // Simulate saving delay
+    const entryData: JournalEntryData = {
+      id: initialData.id,
+      date,
+      content,
+      mood,
+      energy,
+      activities,
+      people,
+      eventTypes,
+      emotions
+    };
+    
+    // Call the onSave function
+    onSave(entryData);
+    
     setTimeout(() => {
-      onSave({
-        id: initialData.id,
-        date,
-        content,
-        mood,
-        energy,
-        activities,
-        people,
-        eventTypes,
-        emotions
-      });
-      
       setIsSaving(false);
       
       // Display animation effect on save success
@@ -151,7 +170,7 @@ const JournalEntry: React.FC<JournalEntryProps> = ({
             <Button
               id="save-button"
               onClick={handleSave}
-              disabled={content.trim() === "" || isSaving}
+              disabled={content.trim() === "" || isSaving || !user}
               className="relative overflow-hidden transition-all duration-300"
             >
               <div className="flex items-center gap-1.5">
