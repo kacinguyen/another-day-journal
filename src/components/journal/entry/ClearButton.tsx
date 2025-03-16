@@ -31,7 +31,7 @@ const ClearButton: React.FC<ClearButtonProps> = ({ onClear, disabled = false }) 
         <Button 
           variant="outline" 
           size="sm"
-          className="gap-1 text-muted-foreground hover:text-destructive hover:border-destructive"
+          className="gap-1 text-muted-foreground hover:text-gray-600 hover:bg-gray-100 hover:border-gray-300 dark:hover:text-gray-300 dark:hover:bg-gray-800 dark:hover:border-gray-700"
           disabled={disabled}
           id="clear-button"
         >
