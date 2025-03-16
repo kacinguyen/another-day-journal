@@ -10,6 +10,7 @@ import Conversations from "./pages/Conversations";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
+import Profile from "./pages/Profile";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 
 const queryClient = new QueryClient();
@@ -43,6 +44,11 @@ const AuthenticatedRoutes = () => {
           <Route path="/conversations" element={
             <ProtectedRoute>
               <Conversations />
+            </ProtectedRoute>
+          } />
+          <Route path="/profile" element={
+            <ProtectedRoute>
+              <Profile />
             </ProtectedRoute>
           } />
           <Route path="/login" element={<Login />} />
