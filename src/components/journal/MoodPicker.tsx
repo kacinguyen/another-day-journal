@@ -58,7 +58,7 @@ const MoodPicker: React.FC<MoodPickerProps> = ({ value, onChange }) => {
             key={mood.value}
             onClick={() => onChange(mood.value)}
             className={cn(
-              "flex flex-col items-center p-2 rounded-lg transition-all duration-300 transform hover:scale-105",
+              "flex flex-col items-center p-2 rounded-lg transition-all duration-300 transform hover:scale-105 w-[72px] h-[72px]",
               mood.color,
               value === mood.value ? 
                 cn("ring-2 ring-offset-1 scale-105", mood.activeColor) : 
