@@ -26,7 +26,17 @@ import {
   Briefcase,
   Plane,
   Users,
-  Tag
+  Tag,
+  Zap,
+  Thermometer,
+  BatteryLow,
+  Trophy,
+  AlertTriangle,
+  Sparkles,
+  Heart,
+  Cloud,
+  Smile,
+  Check
 } from "lucide-react";
 
 const getJournalEntries = (): JournalEntryData[] => {
@@ -98,6 +108,23 @@ const JournalLog = () => {
     }
   };
 
+  const getEmotionIcon = (emotion: string) => {
+    switch (emotion) {
+      case "excited": return <Zap className="h-4 w-4" />;
+      case "stressed": return <Thermometer className="h-4 w-4" />;
+      case "tired": return <BatteryLow className="h-4 w-4" />;
+      case "proud": return <Trophy className="h-4 w-4" />;
+      case "anxious": return <AlertTriangle className="h-4 w-4" />;
+      case "bored": return <Coffee className="h-4 w-4" />;
+      case "enthusiastic": return <Sparkles className="h-4 w-4" />;
+      case "grateful": return <Heart className="h-4 w-4" />;
+      case "depressed": return <Cloud className="h-4 w-4" />;
+      case "happy": return <Smile className="h-4 w-4" />;
+      case "content": return <Check className="h-4 w-4" />;
+      default: return <Tag className="h-4 w-4" />;
+    }
+  };
+
   return (
     <div className="page-container animate-fade-up">
       <div className="space-y-1 mb-8">
@@ -124,6 +151,7 @@ const JournalLog = () => {
                     <TableRow>
                       <TableHead>Date</TableHead>
                       <TableHead>Mood</TableHead>
+                      <TableHead>Emotions</TableHead>
                       <TableHead>Energy</TableHead>
                       <TableHead>Events</TableHead>
                       <TableHead>Content</TableHead>
@@ -139,6 +167,24 @@ const JournalLog = () => {
                           <span className="flex items-center gap-1">
                             {getMoodEmoji(entry.mood)} {entry.mood}
                           </span>
+                        </TableCell>
+                        <TableCell>
+                          {entry.emotions && entry.emotions.length > 0 ? (
+                            <div className="flex flex-wrap gap-1">
+                              {entry.emotions.map(emotion => (
+                                <Badge 
+                                  key={emotion} 
+                                  variant="outline" 
+                                  className="flex items-center gap-1 py-0.5 text-xs"
+                                >
+                                  {getEmotionIcon(emotion)}
+                                  <span className="capitalize">{emotion}</span>
+                                </Badge>
+                              ))}
+                            </div>
+                          ) : (
+                            <span className="text-muted-foreground text-xs">None</span>
+                          )}
                         </TableCell>
                         <TableCell>{entry.energy}%</TableCell>
                         <TableCell>

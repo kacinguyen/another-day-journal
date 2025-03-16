@@ -15,6 +15,7 @@ import EnergyTracker from "./EnergyTracker";
 import ActivitySelector from "./ActivitySelector";
 import SocialTracker from "./SocialTracker";
 import EventTracker, { EventType } from "./EventTracker";
+import EmotionTracker, { EmotionType } from "./EmotionTracker";
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
@@ -30,6 +31,7 @@ export interface JournalEntryData {
   activities: string[];
   people: string[];
   eventTypes: EventType[];
+  emotions: EmotionType[];
 }
 
 interface JournalEntryProps {
@@ -48,6 +50,7 @@ const JournalEntry: React.FC<JournalEntryProps> = ({
   const [activities, setActivities] = useState<string[]>(initialData.activities || []);
   const [people, setPeople] = useState<string[]>(initialData.people || []);
   const [eventTypes, setEventTypes] = useState<EventType[]>(initialData.eventTypes || []);
+  const [emotions, setEmotions] = useState<EmotionType[]>(initialData.emotions || []);
   const [isSaving, setIsSaving] = useState(false);
 
   const handleAddActivity = (activity: string) => {
@@ -81,7 +84,8 @@ const JournalEntry: React.FC<JournalEntryProps> = ({
         energy,
         activities,
         people,
-        eventTypes
+        eventTypes,
+        emotions
       });
       
       setIsSaving(false);
@@ -147,6 +151,7 @@ const JournalEntry: React.FC<JournalEntryProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-6">
               <MoodPicker value={mood} onChange={setMood} />
+              <EmotionTracker values={emotions} onChange={setEmotions} />
               <EnergyTracker value={energy} onChange={setEnergy} />
             </div>
             
