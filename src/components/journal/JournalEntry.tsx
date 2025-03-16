@@ -8,6 +8,7 @@ import EntryContent from "./entry/EntryContent";
 import TrackerLeftColumn from "./entry/TrackerLeftColumn";
 import TrackerRightColumn from "./entry/TrackerRightColumn";
 import SaveButton from "./entry/SaveButton";
+import ClearButton from "./entry/ClearButton";
 import { JournalEntryProps } from "./types/journal-types";
 
 // Reexport JournalEntryData type for backward compatibility
@@ -55,6 +56,7 @@ const JournalEntry: React.FC<JournalEntryProps> = ({
     handleRemoveActivity,
     handleAddPerson,
     handleRemovePerson,
+    handleClear,
     handleSave
   } = useJournalEntry(initialData, onSave);
   
@@ -93,7 +95,12 @@ const JournalEntry: React.FC<JournalEntryProps> = ({
             />
           </div>
           
-          <div className="flex justify-end pt-2">
+          <div className="flex justify-between pt-2">
+            <ClearButton 
+              onClear={handleClear}
+              disabled={!content && !mood && energy === 50 && activities.length === 0 && 
+                       people.length === 0 && eventTypes.length === 0 && emotions.length === 0}
+            />
             <SaveButton
               onClick={() => handleSave(user)}
               disabled={!isFormValid || isSaving || !user}

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { format } from "date-fns";
 import { JournalEntryData } from "../types/journal-types";
@@ -62,6 +61,18 @@ export const useJournalEntry = (
     setPeople(people.filter((_, i) => i !== index));
   };
 
+  // Handle clear operation
+  const handleClear = () => {
+    // Keep the date but reset all other fields
+    setContent("");
+    setMood(null);
+    setEnergy(50);
+    setActivities([]);
+    setPeople([]);
+    setEventTypes([]);
+    setEmotions([]);
+  };
+
   // Handle save operation
   const handleSave = (user: any) => {
     if (!user) {
@@ -122,6 +133,7 @@ export const useJournalEntry = (
     handleRemoveActivity,
     handleAddPerson,
     handleRemovePerson,
+    handleClear,
     handleSave
   };
 };
