@@ -24,6 +24,7 @@ const JournalLog: React.FC = () => {
     showDummyEntry,
     handleDateSelect,
     handleSaveEntry,
+    handleEntryClick,
     getInitialData,
     isDayWithEntry
   } = useJournalLog();
@@ -43,6 +44,7 @@ const JournalLog: React.FC = () => {
         showDummyEntry={showDummyEntry}
         handleDateSelect={handleDateSelect}
         handleSaveEntry={handleSaveEntry}
+        handleEntryClick={handleEntryClick}
         getInitialData={getInitialData}
         datesWithEntries={datesWithEntries}
       />

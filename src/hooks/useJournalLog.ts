@@ -122,6 +122,17 @@ export function useJournalLog() {
     // Removed the automatic scrolling code
   };
 
+  /**
+   * Handle clicking on a previous entry in the list
+   */
+  const handleEntryClick = (entry: JournalEntryData) => {
+    // Update the selected date to match the entry's date
+    setSelectedDate(entry.date);
+    
+    // Set the current entry
+    setCurrentEntry(entry);
+  };
+
   // Determine whether to show the example entry
   const showDummyEntry = entries.length === 0 && !loading;
 
@@ -159,6 +170,7 @@ export function useJournalLog() {
     showDummyEntry,
     handleDateSelect,
     handleSaveEntry,
+    handleEntryClick,
     getInitialData,
     isDayWithEntry
   };

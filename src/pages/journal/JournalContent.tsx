@@ -12,6 +12,7 @@ interface JournalContentProps {
   showDummyEntry: boolean;
   handleDateSelect: (date: Date | undefined) => void;
   handleSaveEntry: (data: JournalEntryData) => void;
+  handleEntryClick: (entry: JournalEntryData) => void;
   getInitialData: () => JournalEntryData;
   datesWithEntries: Date[];
 }
@@ -29,6 +30,7 @@ const JournalContent: React.FC<JournalContentProps> = ({
   showDummyEntry,
   handleDateSelect,
   handleSaveEntry,
+  handleEntryClick,
   getInitialData,
   datesWithEntries
 }) => {
@@ -49,6 +51,7 @@ const JournalContent: React.FC<JournalContentProps> = ({
             entries={entries}
             loading={loading}
             showDummyEntry={showDummyEntry}
+            onEntryClick={handleEntryClick}
           />
         </div>
       </div>

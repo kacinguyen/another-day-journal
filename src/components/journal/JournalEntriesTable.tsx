@@ -32,7 +32,10 @@ import {
 /**
  * Component to display a list of journal entries
  */
-export const JournalEntriesTable: React.FC<{ entries: JournalEntryData[] }> = ({ entries }) => {
+export const JournalEntriesTable: React.FC<{ 
+  entries: JournalEntryData[];
+  onEntryClick?: (entry: JournalEntryData) => void;
+}> = ({ entries, onEntryClick }) => {
   /**
    * Returns the appropriate icon component for an event type
    */
@@ -83,7 +86,11 @@ export const JournalEntriesTable: React.FC<{ entries: JournalEntryData[] }> = ({
     <ScrollArea className="h-[500px] pr-4">
       <div className="space-y-4">
         {entries.map((entry) => (
-          <Card key={entry.id} className="p-4">
+          <Card 
+            key={entry.id} 
+            className="p-4 cursor-pointer hover:bg-accent/50 transition-colors"
+            onClick={() => onEntryClick && onEntryClick(entry)}
+          >
             <div className="space-y-3">
               <div className="flex justify-between items-center">
                 <span className="text-sm font-medium">{format(new Date(entry.date), 'MMM dd, yyyy')}</span>

@@ -9,6 +9,7 @@ interface PreviousEntriesListProps {
   entries: JournalEntryData[];
   loading: boolean;
   showDummyEntry: boolean;
+  onEntryClick?: (entry: JournalEntryData) => void;
 }
 
 /**
@@ -20,7 +21,8 @@ interface PreviousEntriesListProps {
 const PreviousEntriesList: React.FC<PreviousEntriesListProps> = ({
   entries,
   loading,
-  showDummyEntry
+  showDummyEntry,
+  onEntryClick
 }) => {
   return (
     <Card className="border rounded-lg p-4 bg-card shadow-sm h-full">
@@ -28,7 +30,7 @@ const PreviousEntriesList: React.FC<PreviousEntriesListProps> = ({
         <h2 className="text-xl font-semibold">Previous Entries</h2>
         
         {entries.length > 0 ? (
-          <JournalEntriesTable entries={entries} />
+          <JournalEntriesTable entries={entries} onEntryClick={onEntryClick} />
         ) : (
           <div>
             {showDummyEntry ? (
