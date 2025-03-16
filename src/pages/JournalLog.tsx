@@ -5,6 +5,9 @@ import { useToast } from "@/hooks/use-toast";
 import { getJournalEntries, saveJournalEntries } from "@/utils/journalUtils";
 import JournalEntriesTable from "@/components/journal/JournalEntriesTable";
 import ExampleJournalEntry from "@/components/journal/ExampleJournalEntry";
+import { Calendar } from "@/components/ui/calendar";
+import { Card } from "@/components/ui/card";
+import { format } from "date-fns";
 
 /**
  * JournalLog Component
@@ -16,6 +19,7 @@ const JournalLog: React.FC = () => {
   // State for journal entries and loading status
   const [entries, setEntries] = useState<JournalEntryData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const { toast } = useToast();
 
   // Load journal entries from localStorage on component mount
@@ -50,6 +54,48 @@ const JournalLog: React.FC = () => {
     });
   };
 
+  /**
+   * Find an entry for the selected date or return undefined if none exists
+   */
+  const findEntryForDate = (date: Date) => {
+    const dateString = format(date, 'yyyy-MM-dd');
+    return entries.find(entry => {
+      const entryDate = new Date(entry.date);
+      return format(entryDate, 'yyyy-MM-dd') === dateString;
+    });
+  };
+
+  /**
+   * Handle date selection in the calendar
+   */
+  const handleDateSelect = (date: Date | undefined) => {
+    if (!date) return;
+    
+    setSelectedDate(date);
+    
+    const entry = findEntryForDate(date);
+    if (entry) {
+      // Scroll to the entry form
+      const journalForm = document.getElementById('journal-form');
+      if (journalForm) {
+        journalForm.scrollIntoView({ behavior: 'smooth' });
+      }
+      
+      toast({
+        title: "Journal Entry Found",
+        description: `Found entry for ${format(date, 'MMMM d, yyyy')}`,
+      });
+    }
+  };
+
+  // Highlight dates that have journal entries
+  const isDayWithEntry = (day: Date) => {
+    return entries.some(entry => {
+      const entryDate = new Date(entry.date);
+      return format(entryDate, 'yyyy-MM-dd') === format(day, 'yyyy-MM-dd');
+    });
+  };
+
   // Determine whether to show the example entry
   const showDummyEntry = entries.length === 0 && !loading;
 
@@ -70,29 +116,58 @@ const JournalLog: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Previous Entries Section */}
         <div className="lg:col-span-4 order-2 lg:order-1">
-          <div className="border rounded-lg p-4 bg-card shadow-sm h-full">
-            <h2 className="text-xl font-semibold mb-4">Previous Entries</h2>
-            
-            {entries.length > 0 ? (
-              <JournalEntriesTable entries={entries} />
-            ) : (
-              <div>
-                {showDummyEntry ? (
-                  <ExampleJournalEntry />
-                ) : (
-                  <div className="text-sm text-muted-foreground">
-                    Your previous journal entries will appear here.
-                  </div>
-                )}
+          <div className="space-y-6">
+            {/* Calendar Card */}
+            <Card className="border rounded-lg p-4 bg-card shadow-sm">
+              <h2 className="text-xl font-semibold mb-4">Journal Calendar</h2>
+              <div className="flex justify-center">
+                <Calendar
+                  mode="single"
+                  selected={selectedDate}
+                  onSelect={handleDateSelect}
+                  className="rounded-md bg-white pointer-events-auto"
+                  modifiers={{
+                    hasEntry: entries.map(entry => new Date(entry.date))
+                  }}
+                  modifiersStyles={{
+                    hasEntry: {
+                      fontWeight: 'bold',
+                      border: '2px solid currentColor',
+                      color: 'var(--primary)'
+                    }
+                  }}
+                />
               </div>
-            )}
+            </Card>
+            
+            {/* Previous Entries Card */}
+            <Card className="border rounded-lg p-4 bg-card shadow-sm h-full">
+              <h2 className="text-xl font-semibold mb-4">Previous Entries</h2>
+              
+              {entries.length > 0 ? (
+                <JournalEntriesTable entries={entries} />
+              ) : (
+                <div>
+                  {showDummyEntry ? (
+                    <ExampleJournalEntry />
+                  ) : (
+                    <div className="text-sm text-muted-foreground">
+                      Your previous journal entries will appear here.
+                    </div>
+                  )}
+                </div>
+              )}
+            </Card>
           </div>
         </div>
         
         {/* Journal Entry Form Section */}
         <div className="lg:col-span-8 order-1 lg:order-2">
           <div id="journal-form">
-            <JournalEntry onSave={handleSaveEntry} />
+            <JournalEntry 
+              onSave={handleSaveEntry} 
+              initialData={findEntryForDate(selectedDate)}
+            />
           </div>
         </div>
       </div>
