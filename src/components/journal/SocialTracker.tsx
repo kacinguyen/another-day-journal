@@ -19,7 +19,6 @@ const SocialTracker: React.FC<SocialTrackerProps> = ({
 }) => {
   const [inputValue, setInputValue] = useState("");
   const [showInput, setShowInput] = useState(false);
-  const [isPreviewVisible, setIsPreviewVisible] = useState(true);
   
   const suggestions = ["Satya", "Shrivu"];
 
@@ -40,15 +39,6 @@ const SocialTracker: React.FC<SocialTrackerProps> = ({
       setInputValue("");
     }
   };
-
-  // Hide the preview when real people are added
-  React.useEffect(() => {
-    if (people.length > 0) {
-      setIsPreviewVisible(false);
-    } else {
-      setIsPreviewVisible(true);
-    }
-  }, [people]);
 
   return (
     <div className="space-y-3">
@@ -88,27 +78,6 @@ const SocialTracker: React.FC<SocialTrackerProps> = ({
         </Button>
       )}
       
-      {/* Suggestions */}
-      {showInput && suggestions.length > 0 && (
-        <div className="flex flex-wrap gap-2 mt-2 animate-fade-in">
-          {suggestions.map((suggestion) => (
-            <Badge 
-              key={suggestion}
-              variant="outline"
-              className="px-3 py-1 text-xs cursor-pointer hover:bg-secondary transition-colors"
-              onClick={() => {
-                if (!people.includes(suggestion)) {
-                  onAddPerson(suggestion);
-                  setShowInput(false);
-                }
-              }}
-            >
-              {suggestion}
-            </Badge>
-          ))}
-        </div>
-      )}
-      
       {people.length > 0 && (
         <div className="flex flex-wrap gap-2 mt-2 min-h-9">
           {people.map((person, index) => (
@@ -129,20 +98,39 @@ const SocialTracker: React.FC<SocialTrackerProps> = ({
         </div>
       )}
 
-      {/* Dummy preview of what adding a person looks like */}
-      {isPreviewVisible && people.length === 0 && (
-        <div className="flex flex-wrap gap-2 mt-2 min-h-9 opacity-50">
-          <Badge 
-            variant="secondary"
-            className="px-3 py-1.5 h-auto text-sm gap-1.5 border-dashed"
-          >
-            <User className="h-3.5 w-3.5 mr-1" />
-            Person name
-            <span className="rounded-full hover:bg-muted p-0.5">
-              <X className="h-3 w-3" />
-            </span>
-          </Badge>
+      {/* Suggestions - Updated to match ActivitySelector style */}
+      {showInput && suggestions.length > 0 && (
+        <div className="mt-2">
+          <p className="text-xs text-muted-foreground mb-1.5">Suggestions:</p>
+          <div className="flex flex-wrap gap-1.5">
+            {suggestions
+              .filter(s => !people.includes(s))
+              .map((suggestion, i) => (
+                <Badge
+                  key={i}
+                  variant="outline" 
+                  className={cn(
+                    "cursor-pointer hover:bg-muted",
+                    people.includes(suggestion) && "opacity-50"
+                  )}
+                  onClick={() => {
+                    if (!people.includes(suggestion)) {
+                      onAddPerson(suggestion);
+                      setShowInput(false);
+                    }
+                  }}
+                >
+                  {suggestion}
+                </Badge>
+              ))}
+          </div>
         </div>
+      )}
+      
+      {people.length === 0 && (
+        <p className="text-xs text-muted-foreground">
+          Add people you spent time with today
+        </p>
       )}
     </div>
   );
