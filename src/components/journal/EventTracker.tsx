@@ -13,16 +13,10 @@ import {
   Plus,
   Tag
 } from "lucide-react";
-import { 
-  ToggleGroup, 
-  ToggleGroupItem 
-} from "@/components/ui/toggle-group";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 
 export type EventType = 
   | "party" 
@@ -117,47 +111,30 @@ const EventTracker: React.FC<EventTrackerProps> = ({ values, onChange }) => {
       
       <div className="flex flex-wrap gap-2">
         {allEventOptions.map((option) => (
-          <TooltipProvider key={option.value} delayDuration={300}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div 
-                  className={`
-                    inline-flex items-center gap-1 px-3 py-1.5 rounded-md cursor-pointer
-                    ${values.includes(option.value) 
-                      ? 'bg-primary text-primary-foreground' 
-                      : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'}
-                    ${option.isCustom ? 'border border-dashed border-primary/30' : ''}
-                  `}
-                  onClick={() => handleToggleEvent(option.value)}
-                >
-                  {option.icon}
-                  <span className="text-xs font-medium">{option.label}</span>
-                </div>
-              </TooltipTrigger>
-              <TooltipContent side="bottom">
-                <p>Toggle {option.label}</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <div 
+            key={option.value}
+            className={`
+              inline-flex items-center gap-1 px-3 py-1.5 rounded-md cursor-pointer transition-colors
+              ${values.includes(option.value) 
+                ? 'bg-primary text-primary-foreground' 
+                : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'}
+              ${option.isCustom ? 'border border-dashed border-primary/30' : ''}
+            `}
+            onClick={() => handleToggleEvent(option.value)}
+          >
+            {option.icon}
+            <span className="text-xs font-medium">{option.label}</span>
+          </div>
         ))}
 
         {/* Add new tag button */}
-        <TooltipProvider delayDuration={300}>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div 
-                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md cursor-pointer bg-secondary/50 hover:bg-secondary border border-dashed border-primary/30"
-                onClick={() => setIsAddingTag(true)}
-              >
-                <Plus className="h-4 w-4" />
-                <span className="text-xs font-medium">Add Tag</span>
-              </div>
-            </TooltipTrigger>
-            <TooltipContent side="bottom">
-              <p>Create a new custom event tag</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <div 
+          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md cursor-pointer transition-colors bg-secondary/50 hover:bg-secondary border border-dashed border-primary/30"
+          onClick={() => setIsAddingTag(true)}
+        >
+          <Plus className="h-4 w-4" />
+          <span className="text-xs font-medium">Add Tag</span>
+        </div>
       </div>
 
       {/* Add new tag dialog */}
