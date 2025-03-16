@@ -3,6 +3,7 @@ import { JournalEntryData, MoodType } from "@/components/journal/JournalEntry";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Json } from "@/integrations/supabase/types";
+import { EmotionType } from "@/components/journal/types/emotion-types";
 
 // Save a journal entry to Supabase
 export const saveJournalEntry = async (entry: JournalEntryData): Promise<JournalEntryData | null> => {
@@ -69,7 +70,7 @@ export const saveJournalEntry = async (entry: JournalEntryData): Promise<Journal
       activities: result.data.activities || [],
       people: result.data.social_interactions?.people || [],
       eventTypes: result.data.social_interactions?.eventTypes || [],
-      emotions: result.data.emotions || [],
+      emotions: result.data.emotions ? (result.data.emotions as string[]).map(e => e as EmotionType) : [],
     };
   } catch (error) {
     console.error("Error in saveJournalEntry:", error);
@@ -111,6 +112,13 @@ export const fetchJournalEntries = async (): Promise<JournalEntryData[]> => {
         eventTypes?: string[] 
       } | null;
 
+      // Handle emotions array conversion - ensure it's an array of strings (EmotionType)
+      const emotions: EmotionType[] = Array.isArray(entry.emotions) 
+        ? (entry.emotions as any[]).map(emotion => 
+            typeof emotion === 'string' ? emotion as EmotionType : String(emotion) as EmotionType
+          )
+        : [];
+
       return {
         id: entry.id,
         date: new Date(entry.created_at),
@@ -120,7 +128,7 @@ export const fetchJournalEntries = async (): Promise<JournalEntryData[]> => {
         activities: entry.activities || [],
         people: socialInteractions?.people || [],
         eventTypes: socialInteractions?.eventTypes || [],
-        emotions: Array.isArray(entry.emotions) ? entry.emotions : [],
+        emotions: emotions,
       };
     });
   } catch (error) {
