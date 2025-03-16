@@ -101,15 +101,13 @@ const JournalEntry: React.FC<JournalEntryProps> = ({
       <CardContent className="space-y-6 p-0">
         <div className="space-y-6">
           <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <h2 className="text-xl font-semibold tracking-tight">
-                  Journal Entry
-                </h2>
-                <span className="text-sm text-muted-foreground">
-                  {format(date, "PPP")}
-                </span>
-              </div>
+            <div className="flex flex-col">
+              <h2 className="text-xl font-semibold tracking-tight">
+                Journal Entry
+              </h2>
+              <span className="text-sm text-muted-foreground">
+                {format(date, "PPP")}
+              </span>
             </div>
             
             <div className="relative">
