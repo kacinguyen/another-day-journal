@@ -1,7 +1,8 @@
 
-import { JournalEntryData } from "@/components/journal/JournalEntry";
+import { JournalEntryData, MoodType } from "@/components/journal/JournalEntry";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { Json } from "@/integrations/supabase/types";
 
 // Save a journal entry to Supabase
 export const saveJournalEntry = async (entry: JournalEntryData): Promise<JournalEntryData | null> => {
@@ -63,7 +64,7 @@ export const saveJournalEntry = async (entry: JournalEntryData): Promise<Journal
       id: result.data.id,
       date: new Date(result.data.created_at),
       content: result.data.content,
-      mood: result.data.mood,
+      mood: result.data.mood as MoodType, // Cast string to MoodType
       energy: result.data.energy_level,
       activities: result.data.activities || [],
       people: result.data.social_interactions?.people || [],
@@ -102,17 +103,26 @@ export const fetchJournalEntries = async (): Promise<JournalEntryData[]> => {
       return [];
     }
 
-    return data.map(entry => ({
-      id: entry.id,
-      date: new Date(entry.created_at),
-      content: entry.content,
-      mood: entry.mood,
-      energy: entry.energy_level,
-      activities: entry.activities || [],
-      people: entry.social_interactions?.people || [],
-      eventTypes: entry.social_interactions?.eventTypes || [],
-      emotions: entry.emotions || [],
-    }));
+    // Convert database entries to JournalEntryData
+    return data.map(entry => {
+      // Parse the social_interactions object
+      const socialInteractions = entry.social_interactions as { 
+        people?: string[], 
+        eventTypes?: string[] 
+      } | null;
+
+      return {
+        id: entry.id,
+        date: new Date(entry.created_at),
+        content: entry.content || "",
+        mood: (entry.mood as MoodType) || "neutral", // Cast to MoodType with default
+        energy: entry.energy_level || 50,
+        activities: entry.activities || [],
+        people: socialInteractions?.people || [],
+        eventTypes: socialInteractions?.eventTypes || [],
+        emotions: Array.isArray(entry.emotions) ? entry.emotions : [],
+      };
+    });
   } catch (error) {
     console.error("Error in fetchJournalEntries:", error);
     return [];
