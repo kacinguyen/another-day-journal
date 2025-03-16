@@ -52,7 +52,7 @@ const MoodPicker: React.FC<MoodPickerProps> = ({ value, onChange }) => {
   return (
     <div className="space-y-2">
       <label className="text-sm font-medium">How was your day?</label>
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-2">
         {moods.map((mood) => (
           <button
             key={mood.value}
