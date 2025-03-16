@@ -11,7 +11,7 @@ import SaveButton from "./entry/SaveButton";
 import { JournalEntryProps } from "./types/journal-types";
 
 // Reexport JournalEntryData type for backward compatibility
-export { JournalEntryData } from "./types/journal-types";
+export type { JournalEntryData } from "./types/journal-types";
 
 /**
  * JournalEntry Component
