@@ -14,6 +14,19 @@ import {
 import { format } from "date-fns";
 import { Card } from "@/components/ui/card";
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
+import { 
+  PartyPopper, 
+  UtensilsCrossed, 
+  Coffee, 
+  Home, 
+  Film, 
+  Book, 
+  Music, 
+  Gamepad, 
+  ShoppingBag, 
+  TreeDeciduous,
+  Calendar 
+} from "lucide-react";
 
 // Mock function to get entries - would be replaced by actual API call
 const getJournalEntries = (): JournalEntryData[] => {
@@ -72,6 +85,25 @@ const JournalLog = () => {
     }
   };
 
+  // Function to get an event icon based on the event type
+  const getEventIcon = (eventType: string | null) => {
+    if (!eventType) return null;
+    
+    switch (eventType) {
+      case "party": return <PartyPopper className="h-4 w-4" />;
+      case "restaurant": return <UtensilsCrossed className="h-4 w-4" />;
+      case "cafe": return <Coffee className="h-4 w-4" />;
+      case "home": return <Home className="h-4 w-4" />;
+      case "movie": return <Film className="h-4 w-4" />;
+      case "reading": return <Book className="h-4 w-4" />;
+      case "music": return <Music className="h-4 w-4" />;
+      case "gaming": return <Gamepad className="h-4 w-4" />;
+      case "shopping": return <ShoppingBag className="h-4 w-4" />;
+      case "outdoors": return <TreeDeciduous className="h-4 w-4" />;
+      default: return <Calendar className="h-4 w-4" />;
+    }
+  };
+
   return (
     <div className="page-container animate-fade-up">
       <div className="space-y-1 mb-8">
@@ -99,6 +131,7 @@ const JournalLog = () => {
                       <TableHead>Date</TableHead>
                       <TableHead>Mood</TableHead>
                       <TableHead>Energy</TableHead>
+                      <TableHead>Event</TableHead>
                       <TableHead>Content</TableHead>
                       <TableHead>Activities</TableHead>
                       <TableHead>People</TableHead>
@@ -114,6 +147,14 @@ const JournalLog = () => {
                           </span>
                         </TableCell>
                         <TableCell>{entry.energy}%</TableCell>
+                        <TableCell>
+                          {entry.eventType && (
+                            <div className="flex items-center gap-1.5">
+                              {getEventIcon(entry.eventType)}
+                              <span className="capitalize">{entry.eventType}</span>
+                            </div>
+                          )}
+                        </TableCell>
                         <TableCell className="max-w-xs truncate">{entry.content}</TableCell>
                         <TableCell>{entry.activities.join(", ")}</TableCell>
                         <TableCell>{entry.people.join(", ")}</TableCell>
