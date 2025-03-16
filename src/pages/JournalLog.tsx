@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import JournalEntry, { JournalEntryData } from "@/components/journal/JournalEntry";
 import { useToast } from "@/hooks/use-toast";
@@ -121,24 +120,22 @@ const JournalLog: React.FC = () => {
             <Card className="border rounded-lg p-4 bg-card shadow-sm">
               <div className="space-y-4">
                 <h2 className="text-xl font-semibold">Journal Calendar</h2>
-                <div className="flex justify-center">
-                  <Calendar
-                    mode="single"
-                    selected={selectedDate}
-                    onSelect={handleDateSelect}
-                    className="rounded-md bg-white pointer-events-auto"
-                    modifiers={{
-                      hasEntry: entries.map(entry => new Date(entry.date))
-                    }}
-                    modifiersStyles={{
-                      hasEntry: {
-                        fontWeight: 'bold',
-                        border: '2px solid currentColor',
-                        color: 'var(--primary)'
-                      }
-                    }}
-                  />
-                </div>
+                <Calendar
+                  mode="single"
+                  selected={selectedDate}
+                  onSelect={handleDateSelect}
+                  className="rounded-md bg-white mx-auto w-full"
+                  modifiers={{
+                    hasEntry: entries.map(entry => new Date(entry.date))
+                  }}
+                  modifiersStyles={{
+                    hasEntry: {
+                      fontWeight: 'bold',
+                      border: '2px solid currentColor',
+                      color: 'var(--primary)'
+                    }
+                  }}
+                />
               </div>
             </Card>
             
