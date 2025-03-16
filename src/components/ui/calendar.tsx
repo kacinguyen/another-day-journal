@@ -50,14 +50,6 @@ function Calendar({
         day_range_middle:
           "aria-selected:bg-accent aria-selected:text-accent-foreground",
         day_hidden: "invisible",
-        // Custom modifier classes with hover states that maintain color identity
-        ...{
-          greatDay: "bg-pink-100 dark:bg-pink-950 text-pink-800 dark:text-pink-200 hover:bg-pink-50 dark:hover:bg-pink-900 hover:text-pink-900 dark:hover:text-pink-100",
-          goodDay: "bg-green-100 dark:bg-green-950 text-green-800 dark:text-green-200 hover:bg-green-50 dark:hover:bg-green-900 hover:text-green-900 dark:hover:text-green-100",
-          neutralDay: "bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-200 hover:bg-blue-50 dark:hover:bg-blue-900 hover:text-blue-900 dark:hover:text-blue-100",
-          badDay: "bg-orange-100 dark:bg-orange-950 text-orange-800 dark:text-orange-200 hover:bg-orange-50 dark:hover:bg-orange-900 hover:text-orange-900 dark:hover:text-orange-100",
-          awfulDay: "bg-red-100 dark:bg-red-950 text-red-800 dark:text-red-200 hover:bg-red-50 dark:hover:bg-red-900 hover:text-red-900 dark:hover:text-red-100",
-        },
         ...classNames,
       }}
       components={{
