@@ -21,6 +21,7 @@ const JournalLog: React.FC = () => {
   const [entries, setEntries] = useState<JournalEntryData[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [currentEntry, setCurrentEntry] = useState<JournalEntryData | undefined>(undefined);
   const { toast } = useToast();
   const { user } = useAuth();
 
@@ -32,11 +33,29 @@ const JournalLog: React.FC = () => {
       setLoading(true);
       const journalEntries = await fetchJournalEntries();
       setEntries(journalEntries);
+      
+      // Set the initial entry for today's date
+      const todayEntry = findEntryForDate(new Date());
+      updateCurrentEntry(todayEntry);
+      
       setLoading(false);
     };
 
     loadEntries();
   }, [user]);
+
+  /**
+   * Update the current entry state based on selected date
+   */
+  const updateCurrentEntry = (entry: JournalEntryData | undefined) => {
+    if (entry) {
+      // Use the existing entry
+      setCurrentEntry(entry);
+    } else {
+      // Create a new empty entry for the selected date
+      setCurrentEntry(undefined);
+    }
+  };
 
   /**
    * Handles saving a new journal entry or updating an existing one
@@ -50,7 +69,21 @@ const JournalLog: React.FC = () => {
         ? entries.map(entry => entry.id === entryData.id ? savedEntry : entry)
         : [savedEntry, ...entries];
       
-      setEntries(updatedEntries);
+      // Make sure entries are unique by date
+      const uniqueEntries = new Map<string, JournalEntryData>();
+      updatedEntries.forEach(entry => {
+        const dateString = format(entry.date, 'yyyy-MM-dd');
+        if (!uniqueEntries.has(dateString) || 
+            entry.date > uniqueEntries.get(dateString)!.date) {
+          uniqueEntries.set(dateString, entry);
+        }
+      });
+      
+      const finalEntries = Array.from(uniqueEntries.values())
+        .sort((a, b) => b.date.getTime() - a.date.getTime());
+        
+      setEntries(finalEntries);
+      setCurrentEntry(savedEntry);
       
       toast({
         title: entryData.id ? "Entry Updated" : "Entry Created",
@@ -75,19 +108,32 @@ const JournalLog: React.FC = () => {
    */
   const handleDateSelect = (date: Date | undefined) => {
     if (!date) return;
+    
+    // Update the selected date
     setSelectedDate(date);
+    
+    // Find an entry for this date or create a new empty one
     const entry = findEntryForDate(date);
+    updateCurrentEntry(entry);
+    
+    // If an entry exists, show a toast notification
     if (entry) {
-      // Scroll to the entry form
-      const journalForm = document.getElementById('journal-form');
-      if (journalForm) {
-        journalForm.scrollIntoView({
-          behavior: 'smooth'
-        });
-      }
       toast({
         title: "Journal Entry Found",
-        description: `Found entry for ${format(date, 'MMMM d, yyyy')}`
+        description: `Loaded entry for ${format(date, 'MMMM d, yyyy')}`
+      });
+    } else {
+      toast({
+        title: "New Journal Entry",
+        description: `Create a new entry for ${format(date, 'MMMM d, yyyy')}`
+      });
+    }
+    
+    // Scroll to the entry form
+    const journalForm = document.getElementById('journal-form');
+    if (journalForm) {
+      journalForm.scrollIntoView({
+        behavior: 'smooth'
       });
     }
   };
@@ -102,6 +148,25 @@ const JournalLog: React.FC = () => {
 
   // Determine whether to show the example entry
   const showDummyEntry = entries.length === 0 && !loading;
+  
+  // Prepare the initial data for the journal entry form
+  const getInitialData = () => {
+    if (currentEntry) {
+      return currentEntry;
+    }
+    
+    // Return a new empty entry with the selected date
+    return {
+      date: selectedDate,
+      content: "",
+      mood: "neutral" as const,
+      energy: 50,
+      activities: [],
+      people: [],
+      eventTypes: [],
+      emotions: []
+    };
+  };
   
   return (
     <div className="page-container animate-fade-up">
@@ -127,7 +192,7 @@ const JournalLog: React.FC = () => {
                   mode="single" 
                   selected={selectedDate} 
                   onSelect={handleDateSelect} 
-                  className="rounded-md bg-white mx-auto w-full" 
+                  className="rounded-md bg-white mx-auto w-full pointer-events-auto" 
                   modifiers={{
                     hasEntry: entries.map(entry => new Date(entry.date))
                   }} 
@@ -170,7 +235,7 @@ const JournalLog: React.FC = () => {
           <div id="journal-form">
             <JournalEntry 
               onSave={handleSaveEntry} 
-              initialData={findEntryForDate(selectedDate)} 
+              initialData={getInitialData()} 
             />
           </div>
         </div>

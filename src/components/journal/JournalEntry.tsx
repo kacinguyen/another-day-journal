@@ -31,12 +31,12 @@ export interface JournalEntryData {
 
 interface JournalEntryProps {
   onSave: (data: JournalEntryData) => void;
-  initialData?: Partial<JournalEntryData>;
+  initialData: JournalEntryData;
 }
 
 const JournalEntry: React.FC<JournalEntryProps> = ({
   onSave,
-  initialData = {}
+  initialData
 }) => {
   const [date, setDate] = useState<Date>(initialData.date || new Date());
   const [content, setContent] = useState(initialData.content || "");
@@ -51,14 +51,26 @@ const JournalEntry: React.FC<JournalEntryProps> = ({
 
   // Update form when initialData changes
   useEffect(() => {
-    if (initialData.date) setDate(initialData.date);
-    if (initialData.content !== undefined) setContent(initialData.content);
-    if (initialData.mood) setMood(initialData.mood);
-    if (initialData.energy !== undefined) setEnergy(initialData.energy);
-    if (initialData.activities) setActivities(initialData.activities);
-    if (initialData.people) setPeople(initialData.people);
-    if (initialData.eventTypes) setEventTypes(initialData.eventTypes);
-    if (initialData.emotions) setEmotions(initialData.emotions);
+    // Only update if the date is different to avoid clearing form during typing
+    const currentDateStr = format(date, 'yyyy-MM-dd');
+    const newDateStr = format(initialData.date, 'yyyy-MM-dd');
+    const isNewDate = currentDateStr !== newDateStr;
+    
+    // If it's a new date or if there's an ID (existing entry), update all fields
+    if (isNewDate || initialData.id) {
+      setDate(initialData.date);
+      setContent(initialData.content || "");
+      setMood(initialData.mood || "neutral");
+      setEnergy(initialData.energy || 50);
+      setActivities(initialData.activities || []);
+      setPeople(initialData.people || []);
+      setEventTypes(initialData.eventTypes || []);
+      setEmotions(initialData.emotions || []);
+    } 
+    // If it's the same date but no ID (new entry), only update the date
+    else if (!initialData.id) {
+      setDate(initialData.date);
+    }
   }, [initialData]);
 
   const handleAddActivity = (activity: string) => {
