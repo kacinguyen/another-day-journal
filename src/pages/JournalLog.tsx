@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import JournalEntry, { JournalEntryData } from "@/components/journal/JournalEntry";
 import { toast } from "@/components/ui/use-toast";
@@ -51,7 +52,7 @@ const saveJournalEntries = (entries: JournalEntryData[]) => {
 
 const dummyEntry: JournalEntryData = {
   id: "dummy-entry",
-  date: new Date().toISOString(),
+  date: new Date(), // Fixed: Using a Date object instead of an ISO string
   mood: "good",
   emotions: ["grateful", "happy", "content"],
   energy: 85,
