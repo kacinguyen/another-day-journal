@@ -17,6 +17,8 @@ import {
   ToggleGroupItem 
 } from "@/components/ui/toggle-group";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export type EventType = 
   | "party" 
@@ -32,8 +34,8 @@ export type EventType =
   | "other";
 
 interface EventTrackerProps {
-  value: EventType | null;
-  onChange: (value: EventType | null) => void;
+  values: EventType[];
+  onChange: (values: EventType[]) => void;
 }
 
 interface EventOption {
@@ -42,7 +44,7 @@ interface EventOption {
   icon: React.ReactNode;
 }
 
-const EventTracker: React.FC<EventTrackerProps> = ({ value, onChange }) => {
+const EventTracker: React.FC<EventTrackerProps> = ({ values, onChange }) => {
   const eventOptions: EventOption[] = [
     { value: "party", label: "Party", icon: <PartyPopper className="h-4 w-4" /> },
     { value: "restaurant", label: "Restaurant", icon: <UtensilsCrossed className="h-4 w-4" /> },
@@ -56,48 +58,61 @@ const EventTracker: React.FC<EventTrackerProps> = ({ value, onChange }) => {
     { value: "outdoors", label: "Outdoors", icon: <TreeDeciduous className="h-4 w-4" /> },
   ];
 
-  const handleValueChange = (newValue: string) => {
-    if (newValue === "") {
-      onChange(null);
+  const handleToggleEvent = (event: EventType) => {
+    if (values.includes(event)) {
+      onChange(values.filter(v => v !== event));
     } else {
-      onChange(newValue as EventType);
+      onChange([...values, event]);
     }
   };
 
   return (
     <div className="space-y-3">
-      <label className="text-sm font-medium">Event Type</label>
+      <label className="text-sm font-medium">Event Tags</label>
       
-      <TooltipProvider delayDuration={300}>
-        <ToggleGroup 
-          type="single" 
-          value={value || ""} 
-          onValueChange={handleValueChange}
-          className="flex flex-wrap justify-start gap-2"
-        >
-          {eventOptions.map((option) => (
-            <Tooltip key={option.value}>
+      <div className="flex flex-wrap gap-2">
+        {eventOptions.map((option) => (
+          <TooltipProvider key={option.value} delayDuration={300}>
+            <Tooltip>
               <TooltipTrigger asChild>
-                <ToggleGroupItem 
-                  value={option.value} 
-                  aria-label={option.label}
-                  className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+                <div 
+                  className={`
+                    inline-flex items-center gap-1 px-3 py-1.5 rounded-md cursor-pointer
+                    ${values.includes(option.value) 
+                      ? 'bg-primary text-primary-foreground' 
+                      : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'}
+                  `}
+                  onClick={() => handleToggleEvent(option.value)}
                 >
                   {option.icon}
-                </ToggleGroupItem>
+                  <span className="text-xs font-medium">{option.label}</span>
+                </div>
               </TooltipTrigger>
               <TooltipContent side="bottom">
-                <p>{option.label}</p>
+                <p>Toggle {option.label}</p>
               </TooltipContent>
             </Tooltip>
-          ))}
-        </ToggleGroup>
-      </TooltipProvider>
+          </TooltipProvider>
+        ))}
+      </div>
       
-      {value && (
-        <p className="text-xs text-muted-foreground">
-          Selected: {eventOptions.find(o => o.value === value)?.label || value}
-        </p>
+      {values.length > 0 && (
+        <div className="flex flex-wrap gap-1.5 mt-2">
+          <span className="text-xs text-muted-foreground">Selected: </span>
+          {values.map(value => {
+            const eventOption = eventOptions.find(o => o.value === value);
+            return (
+              <Badge 
+                key={value} 
+                variant="secondary"
+                className="flex items-center gap-1"
+              >
+                {eventOption?.icon}
+                {eventOption?.label}
+              </Badge>
+            );
+          })}
+        </div>
       )}
     </div>
   );

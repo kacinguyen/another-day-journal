@@ -14,6 +14,7 @@ import {
 import { format } from "date-fns";
 import { Card } from "@/components/ui/card";
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
+import { Badge } from "@/components/ui/badge";
 import { 
   PartyPopper, 
   UtensilsCrossed, 
@@ -86,9 +87,7 @@ const JournalLog = () => {
   };
 
   // Function to get an event icon based on the event type
-  const getEventIcon = (eventType: string | null) => {
-    if (!eventType) return null;
-    
+  const getEventIcon = (eventType: string) => {
     switch (eventType) {
       case "party": return <PartyPopper className="h-4 w-4" />;
       case "restaurant": return <UtensilsCrossed className="h-4 w-4" />;
@@ -131,7 +130,7 @@ const JournalLog = () => {
                       <TableHead>Date</TableHead>
                       <TableHead>Mood</TableHead>
                       <TableHead>Energy</TableHead>
-                      <TableHead>Event</TableHead>
+                      <TableHead>Events</TableHead>
                       <TableHead>Content</TableHead>
                       <TableHead>Activities</TableHead>
                       <TableHead>People</TableHead>
@@ -148,11 +147,21 @@ const JournalLog = () => {
                         </TableCell>
                         <TableCell>{entry.energy}%</TableCell>
                         <TableCell>
-                          {entry.eventType && (
-                            <div className="flex items-center gap-1.5">
-                              {getEventIcon(entry.eventType)}
-                              <span className="capitalize">{entry.eventType}</span>
+                          {entry.eventTypes && entry.eventTypes.length > 0 ? (
+                            <div className="flex flex-wrap gap-1">
+                              {entry.eventTypes.map(eventType => (
+                                <Badge 
+                                  key={eventType} 
+                                  variant="outline" 
+                                  className="flex items-center gap-1 py-0.5 text-xs"
+                                >
+                                  {getEventIcon(eventType)}
+                                  <span className="capitalize">{eventType}</span>
+                                </Badge>
+                              ))}
                             </div>
+                          ) : (
+                            <span className="text-muted-foreground text-xs">None</span>
                           )}
                         </TableCell>
                         <TableCell className="max-w-xs truncate">{entry.content}</TableCell>

@@ -29,7 +29,7 @@ export interface JournalEntryData {
   energy: number;
   activities: string[];
   people: string[];
-  eventType: EventType | null;
+  eventTypes: EventType[];
 }
 
 interface JournalEntryProps {
@@ -47,7 +47,7 @@ const JournalEntry: React.FC<JournalEntryProps> = ({
   const [energy, setEnergy] = useState(initialData.energy || 50);
   const [activities, setActivities] = useState<string[]>(initialData.activities || []);
   const [people, setPeople] = useState<string[]>(initialData.people || []);
-  const [eventType, setEventType] = useState<EventType | null>(initialData.eventType || null);
+  const [eventTypes, setEventTypes] = useState<EventType[]>(initialData.eventTypes || []);
   const [isSaving, setIsSaving] = useState(false);
 
   const handleAddActivity = (activity: string) => {
@@ -81,7 +81,7 @@ const JournalEntry: React.FC<JournalEntryProps> = ({
         energy,
         activities,
         people,
-        eventType
+        eventTypes
       });
       
       setIsSaving(false);
@@ -148,7 +148,7 @@ const JournalEntry: React.FC<JournalEntryProps> = ({
             <div className="space-y-6">
               <MoodPicker value={mood} onChange={setMood} />
               <EnergyTracker value={energy} onChange={setEnergy} />
-              <EventTracker value={eventType} onChange={setEventType} />
+              <EventTracker values={eventTypes} onChange={setEventTypes} />
             </div>
             
             <div className="space-y-6">
