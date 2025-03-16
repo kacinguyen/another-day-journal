@@ -30,7 +30,7 @@ async function fetchJournalEntries(userId: string) {
       return [];
     }
     
-    console.log(`SUCCESS: Found ${data?.length || 0} journal entries`);
+    console.log(`SUCCESS: Found ${data?.length || 0} journal entries for user_id: ${userId}`);
     
     // Log more detailed information about the entries
     if (data && data.length > 0) {
@@ -39,7 +39,7 @@ async function fetchJournalEntries(userId: string) {
       
       // Log a few entries to see date patterns
       data.slice(0, 3).forEach((entry, i) => {
-        console.log(`ENTRY ${i}: Date=${new Date(entry.created_at).toISOString()}, Mood=${entry.mood}`);
+        console.log(`ENTRY ${i}: Date=${new Date(entry.created_at).toISOString()}, Mood=${entry.mood}, user_id=${entry.user_id}`);
       });
       
       // Check for entries in March specifically
@@ -48,9 +48,16 @@ async function fetchJournalEntries(userId: string) {
         return date.getMonth() === 2; // March is month 2 (0-indexed)
       });
       
-      console.log(`MARCH ENTRIES: Found ${marchEntries.length} entries from March`);
+      console.log(`MARCH ENTRIES: Found ${marchEntries.length} entries from March for user_id: ${userId}`);
+      
+      // Log more details about March entries if they exist
+      if (marchEntries.length > 0) {
+        marchEntries.forEach((entry, i) => {
+          console.log(`MARCH ENTRY ${i}: Date=${new Date(entry.created_at).toISOString()}, Mood=${entry.mood}, user_id=${entry.user_id}`);
+        });
+      }
     } else {
-      console.log("WARNING: No journal entries found for this user");
+      console.log(`WARNING: No journal entries found for user_id: ${userId}`);
     }
     
     return data || [];
