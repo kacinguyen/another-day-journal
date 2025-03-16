@@ -1,10 +1,9 @@
-
 import React, { useState, useEffect } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { Save } from "lucide-react";
-import MoodPicker from "./MoodPicker";
+import MoodPicker, { MoodType } from "./MoodPicker";
 import EnergyTracker from "./EnergyTracker";
 import ActivitySelector from "./ActivitySelector";
 import SocialTracker from "./SocialTracker";
@@ -14,8 +13,6 @@ import { EmotionType } from "./types/emotion-types";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/context/AuthContext";
-
-export type MoodType = "great" | "good" | "neutral" | "bad" | "awful";
 
 export interface JournalEntryData {
   id?: string;
@@ -40,7 +37,7 @@ const JournalEntry: React.FC<JournalEntryProps> = ({
 }) => {
   const [date, setDate] = useState<Date>(initialData.date || new Date());
   const [content, setContent] = useState(initialData.content || "");
-  const [mood, setMood] = useState<MoodType>(initialData.mood || "neutral");
+  const [mood, setMood] = useState<MoodType>(initialData.mood || null);
   const [energy, setEnergy] = useState(initialData.energy || 50);
   const [activities, setActivities] = useState<string[]>(initialData.activities || []);
   const [people, setPeople] = useState<string[]>(initialData.people || []);
@@ -49,25 +46,21 @@ const JournalEntry: React.FC<JournalEntryProps> = ({
   const [isSaving, setIsSaving] = useState(false);
   const { user } = useAuth();
 
-  // Update form when initialData changes
   useEffect(() => {
-    // Only update if the date is different to avoid clearing form during typing
     const currentDateStr = format(date, 'yyyy-MM-dd');
     const newDateStr = format(initialData.date, 'yyyy-MM-dd');
     const isNewDate = currentDateStr !== newDateStr;
     
-    // If it's a new date or if there's an ID (existing entry), update all fields
     if (isNewDate || initialData.id) {
       setDate(initialData.date);
       setContent(initialData.content || "");
-      setMood(initialData.mood || "neutral");
+      setMood(initialData.mood || null);
       setEnergy(initialData.energy || 50);
       setActivities(initialData.activities || []);
       setPeople(initialData.people || []);
       setEventTypes(initialData.eventTypes || []);
       setEmotions(initialData.emotions || []);
     } 
-    // If it's the same date but no ID (new entry), only update the date
     else if (!initialData.id) {
       setDate(initialData.date);
     }
@@ -91,10 +84,10 @@ const JournalEntry: React.FC<JournalEntryProps> = ({
 
   const handleSave = () => {
     if (!user) {
-      return; // Don't allow saving if not logged in
+      return;
     }
     
-    if (content.trim() === "") return;
+    if (content.trim() === "" || mood === null) return;
     
     setIsSaving(true);
     
@@ -110,13 +103,11 @@ const JournalEntry: React.FC<JournalEntryProps> = ({
       emotions
     };
     
-    // Call the onSave function
     onSave(entryData);
     
     setTimeout(() => {
       setIsSaving(false);
       
-      // Display animation effect on save success
       const saveButton = document.getElementById("save-button");
       if (saveButton) {
         saveButton.classList.add("animate-pulse");
@@ -182,7 +173,7 @@ const JournalEntry: React.FC<JournalEntryProps> = ({
             <Button
               id="save-button"
               onClick={handleSave}
-              disabled={content.trim() === "" || isSaving || !user}
+              disabled={content.trim() === "" || mood === null || isSaving || !user}
               className="relative overflow-hidden transition-all duration-300"
             >
               <div className="flex items-center gap-1.5">

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import JournalEntry, { JournalEntryData } from "@/components/journal/JournalEntry";
 import { useToast } from "@/hooks/use-toast";
@@ -159,7 +158,7 @@ const JournalLog: React.FC = () => {
     return {
       date: selectedDate,
       content: "",
-      mood: "neutral" as const,
+      mood: null,
       energy: 50,
       activities: [],
       people: [],

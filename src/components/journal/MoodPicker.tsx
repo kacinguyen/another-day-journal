@@ -3,7 +3,7 @@ import React from "react";
 import { Smile, Meh, Frown, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-type MoodType = "great" | "good" | "neutral" | "bad" | "awful";
+export type MoodType = "great" | "good" | "neutral" | "bad" | "awful" | null;
 
 interface MoodPickerProps {
   value: MoodType;
