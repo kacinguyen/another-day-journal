@@ -34,38 +34,34 @@ const JournalCalendar: React.FC<JournalCalendarProps> = ({
     }
   });
   
-  // Custom day rendering to show mood colors
+  // Create mood-specific modifiers for each date
   const modifiers = {
-    hasEntry: datesWithEntries
+    hasEntry: datesWithEntries,
+    greatDay: datesWithEntries.filter(date => 
+      dateMoodMap.get(date.toDateString()) === "great"
+    ),
+    goodDay: datesWithEntries.filter(date => 
+      dateMoodMap.get(date.toDateString()) === "good"
+    ),
+    neutralDay: datesWithEntries.filter(date => 
+      dateMoodMap.get(date.toDateString()) === "neutral"
+    ),
+    badDay: datesWithEntries.filter(date => 
+      dateMoodMap.get(date.toDateString()) === "bad"
+    ),
+    awfulDay: datesWithEntries.filter(date => 
+      dateMoodMap.get(date.toDateString()) === "awful"
+    )
   };
 
-  const modifiersStyles = {
-    hasEntry: {
-      fontWeight: 'bold'
-    }
-  };
-
-  // Custom day rendering to show mood colors
-  const getDayClassNames = (date: Date) => {
-    const dateStr = date.toDateString();
-    const mood = dateMoodMap.get(dateStr);
-    
-    if (!mood) return "";
-    
-    switch (mood) {
-      case "great":
-        return "bg-pink-100 dark:bg-pink-950 text-pink-800 dark:text-pink-200";
-      case "good":
-        return "bg-green-100 dark:bg-green-950 text-green-800 dark:text-green-200";
-      case "neutral":
-        return "bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-200";
-      case "bad":
-        return "bg-orange-100 dark:bg-orange-950 text-orange-800 dark:text-orange-200";
-      case "awful":
-        return "bg-red-100 dark:bg-red-950 text-red-800 dark:text-red-200";
-      default:
-        return "";
-    }
+  // Styles for the modifiers
+  const modifiersClassNames = {
+    hasEntry: "font-bold",
+    greatDay: "bg-pink-100 dark:bg-pink-950 text-pink-800 dark:text-pink-200",
+    goodDay: "bg-green-100 dark:bg-green-950 text-green-800 dark:text-green-200",
+    neutralDay: "bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-200",
+    badDay: "bg-orange-100 dark:bg-orange-950 text-orange-800 dark:text-orange-200",
+    awfulDay: "bg-red-100 dark:bg-red-950 text-red-800 dark:text-red-200"
   };
 
   return (
@@ -78,10 +74,7 @@ const JournalCalendar: React.FC<JournalCalendarProps> = ({
           onSelect={onDateSelect} 
           className="rounded-md bg-white mx-auto w-full pointer-events-auto"
           modifiers={modifiers}
-          modifiersStyles={modifiersStyles}
-          modifiersClassNames={{
-            hasEntry: (date) => getDayClassNames(date)
-          }}
+          modifiersClassNames={modifiersClassNames}
         />
       </div>
     </Card>
