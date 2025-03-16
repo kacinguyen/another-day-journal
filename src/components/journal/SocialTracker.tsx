@@ -1,7 +1,7 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { Badge } from "@/components/ui/badge";
-import { X, Plus, Users } from "lucide-react";
+import { X, Plus, Users, User } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -17,8 +17,9 @@ const SocialTracker: React.FC<SocialTrackerProps> = ({
   onAddPerson,
   onRemovePerson
 }) => {
-  const [inputValue, setInputValue] = React.useState("");
-  const [showInput, setShowInput] = React.useState(false);
+  const [inputValue, setInputValue] = useState("");
+  const [showInput, setShowInput] = useState(false);
+  const [isPreviewVisible, setIsPreviewVisible] = useState(true);
 
   const handleAddPerson = () => {
     if (inputValue.trim() !== "" && !people.includes(inputValue.trim())) {
@@ -37,6 +38,15 @@ const SocialTracker: React.FC<SocialTrackerProps> = ({
       setInputValue("");
     }
   };
+
+  // Hide the preview when real people are added
+  React.useEffect(() => {
+    if (people.length > 0) {
+      setIsPreviewVisible(false);
+    } else {
+      setIsPreviewVisible(true);
+    }
+  }, [people]);
 
   return (
     <div className="space-y-3">
@@ -93,6 +103,25 @@ const SocialTracker: React.FC<SocialTrackerProps> = ({
               </button>
             </Badge>
           ))}
+        </div>
+      )}
+
+      {/* Dummy preview of what adding a person looks like */}
+      {isPreviewVisible && people.length === 0 && (
+        <div className="flex flex-wrap gap-2 mt-2 min-h-9 opacity-50">
+          <Badge 
+            variant="secondary"
+            className="px-3 py-1.5 h-auto text-sm gap-1.5 border-dashed"
+          >
+            <User className="h-3.5 w-3.5 mr-1" />
+            Person name
+            <span className="rounded-full hover:bg-muted p-0.5">
+              <X className="h-3 w-3" />
+            </span>
+          </Badge>
+          <div className="flex items-center text-xs text-muted-foreground ml-2">
+            ← Example of added person
+          </div>
         </div>
       )}
     </div>
