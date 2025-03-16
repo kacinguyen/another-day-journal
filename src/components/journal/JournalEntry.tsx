@@ -1,14 +1,9 @@
+
 import React, { useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
-import { CalendarIcon, Save } from "lucide-react";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Save } from "lucide-react";
 import MoodPicker from "./MoodPicker";
 import EnergyTracker from "./EnergyTracker";
 import ActivitySelector from "./ActivitySelector";
@@ -107,30 +102,14 @@ const JournalEntry: React.FC<JournalEntryProps> = ({
         <div className="space-y-6">
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold tracking-tight">
-                Journal Entry
-              </h2>
-              
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="h-9 pl-3 text-left font-normal flex items-center"
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {format(date, "PPP")}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="end">
-                  <Calendar
-                    mode="single"
-                    selected={date}
-                    onSelect={(newDate) => newDate && setDate(newDate)}
-                    initialFocus
-                    className="rounded-md bg-white p-3 pointer-events-auto"
-                  />
-                </PopoverContent>
-              </Popover>
+              <div className="flex items-center gap-2">
+                <h2 className="text-xl font-semibold tracking-tight">
+                  Journal Entry
+                </h2>
+                <span className="text-sm text-muted-foreground">
+                  {format(date, "PPP")}
+                </span>
+              </div>
             </div>
             
             <div className="relative">
