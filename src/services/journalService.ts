@@ -1,9 +1,9 @@
-
 import { JournalEntryData, MoodType } from "@/components/journal/JournalEntry";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Json } from "@/integrations/supabase/types";
 import { EmotionType } from "@/components/journal/types/emotion-types";
+import { format } from "date-fns";
 
 // Save a journal entry to Supabase
 export const saveJournalEntry = async (entry: JournalEntryData): Promise<JournalEntryData | null> => {
@@ -105,7 +105,7 @@ export const fetchJournalEntries = async (): Promise<JournalEntryData[]> => {
     }
 
     // Convert database entries to JournalEntryData
-    return data.map(entry => {
+    const entries = data.map(entry => {
       // Parse the social_interactions object
       const socialInteractions = entry.social_interactions as { 
         people?: string[], 
@@ -131,6 +131,24 @@ export const fetchJournalEntries = async (): Promise<JournalEntryData[]> => {
         emotions: emotions,
       };
     });
+    
+    // Filter entries to keep only the latest entry for each date
+    const uniqueEntriesByDate = new Map<string, JournalEntryData>();
+    
+    // Group entries by date string (ignoring time)
+    entries.forEach(entry => {
+      const dateString = format(entry.date, 'yyyy-MM-dd');
+      
+      // If this date isn't in our map yet, or this entry is newer than what we have
+      if (!uniqueEntriesByDate.has(dateString) || 
+          entry.date > uniqueEntriesByDate.get(dateString)!.date) {
+        uniqueEntriesByDate.set(dateString, entry);
+      }
+    });
+    
+    // Convert map back to array and sort by date (newest first)
+    return Array.from(uniqueEntriesByDate.values())
+      .sort((a, b) => b.date.getTime() - a.date.getTime());
   } catch (error) {
     console.error("Error in fetchJournalEntries:", error);
     return [];
