@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
 import { Badge } from "@/components/ui/badge";
-import { Book, Dumbbell, Utensils, Pencil, Brain, Plus, Tag, X, Tv, TreeDeciduous, Building, Cake, Bike } from "lucide-react";
+import { Book, Dumbbell, Utensils, Pencil, Brain, Plus, Tag, X, Tv, TreeDeciduous, Code, Cake, Bike } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -38,7 +38,7 @@ const ActivitySelector: React.FC<ActivitySelectorProps> = ({
     { value: "cooking", label: "Cooking", icon: <Utensils className="h-4 w-4" /> },
     { value: "writing", label: "Writing", icon: <Pencil className="h-4 w-4" /> },
     { value: "crafts", label: "Crafts", icon: <Pencil className="h-4 w-4" /> },
-    { value: "building", label: "Building", icon: <Building className="h-4 w-4" /> },
+    { value: "building", label: "Building", icon: <Code className="h-4 w-4" /> },
     { value: "baking", label: "Baking", icon: <Cake className="h-4 w-4" /> },
     { value: "biking", label: "Biking", icon: <Bike className="h-4 w-4" /> },
     { value: "learning", label: "Learning", icon: <Brain className="h-4 w-4" /> },
