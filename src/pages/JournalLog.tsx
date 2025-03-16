@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import JournalEntry, { JournalEntryData } from "@/components/journal/JournalEntry";
 import { toast } from "@/components/ui/use-toast";
@@ -139,92 +138,83 @@ const JournalLog = () => {
         </p>
       </div>
       
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <div className="lg:col-span-5 order-2 lg:order-1">
-          <h2 className="text-xl font-semibold mb-4">Previous Entries</h2>
-          
-          {entries.length > 0 ? (
-            <Card className="overflow-hidden">
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Date</TableHead>
-                      <TableHead>Mood</TableHead>
-                      <TableHead>Emotions</TableHead>
-                      <TableHead>Energy</TableHead>
-                      <TableHead>Events</TableHead>
-                      <TableHead>Content</TableHead>
-                      <TableHead>Activities</TableHead>
-                      <TableHead>People</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {entries.map((entry) => (
-                      <TableRow key={entry.id}>
-                        <TableCell>{format(new Date(entry.date), 'MMM dd, yyyy')}</TableCell>
-                        <TableCell>
-                          <span className="flex items-center gap-1">
-                            {getMoodEmoji(entry.mood)} {entry.mood}
-                          </span>
-                        </TableCell>
-                        <TableCell>
-                          {entry.emotions && entry.emotions.length > 0 ? (
-                            <div className="flex flex-wrap gap-1">
-                              {entry.emotions.map(emotion => (
-                                <Badge 
-                                  key={emotion} 
-                                  variant="outline" 
-                                  className="flex items-center gap-1 py-0.5 text-xs"
-                                >
-                                  {getEmotionIcon(emotion)}
-                                  <span className="capitalize">{emotion}</span>
-                                </Badge>
-                              ))}
-                            </div>
-                          ) : (
-                            <span className="text-muted-foreground text-xs">None</span>
-                          )}
-                        </TableCell>
-                        <TableCell>{entry.energy}%</TableCell>
-                        <TableCell>
-                          {entry.eventTypes && entry.eventTypes.length > 0 ? (
-                            <div className="flex flex-wrap gap-1">
-                              {entry.eventTypes.map(eventType => (
-                                <Badge 
-                                  key={eventType} 
-                                  variant="outline" 
-                                  className="flex items-center gap-1 py-0.5 text-xs"
-                                >
-                                  {getEventIcon(eventType)}
-                                  <span className="capitalize">{eventType}</span>
-                                </Badge>
-                              ))}
-                            </div>
-                          ) : (
-                            <span className="text-muted-foreground text-xs">None</span>
-                          )}
-                        </TableCell>
-                        <TableCell className="max-w-xs truncate">{entry.content}</TableCell>
-                        <TableCell>{entry.activities.join(", ")}</TableCell>
-                        <TableCell>{entry.people.join(", ")}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            </Card>
-          ) : (
-            <div className="text-sm text-muted-foreground">
-              Your previous journal entries will appear here.
-            </div>
-          )}
-        </div>
+      <ResizablePanelGroup
+        direction="horizontal"
+        className="min-h-[600px] rounded-lg border"
+      >
+        {/* Journal Entry Panel - 75% */}
+        <ResizablePanel defaultSize={75} minSize={40}>
+          <div className="p-6">
+            <JournalEntry onSave={handleSaveEntry} />
+          </div>
+        </ResizablePanel>
         
-        <div className="lg:col-span-7 order-1 lg:order-2">
-          <JournalEntry onSave={handleSaveEntry} />
-        </div>
-      </div>
+        <ResizableHandle withHandle />
+        
+        {/* Previous Entries Panel - 25% */}
+        <ResizablePanel defaultSize={25} minSize={20}>
+          <div className="p-6 h-full overflow-y-auto">
+            <h2 className="text-xl font-semibold mb-4">Previous Entries</h2>
+            
+            {entries.length > 0 ? (
+              <Card className="overflow-hidden">
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Date</TableHead>
+                        <TableHead>Mood</TableHead>
+                        <TableHead>Emotions</TableHead>
+                        <TableHead>Energy</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {entries.map((entry) => (
+                        <TableRow key={entry.id} className="cursor-pointer hover:bg-muted/50">
+                          <TableCell>{format(new Date(entry.date), 'MMM dd, yyyy')}</TableCell>
+                          <TableCell>
+                            <span className="flex items-center gap-1">
+                              {getMoodEmoji(entry.mood)} {entry.mood}
+                            </span>
+                          </TableCell>
+                          <TableCell>
+                            {entry.emotions && entry.emotions.length > 0 ? (
+                              <div className="flex flex-wrap gap-1">
+                                {entry.emotions.slice(0, 2).map(emotion => (
+                                  <Badge 
+                                    key={emotion} 
+                                    variant="outline" 
+                                    className="flex items-center gap-1 py-0.5 text-xs"
+                                  >
+                                    {getEmotionIcon(emotion)}
+                                    <span className="capitalize">{emotion}</span>
+                                  </Badge>
+                                ))}
+                                {entry.emotions.length > 2 && (
+                                  <Badge variant="outline" className="py-0.5 text-xs">
+                                    +{entry.emotions.length - 2}
+                                  </Badge>
+                                )}
+                              </div>
+                            ) : (
+                              <span className="text-muted-foreground text-xs">None</span>
+                            )}
+                          </TableCell>
+                          <TableCell>{entry.energy}%</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </Card>
+            ) : (
+              <div className="text-sm text-muted-foreground">
+                Your previous journal entries will appear here.
+              </div>
+            )}
+          </div>
+        </ResizablePanel>
+      </ResizablePanelGroup>
     </div>
   );
 };
