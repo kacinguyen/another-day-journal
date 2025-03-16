@@ -1,21 +1,18 @@
 
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { LogIn } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/contexts/AuthContext";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  const { login } = useAuth();
-  const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,14 +28,14 @@ const Login: React.FC = () => {
     
     setIsLoading(true);
     
-    try {
-      const { error } = await login(email, password);
-      if (!error) {
-        navigate('/');
-      }
-    } finally {
+    // For now, just show a toast - we'll connect to Supabase later
+    setTimeout(() => {
+      toast({
+        title: "Login functionality",
+        description: "This will be connected to Supabase in the next step.",
+      });
       setIsLoading(false);
-    }
+    }, 1000);
   };
 
   return (
