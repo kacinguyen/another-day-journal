@@ -33,7 +33,7 @@ const Navbar = () => {
               key={item.path}
               to={item.path}
               className={cn(
-                "group flex items-center text-sm font-medium transition-colors hover:text-accent",
+                "flex items-center text-sm font-medium transition-colors hover:text-accent",
                 location.pathname === item.path
                   ? "text-foreground"
                   : "text-muted-foreground"
@@ -43,13 +43,6 @@ const Navbar = () => {
                 {item.icon}
                 <span>{item.name}</span>
               </div>
-              <span
-                className={cn(
-                  "h-0.5 w-0 bg-accent transition-all duration-300 group-hover:w-full",
-                  location.pathname === item.path ? "w-full" : ""
-                )}
-                style={{ marginTop: "2px" }}
-              />
             </Link>
           ))}
         </nav>
