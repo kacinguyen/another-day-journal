@@ -6,7 +6,6 @@ import {
   User, 
   Briefcase, 
   UserPlus, 
-  Tag, 
   Plus,
   X
 } from "lucide-react";
@@ -139,9 +138,6 @@ const SocialTracker: React.FC<SocialTrackerProps> = ({
     }
   };
 
-  // Helper for suggestions
-  const suggestions = ["Satya", "Shrivu"];
-
   return (
     <div className="space-y-3">
       <label className="text-sm font-medium">People I spent time with</label>
@@ -194,28 +190,6 @@ const SocialTracker: React.FC<SocialTrackerProps> = ({
           </div>
         )}
       </div>
-      
-      {/* Individual people suggestions */}
-      {suggestions.length > 0 && !showInput && (
-        <div className="mt-2">
-          <p className="text-xs text-muted-foreground mb-1.5">Suggestions:</p>
-          <div className="flex flex-wrap gap-1.5">
-            {suggestions
-              .filter(s => !people.some(p => p.toLowerCase() === s.toLowerCase()))
-              .map((suggestion, i) => (
-                <div
-                  key={i}
-                  className="inline-flex items-center gap-1 px-2 py-1 rounded-md cursor-pointer 
-                    bg-secondary/50 hover:bg-secondary text-xs"
-                  onClick={() => onAddPerson(suggestion)}
-                >
-                  <User className="h-3 w-3" />
-                  {suggestion}
-                </div>
-              ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 };
