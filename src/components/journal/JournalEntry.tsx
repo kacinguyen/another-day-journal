@@ -148,10 +148,10 @@ const JournalEntry: React.FC<JournalEntryProps> = ({
             <div className="space-y-6">
               <MoodPicker value={mood} onChange={setMood} />
               <EnergyTracker value={energy} onChange={setEnergy} />
-              <EventTracker values={eventTypes} onChange={setEventTypes} />
             </div>
             
             <div className="space-y-6">
+              <EventTracker values={eventTypes} onChange={setEventTypes} />
               <ActivitySelector
                 activities={activities}
                 onAddActivity={handleAddActivity}
