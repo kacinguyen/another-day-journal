@@ -3,6 +3,16 @@ import React, { useState, useEffect } from "react";
 import JournalEntry, { JournalEntryData } from "@/components/journal/JournalEntry";
 import { toast } from "@/components/ui/use-toast";
 import { useToast } from "@/hooks/use-toast";
+import { 
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow 
+} from "@/components/ui/table";
+import { format } from "date-fns";
+import { Card } from "@/components/ui/card";
 
 // Mock function to get entries - would be replaced by actual API call
 const getJournalEntries = (): JournalEntryData[] => {
@@ -49,6 +59,18 @@ const JournalLog = () => {
     });
   };
 
+  // Function to get a mood emoji based on the mood type
+  const getMoodEmoji = (mood: string) => {
+    switch (mood) {
+      case "great": return "😄";
+      case "good": return "🙂";
+      case "neutral": return "😐";
+      case "bad": return "🙁";
+      case "awful": return "😞";
+      default: return "❓";
+    }
+  };
+
   return (
     <div className="page-container animate-fade-up">
       <div className="flex flex-col gap-8">
@@ -66,7 +88,44 @@ const JournalLog = () => {
         
         <JournalEntry onSave={handleSaveEntry} />
         
-        {entries.length > 0 && (
+        {entries.length > 0 ? (
+          <div className="pt-6 border-t">
+            <h2 className="text-xl font-semibold mb-4">Previous Entries</h2>
+            
+            <Card className="overflow-hidden">
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Date</TableHead>
+                      <TableHead>Mood</TableHead>
+                      <TableHead>Energy</TableHead>
+                      <TableHead>Content</TableHead>
+                      <TableHead>Activities</TableHead>
+                      <TableHead>People</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {entries.map((entry) => (
+                      <TableRow key={entry.id}>
+                        <TableCell>{format(new Date(entry.date), 'MMM dd, yyyy')}</TableCell>
+                        <TableCell>
+                          <span className="flex items-center gap-1">
+                            {getMoodEmoji(entry.mood)} {entry.mood}
+                          </span>
+                        </TableCell>
+                        <TableCell>{entry.energy}%</TableCell>
+                        <TableCell className="max-w-xs truncate">{entry.content}</TableCell>
+                        <TableCell>{entry.activities.join(", ")}</TableCell>
+                        <TableCell>{entry.people.join(", ")}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </Card>
+          </div>
+        ) : (
           <div className="pt-6 border-t">
             <h2 className="text-xl font-semibold mb-4">Previous Entries</h2>
             <div className="text-sm text-muted-foreground">
