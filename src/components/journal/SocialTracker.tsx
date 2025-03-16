@@ -98,7 +98,7 @@ const SocialTracker: React.FC<SocialTrackerProps> = ({
         </div>
       )}
 
-      {/* Suggestions - Updated to match ActivitySelector style */}
+      {/* Always show suggestions without requiring button click */}
       {showInput && suggestions.length > 0 && (
         <div className="mt-2">
           <p className="text-xs text-muted-foreground mb-1.5">Suggestions:</p>
@@ -128,9 +128,39 @@ const SocialTracker: React.FC<SocialTrackerProps> = ({
       )}
       
       {people.length === 0 && (
-        <p className="text-xs text-muted-foreground">
-          Add people you spent time with today
-        </p>
+        <>
+          <p className="text-xs text-muted-foreground mb-2">
+            Add people you spent time with today
+          </p>
+          
+          {/* Always visible suggestions */}
+          {suggestions.length > 0 && !showInput && (
+            <div className="mt-1">
+              <p className="text-xs text-muted-foreground mb-1.5">Suggestions:</p>
+              <div className="flex flex-wrap gap-1.5">
+                {suggestions
+                  .filter(s => !people.includes(s))
+                  .map((suggestion, i) => (
+                    <Badge
+                      key={i}
+                      variant="outline" 
+                      className={cn(
+                        "cursor-pointer hover:bg-muted",
+                        people.includes(suggestion) && "opacity-50"
+                      )}
+                      onClick={() => {
+                        if (!people.includes(suggestion)) {
+                          onAddPerson(suggestion);
+                        }
+                      }}
+                    >
+                      {suggestion}
+                    </Badge>
+                  ))}
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
