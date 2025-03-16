@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import JournalEntry, { JournalEntryData } from "@/components/journal/JournalEntry";
 import { toast } from "@/components/ui/use-toast";
@@ -12,9 +11,10 @@ import {
   TableRow 
 } from "@/components/ui/table";
 import { format } from "date-fns";
-import { Card } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { 
   PartyPopper, 
   UtensilsCrossed, 
@@ -36,7 +36,8 @@ import {
   Heart,
   Cloud,
   Smile,
-  Check
+  Check,
+  ArrowRight
 } from "lucide-react";
 
 const getJournalEntries = (): JournalEntryData[] => {
@@ -46,6 +47,18 @@ const getJournalEntries = (): JournalEntryData[] => {
 
 const saveJournalEntries = (entries: JournalEntryData[]) => {
   localStorage.setItem("journalEntries", JSON.stringify(entries));
+};
+
+const dummyEntry: JournalEntryData = {
+  id: "dummy-entry",
+  date: new Date().toISOString(),
+  mood: "good",
+  emotions: ["grateful", "happy", "content"],
+  energy: 85,
+  eventTypes: ["cafe", "outdoors"],
+  content: "Today was a great day. I went for a morning coffee and then had a relaxing walk in the park.",
+  activities: ["Reading", "Walking"],
+  people: ["Alex", "Sam"]
 };
 
 const JournalLog = () => {
@@ -104,7 +117,7 @@ const JournalLog = () => {
       case "workFromHome": return <Home className="h-4 w-4" />;
       case "travel": return <Plane className="h-4 w-4" />;
       case "hangout": return <Users className="h-4 w-4" />;
-      default: return <Tag className="h-4 w-4" />; // Use Tag icon for custom event types
+      default: return <Tag className="h-4 w-4" />;
     }
   };
 
@@ -124,6 +137,8 @@ const JournalLog = () => {
       default: return <Tag className="h-4 w-4" />;
     }
   };
+
+  const showDummyEntry = entries.length === 0 && !loading;
 
   return (
     <div className="page-container animate-fade-up">
@@ -215,14 +230,102 @@ const JournalLog = () => {
               </div>
             </Card>
           ) : (
-            <div className="text-sm text-muted-foreground">
-              Your previous journal entries will appear here.
+            <div>
+              {showDummyEntry ? (
+                <Card className="overflow-hidden">
+                  <CardHeader>
+                    <CardTitle className="text-lg">Example Entry</CardTitle>
+                    <CardDescription>Here's what your journal entries will look like</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div>
+                        <h3 className="text-sm font-medium mb-1">Date</h3>
+                        <p>{format(new Date(dummyEntry.date), 'MMM dd, yyyy')}</p>
+                      </div>
+                      
+                      <div>
+                        <h3 className="text-sm font-medium mb-1">Mood</h3>
+                        <span className="flex items-center gap-1">
+                          {getMoodEmoji(dummyEntry.mood)} {dummyEntry.mood}
+                        </span>
+                      </div>
+                      
+                      <div>
+                        <h3 className="text-sm font-medium mb-1">Emotions</h3>
+                        <div className="flex flex-wrap gap-1">
+                          {dummyEntry.emotions.map(emotion => (
+                            <Badge 
+                              key={emotion} 
+                              variant="outline" 
+                              className="flex items-center gap-1 py-0.5 text-xs"
+                            >
+                              {getEmotionIcon(emotion)}
+                              <span className="capitalize">{emotion}</span>
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <h3 className="text-sm font-medium mb-1">Energy</h3>
+                        <p>{dummyEntry.energy}%</p>
+                      </div>
+                      
+                      <div>
+                        <h3 className="text-sm font-medium mb-1">Events</h3>
+                        <div className="flex flex-wrap gap-1">
+                          {dummyEntry.eventTypes.map(eventType => (
+                            <Badge 
+                              key={eventType} 
+                              variant="outline" 
+                              className="flex items-center gap-1 py-0.5 text-xs"
+                            >
+                              {getEventIcon(eventType)}
+                              <span className="capitalize">{eventType}</span>
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <h3 className="text-sm font-medium mb-1">Content</h3>
+                        <p>{dummyEntry.content}</p>
+                      </div>
+                      
+                      <div>
+                        <h3 className="text-sm font-medium mb-1">Activities</h3>
+                        <p>{dummyEntry.activities.join(", ")}</p>
+                      </div>
+                      
+                      <div>
+                        <h3 className="text-sm font-medium mb-1">People</h3>
+                        <p>{dummyEntry.people.join(", ")}</p>
+                      </div>
+                      
+                      <Button 
+                        variant="outline" 
+                        className="w-full mt-4"
+                        onClick={() => document.getElementById('journal-form')?.scrollIntoView({ behavior: 'smooth' })}
+                      >
+                        Create Your First Entry <ArrowRight className="ml-2 h-4 w-4" />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="text-sm text-muted-foreground">
+                  Your previous journal entries will appear here.
+                </div>
+              )}
             </div>
           )}
         </div>
         
         <div className="lg:col-span-7 order-1 lg:order-2">
-          <JournalEntry onSave={handleSaveEntry} />
+          <div id="journal-form">
+            <JournalEntry onSave={handleSaveEntry} />
+          </div>
         </div>
       </div>
     </div>
