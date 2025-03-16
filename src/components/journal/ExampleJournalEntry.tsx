@@ -1,4 +1,3 @@
-
 import React from "react";
 import { format } from "date-fns";
 import { dummyEntry, getMoodEmoji, } from "@/utils/journalUtils";
@@ -126,7 +125,7 @@ const ExampleJournalEntry: React.FC = () => {
             className="w-full mt-2"
             onClick={() => document.getElementById('journal-form')?.scrollIntoView({ behavior: 'smooth' })}
           >
-            Create Your First Entry <ArrowRight className="ml-1 h-3 w-3" />
+            Create your first entry <ArrowRight className="ml-1 h-3 w-3" />
           </Button>
         </div>
       </CardContent>

@@ -164,7 +164,7 @@ const EventTracker: React.FC<EventTrackerProps> = ({ values, onChange }) => {
             onClick={() => setShowInput(true)}
           >
             <Plus className="h-4 w-4" />
-            <span className="text-xs font-medium">Add Tag</span>
+            <span className="text-xs font-medium">Add tag</span>
           </div>
         )}
       </div>

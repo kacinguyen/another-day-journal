@@ -188,7 +188,7 @@ const ActivitySelector: React.FC<ActivitySelectorProps> = ({
             onClick={() => setShowInput(true)}
           >
             <Plus className="h-4 w-4" />
-            <span className="text-xs font-medium">Add Activity</span>
+            <span className="text-xs font-medium">Add activity</span>
           </div>
         )}
       </div>

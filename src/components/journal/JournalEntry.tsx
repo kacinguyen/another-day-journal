@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -180,7 +179,7 @@ const JournalEntry: React.FC<JournalEntryProps> = ({
             >
               <div className="flex items-center gap-1.5">
                 <Save className="h-4 w-4" />
-                <span>{isSaving ? "Saving..." : "Save Entry"}</span>
+                <span>{isSaving ? "Saving..." : "Save entry"}</span>
               </div>
               {isSaving && (
                 <span className="absolute inset-0 flex items-center justify-center">
@@ -196,4 +195,3 @@ const JournalEntry: React.FC<JournalEntryProps> = ({
 };
 
 export default JournalEntry;
-

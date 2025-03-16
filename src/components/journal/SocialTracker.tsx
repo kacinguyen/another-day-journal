@@ -228,7 +228,7 @@ const SocialTracker: React.FC<SocialTrackerProps> = ({
             onClick={() => setShowInput(true)}
           >
             <UserPlus className="h-4 w-4" />
-            <span className="text-xs font-medium">Add Person</span>
+            <span className="text-xs font-medium">Add person</span>
           </div>
         )}
       </div>
