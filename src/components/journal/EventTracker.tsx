@@ -11,12 +11,13 @@ import {
   Plane,
   Users,
   Plus,
-  Tag
+  Tag,
+  X
 } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export type EventType = 
   | "party" 
@@ -45,7 +46,7 @@ interface EventOption {
 }
 
 const EventTracker: React.FC<EventTrackerProps> = ({ values, onChange }) => {
-  const [isAddingTag, setIsAddingTag] = useState(false);
+  const [showInput, setShowInput] = useState(false);
   const [newTagName, setNewTagName] = useState("");
   const [customEventOptions, setCustomEventOptions] = useState<EventOption[]>([]);
 
@@ -100,9 +101,19 @@ const EventTracker: React.FC<EventTrackerProps> = ({ values, onChange }) => {
       }
     }
     
-    // Reset and close dialog
+    // Reset and close input
     setNewTagName("");
-    setIsAddingTag(false);
+    setShowInput(false);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleAddNewTag();
+    } else if (e.key === "Escape") {
+      setShowInput(false);
+      setNewTagName("");
+    }
   };
 
   return (
@@ -127,42 +138,36 @@ const EventTracker: React.FC<EventTrackerProps> = ({ values, onChange }) => {
           </div>
         ))}
 
-        {/* Add new tag button */}
-        <div 
-          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md cursor-pointer transition-colors bg-secondary/50 hover:bg-secondary border border-dashed border-primary/30"
-          onClick={() => setIsAddingTag(true)}
-        >
-          <Plus className="h-4 w-4" />
-          <span className="text-xs font-medium">Add Tag</span>
-        </div>
-      </div>
-
-      {/* Add new tag dialog */}
-      <Dialog open={isAddingTag} onOpenChange={setIsAddingTag}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Add New Event Tag</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 py-3">
-            <div className="space-y-2">
-              <label htmlFor="tagName" className="text-sm font-medium">Tag Name</label>
-              <Input
-                id="tagName"
-                value={newTagName}
-                onChange={(e) => setNewTagName(e.target.value)}
-                placeholder="Enter a name for your new event tag"
-                className="w-full"
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => setIsAddingTag(false)}>Cancel</Button>
-            <Button type="button" onClick={handleAddNewTag} disabled={!newTagName.trim()}>
-              <Plus className="mr-1 h-4 w-4" /> Add Tag
+        {/* Add new tag button or input field */}
+        {showInput ? (
+          <div className="flex gap-2 w-full md:w-auto animate-fade-in">
+            <Input
+              value={newTagName}
+              onChange={(e) => setNewTagName(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Enter tag name..."
+              className="flex-1 h-8 min-w-[140px]"
+              autoFocus
+            />
+            <Button 
+              onClick={handleAddNewTag} 
+              variant="outline"
+              size="sm"
+              className="h-8 px-2"
+            >
+              Add
             </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          </div>
+        ) : (
+          <div 
+            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md cursor-pointer transition-colors bg-secondary/50 hover:bg-secondary border border-dashed border-primary/30"
+            onClick={() => setShowInput(true)}
+          >
+            <Plus className="h-4 w-4" />
+            <span className="text-xs font-medium">Add Tag</span>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

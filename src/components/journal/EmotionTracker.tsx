@@ -213,7 +213,7 @@ const EmotionTracker: React.FC<EmotionTrackerProps> = ({ values, onChange }) => 
         ) : (
           <Badge
             variant="outline"
-            className="cursor-pointer border bg-background flex items-center gap-1 px-2 py-1 text-muted-foreground hover:text-foreground"
+            className="cursor-pointer border border-dashed border-primary/30 bg-secondary/50 hover:bg-secondary flex items-center gap-1 px-2 py-1 text-muted-foreground hover:text-foreground"
             onClick={() => setShowInput(true)}
           >
             <Plus className="h-3.5 w-3.5" />
