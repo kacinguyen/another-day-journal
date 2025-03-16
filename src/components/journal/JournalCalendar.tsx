@@ -54,16 +54,6 @@ const JournalCalendar: React.FC<JournalCalendarProps> = ({
     )
   };
 
-  // Styles for the modifiers
-  const modifiersClassNames = {
-    hasEntry: "font-bold",
-    greatDay: "bg-pink-100 dark:bg-pink-950 text-pink-800 dark:text-pink-200",
-    goodDay: "bg-green-100 dark:bg-green-950 text-green-800 dark:text-green-200",
-    neutralDay: "bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-200",
-    badDay: "bg-orange-100 dark:bg-orange-950 text-orange-800 dark:text-orange-200",
-    awfulDay: "bg-red-100 dark:bg-red-950 text-red-800 dark:text-red-200"
-  };
-
   return (
     <Card className="border rounded-lg p-4 bg-card shadow-sm">
       <div className="space-y-4">
@@ -74,7 +64,6 @@ const JournalCalendar: React.FC<JournalCalendarProps> = ({
           onSelect={onDateSelect} 
           className="rounded-md bg-white mx-auto w-full pointer-events-auto"
           modifiers={modifiers}
-          modifiersClassNames={modifiersClassNames}
         />
       </div>
     </Card>
