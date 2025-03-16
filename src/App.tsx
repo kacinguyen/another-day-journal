@@ -8,6 +8,8 @@ import Navbar from "./components/Navbar";
 import JournalLog from "./pages/JournalLog";
 import Conversations from "./pages/Conversations";
 import NotFound from "./pages/NotFound";
+import Login from "./pages/Login";
+import SignUp from "./pages/SignUp";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +25,8 @@ const App = () => (
             <Routes>
               <Route path="/" element={<JournalLog />} />
               <Route path="/conversations" element={<Conversations />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<SignUp />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>
