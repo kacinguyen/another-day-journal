@@ -104,7 +104,7 @@ const JournalEntry: React.FC<JournalEntryProps> = ({
 
   return (
     <Card className="w-full max-w-3xl mx-auto border rounded-lg p-4 bg-card shadow-sm">
-      <CardContent className="p-0 pt-4">
+      <CardContent className="space-y-6 p-0">
         <div className="space-y-6">
           <div className="space-y-2">
             <div className="flex items-center justify-between">
@@ -196,3 +196,4 @@ const JournalEntry: React.FC<JournalEntryProps> = ({
 };
 
 export default JournalEntry;
+
