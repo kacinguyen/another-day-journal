@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { 
@@ -13,8 +13,13 @@ import {
   Heart, 
   Cloud, 
   Smile, 
-  Check 
+  Check,
+  Plus,
+  X,
+  Tag
 } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 export type EmotionType = 
   | "excited" 
@@ -27,14 +32,15 @@ export type EmotionType =
   | "grateful" 
   | "depressed" 
   | "happy" 
-  | "content";
+  | "content"
+  | string; // Allow for custom emotions
 
 interface EmotionTrackerProps {
   values: EmotionType[];
   onChange: (emotions: EmotionType[]) => void;
 }
 
-const emotions = [
+const predefinedEmotions = [
   {
     value: "excited" as EmotionType,
     icon: <Zap className="h-3.5 w-3.5" />,
@@ -104,6 +110,14 @@ const emotions = [
 ];
 
 const EmotionTracker: React.FC<EmotionTrackerProps> = ({ values, onChange }) => {
+  const [showInput, setShowInput] = useState(false);
+  const [customEmotion, setCustomEmotion] = useState("");
+  
+  // Find custom emotions (ones that are not in the predefined list)
+  const customEmotions = values.filter(
+    emotion => !predefinedEmotions.some(e => e.value === emotion)
+  );
+  
   const toggleEmotion = (emotion: EmotionType) => {
     if (values.includes(emotion)) {
       onChange(values.filter(e => e !== emotion));
@@ -112,11 +126,29 @@ const EmotionTracker: React.FC<EmotionTrackerProps> = ({ values, onChange }) => 
     }
   };
   
+  const handleAddCustomEmotion = () => {
+    if (customEmotion.trim() !== "" && !values.includes(customEmotion.trim().toLowerCase())) {
+      onChange([...values, customEmotion.trim().toLowerCase()]);
+      setCustomEmotion("");
+      setShowInput(false);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleAddCustomEmotion();
+    } else if (e.key === "Escape") {
+      setShowInput(false);
+      setCustomEmotion("");
+    }
+  };
+  
   return (
     <div className="space-y-2">
       <label className="text-sm font-medium">What specific emotions did you feel?</label>
       <div className="flex flex-wrap gap-2">
-        {emotions.map((emotion) => (
+        {predefinedEmotions.map((emotion) => (
           <Badge
             key={emotion.value}
             variant="outline"
@@ -131,6 +163,63 @@ const EmotionTracker: React.FC<EmotionTrackerProps> = ({ values, onChange }) => 
             <span>{emotion.value}</span>
           </Badge>
         ))}
+        
+        {/* Display custom emotions */}
+        {customEmotions.map((emotion) => (
+          <Badge
+            key={emotion}
+            variant="outline"
+            className={cn(
+              "cursor-pointer border flex items-center gap-1 px-2 py-1 capitalize transition-all hover:scale-105",
+              "text-purple-500 border-purple-500 hover:bg-purple-100 dark:hover:bg-purple-950",
+              "bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300"
+            )}
+            onClick={() => toggleEmotion(emotion)}
+          >
+            <Tag className="h-3.5 w-3.5" />
+            <span>{emotion}</span>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onChange(values.filter(v => v !== emotion));
+              }}
+              className="ml-1 rounded-full hover:bg-purple-200 dark:hover:bg-purple-800 p-0.5"
+            >
+              <X className="h-2.5 w-2.5" />
+            </button>
+          </Badge>
+        ))}
+        
+        {/* "Add emotion" button or input field */}
+        {showInput ? (
+          <div className="flex gap-2 w-full md:w-auto animate-fade-in">
+            <Input
+              value={customEmotion}
+              onChange={(e) => setCustomEmotion(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Enter emotion..."
+              className="flex-1 h-8 min-w-[140px]"
+              autoFocus
+            />
+            <Button 
+              onClick={handleAddCustomEmotion} 
+              variant="outline"
+              size="sm"
+              className="h-8 px-2"
+            >
+              Add
+            </Button>
+          </div>
+        ) : (
+          <Badge
+            variant="outline"
+            className="cursor-pointer border bg-background flex items-center gap-1 px-2 py-1 text-muted-foreground hover:text-foreground"
+            onClick={() => setShowInput(true)}
+          >
+            <Plus className="h-3.5 w-3.5" />
+            <span>Add emotion</span>
+          </Badge>
+        )}
       </div>
     </div>
   );
