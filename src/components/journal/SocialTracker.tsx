@@ -20,6 +20,8 @@ const SocialTracker: React.FC<SocialTrackerProps> = ({
   const [inputValue, setInputValue] = useState("");
   const [showInput, setShowInput] = useState(false);
   const [isPreviewVisible, setIsPreviewVisible] = useState(true);
+  
+  const suggestions = ["Satya", "Shrivu"];
 
   const handleAddPerson = () => {
     if (inputValue.trim() !== "" && !people.includes(inputValue.trim())) {
@@ -86,6 +88,27 @@ const SocialTracker: React.FC<SocialTrackerProps> = ({
         </Button>
       )}
       
+      {/* Suggestions */}
+      {showInput && suggestions.length > 0 && (
+        <div className="flex flex-wrap gap-2 mt-2 animate-fade-in">
+          {suggestions.map((suggestion) => (
+            <Badge 
+              key={suggestion}
+              variant="outline"
+              className="px-3 py-1 text-xs cursor-pointer hover:bg-secondary transition-colors"
+              onClick={() => {
+                if (!people.includes(suggestion)) {
+                  onAddPerson(suggestion);
+                  setShowInput(false);
+                }
+              }}
+            >
+              {suggestion}
+            </Badge>
+          ))}
+        </div>
+      )}
+      
       {people.length > 0 && (
         <div className="flex flex-wrap gap-2 mt-2 min-h-9">
           {people.map((person, index) => (
@@ -119,9 +142,6 @@ const SocialTracker: React.FC<SocialTrackerProps> = ({
               <X className="h-3 w-3" />
             </span>
           </Badge>
-          <div className="flex items-center text-xs text-muted-foreground ml-2">
-            ← Example of added person
-          </div>
         </div>
       )}
     </div>
