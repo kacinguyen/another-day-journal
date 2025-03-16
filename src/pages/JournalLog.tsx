@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import JournalEntry, { JournalEntryData } from "@/components/journal/JournalEntry";
 import { toast } from "@/components/ui/use-toast";
@@ -24,7 +25,8 @@ import {
   Calendar,
   Briefcase,
   Plane,
-  Users
+  Users,
+  Tag
 } from "lucide-react";
 
 const getJournalEntries = (): JournalEntryData[] => {
@@ -92,7 +94,7 @@ const JournalLog = () => {
       case "workFromHome": return <Home className="h-4 w-4" />;
       case "travel": return <Plane className="h-4 w-4" />;
       case "hangout": return <Users className="h-4 w-4" />;
-      default: return <Calendar className="h-4 w-4" />;
+      default: return <Tag className="h-4 w-4" />; // Use Tag icon for custom event types
     }
   };
 
