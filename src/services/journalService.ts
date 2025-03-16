@@ -20,13 +20,21 @@ export const saveJournalEntry = async (entry: JournalEntryData): Promise<Journal
       return null;
     }
 
+    // Validate only the mood is required
+    if (!entry.mood) {
+      toast("Mood selection is required", {
+        description: "Please select your mood before saving",
+      });
+      return null;
+    }
+
     // Format the date correctly for storage
     const entryDate = format(entry.date, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
 
     // Convert date to ISO string
     const entryData = {
       user_id: user.id,
-      content: entry.content,
+      content: entry.content || "",
       mood: entry.mood,
       energy_level: entry.energy,
       activities: entry.activities,
@@ -72,7 +80,7 @@ export const saveJournalEntry = async (entry: JournalEntryData): Promise<Journal
     return {
       id: result.data.id,
       date: new Date(result.data.created_at),
-      content: result.data.content,
+      content: result.data.content || "",
       mood: result.data.mood as MoodType, // Cast string to MoodType
       energy: result.data.energy_level,
       activities: result.data.activities || [],

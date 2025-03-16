@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { format } from "date-fns";
 import { JournalEntryData } from "../types/journal-types";
@@ -79,7 +80,8 @@ export const useJournalEntry = (
       return;
     }
     
-    if (content.trim() === "" || mood === null) return;
+    // Only mood is required now
+    if (mood === null) return;
     
     setIsSaving(true);
     
@@ -110,8 +112,8 @@ export const useJournalEntry = (
     }, 600);
   };
 
-  // Check if the form is valid to enable save button
-  const isFormValid = content.trim() !== "" && mood !== null;
+  // Check if the form is valid - only mood is required now
+  const isFormValid = mood !== null;
 
   return {
     date,
