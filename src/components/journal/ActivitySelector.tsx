@@ -17,7 +17,7 @@ const ActivitySelector: React.FC<ActivitySelectorProps> = ({
   activities,
   onAddActivity,
   onRemoveActivity,
-  suggestions = ["Reading", "Exercise", "Meditation", "Cooking", "Walking", "Programming", "Art", "Music", "Socializing", "Learning"]
+  suggestions = ["Reading", "Cooking", "Art", "Music", "Socializing", "Learning", "Weight Lifting", "Cycling", "Hiking", "Writing", "Building"]
 }) => {
   const [inputValue, setInputValue] = React.useState("");
 
