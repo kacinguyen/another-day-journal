@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
 import { Badge } from "@/components/ui/badge";
-import { Book, Code, Dumbbell, Coffee, Music, Film, Utensils, Pencil, Globe, Brain, Plus, Tag, X } from "lucide-react";
+import { Book, Dumbbell, Utensils, Pencil, Brain, Plus, Tag, X, Tv, TreeDeciduous, Building, Cake, Bike } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -24,7 +24,7 @@ const ActivitySelector: React.FC<ActivitySelectorProps> = ({
   activities,
   onAddActivity,
   onRemoveActivity,
-  suggestions = ["Reading", "Coding", "Weight Lifting", "Cycling", "Hiking", "Writing", "Cooking", "Learning", "Meditating"]
+  suggestions = ["Reading", "Weight Lifting", "Hiking", "Writing", "Cooking", "Learning", "Meditating", "TV & Content", "Crafts", "Building", "Baking", "Biking"]
 }) => {
   const [showInput, setShowInput] = useState(false);
   const [inputValue, setInputValue] = useState("");
@@ -32,14 +32,15 @@ const ActivitySelector: React.FC<ActivitySelectorProps> = ({
 
   const defaultActivityOptions: ActivityOption[] = [
     { value: "reading", label: "Reading", icon: <Book className="h-4 w-4" /> },
-    { value: "coding", label: "Coding", icon: <Code className="h-4 w-4" /> },
     { value: "weightLifting", label: "Weight Lifting", icon: <Dumbbell className="h-4 w-4" /> },
-    { value: "coffee", label: "Coffee Break", icon: <Coffee className="h-4 w-4" /> },
-    { value: "music", label: "Music", icon: <Music className="h-4 w-4" /> },
-    { value: "movies", label: "Movies", icon: <Film className="h-4 w-4" /> },
+    { value: "hiking", label: "Hiking", icon: <TreeDeciduous className="h-4 w-4" /> },
+    { value: "tvContent", label: "TV & Content", icon: <Tv className="h-4 w-4" /> },
     { value: "cooking", label: "Cooking", icon: <Utensils className="h-4 w-4" /> },
     { value: "writing", label: "Writing", icon: <Pencil className="h-4 w-4" /> },
-    { value: "exploring", label: "Exploring", icon: <Globe className="h-4 w-4" /> },
+    { value: "crafts", label: "Crafts", icon: <Pencil className="h-4 w-4" /> },
+    { value: "building", label: "Building", icon: <Building className="h-4 w-4" /> },
+    { value: "baking", label: "Baking", icon: <Cake className="h-4 w-4" /> },
+    { value: "biking", label: "Biking", icon: <Bike className="h-4 w-4" /> },
     { value: "learning", label: "Learning", icon: <Brain className="h-4 w-4" /> },
   ];
 
