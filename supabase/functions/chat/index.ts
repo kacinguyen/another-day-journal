@@ -18,6 +18,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 // Function to fetch journal entries for a user
 async function fetchJournalEntries(userId: string) {
   try {
+    console.log(`Fetching journal entries for user ${userId}`);
     const { data, error } = await supabase
       .from('journal_entries')
       .select('*')
@@ -29,6 +30,12 @@ async function fetchJournalEntries(userId: string) {
       return [];
     }
     
+    console.log(`Found ${data?.length || 0} journal entries`);
+    if (data && data.length > 0) {
+      console.log("First entry created_at:", data[0].created_at);
+      console.log("First entry sample:", JSON.stringify(data[0]).substring(0, 200) + "...");
+    }
+    
     return data || [];
   } catch (err) {
     console.error("Exception fetching journal entries:", err);
@@ -38,45 +45,79 @@ async function fetchJournalEntries(userId: string) {
 
 // Format journal entries as context for the AI
 function formatJournalContext(entries: any[]) {
-  if (!entries.length) return "You don't have any journal entries yet.";
+  if (!entries.length) {
+    console.log("No journal entries found to format");
+    return "You don't have any journal entries yet.";
+  }
+  
+  console.log(`Formatting ${entries.length} journal entries for context`);
   
   return entries.map(entry => {
     const date = new Date(entry.created_at).toLocaleDateString();
-    const emotions = Array.isArray(entry.emotions) ? entry.emotions.join(", ") : "";
     
-    let context = `Date: ${date}\nMood: ${entry.mood || 'Unknown'}\n`;
-    
-    if (emotions) {
-      context += `Emotions: ${emotions}\n`;
+    // Format emotions with proper handling for different data types
+    let emotionsText = "";
+    if (entry.emotions) {
+      if (Array.isArray(entry.emotions)) {
+        emotionsText = entry.emotions.join(", ");
+      } else if (typeof entry.emotions === 'object') {
+        emotionsText = JSON.stringify(entry.emotions);
+      } else {
+        emotionsText = String(entry.emotions);
+      }
     }
     
-    if (entry.energy_level) {
-      context += `Energy: ${entry.energy_level}/100\n`;
+    // Extract social interactions with careful checks
+    let peopleText = "";
+    let eventsText = "";
+    
+    if (entry.social_interactions) {
+      const social = typeof entry.social_interactions === 'string' 
+        ? JSON.parse(entry.social_interactions) 
+        : entry.social_interactions;
+      
+      if (social.people && Array.isArray(social.people) && social.people.length > 0) {
+        peopleText = social.people.join(", ");
+      }
+      
+      if (social.eventTypes && Array.isArray(social.eventTypes) && social.eventTypes.length > 0) {
+        eventsText = social.eventTypes.join(", ");
+      }
+    }
+    
+    // Build the context with all available information
+    let context = `=== ENTRY FROM ${date} ===\n`;
+    
+    if (entry.mood) {
+      context += `Mood: ${entry.mood}\n`;
+    }
+    
+    if (emotionsText) {
+      context += `Emotions: ${emotionsText}\n`;
+    }
+    
+    if (entry.energy_level !== null && entry.energy_level !== undefined) {
+      context += `Energy Level: ${entry.energy_level}/100\n`;
     }
     
     if (entry.content) {
-      context += `Entry: ${entry.content}\n`;
+      context += `Journal Text: ${entry.content}\n`;
     }
     
     if (Array.isArray(entry.activities) && entry.activities.length > 0) {
       context += `Activities: ${entry.activities.join(", ")}\n`;
     }
     
-    // Add social interactions if available
-    if (entry.social_interactions) {
-      const social = entry.social_interactions;
-      
-      if (social.people && social.people.length > 0) {
-        context += `People: ${social.people.join(", ")}\n`;
-      }
-      
-      if (social.eventTypes && social.eventTypes.length > 0) {
-        context += `Events: ${social.eventTypes.join(", ")}\n`;
-      }
+    if (peopleText) {
+      context += `People I spent time with: ${peopleText}\n`;
+    }
+    
+    if (eventsText) {
+      context += `Events/Social contexts: ${eventsText}\n`;
     }
     
     return context;
-  }).join("\n\n---------\n\n");
+  }).join("\n\n");
 }
 
 serve(async (req) => {
@@ -103,20 +144,24 @@ serve(async (req) => {
       );
     }
     
+    console.log(`Processing request for user ${userId}`);
+    
     // Fetch journal entries for context
     const journalEntries = await fetchJournalEntries(userId);
     const journalContext = formatJournalContext(journalEntries);
     
     // Build messages for OpenAI
-    const systemPrompt = `You are a helpful AI assistant for a journaling app. You have access to the user's journal entries which provide context about their life, moods, activities, and experiences.
+    const systemPrompt = `You are a helpful AI assistant for a journaling app called Journal Flow. You have access to the user's journal entries which provide context about their life, moods, activities, and experiences.
 
-Here are the user's journal entries:
+Here are the user's journal entries (formatted with dates, moods, activities, and other details):
 
 ${journalContext}
 
-Use these entries as context when responding to the user. If relevant, you can refer to specific entries, patterns in their moods or activities, or insights that might be helpful. Be supportive, empathetic, and insightful. Respect the user's privacy and provide thoughtful responses that show you understand their history as documented in their journal.
+Use these entries as context when responding to the user. If relevant, you can refer to specific details from their entries, patterns in their moods or activities, or insights that might be helpful. Be supportive, empathetic, and insightful.
 
-If the user asks about something not covered in their journal entries, you can still be helpful, but acknowledge when you don't have specific information about their experience.`;
+If the user asks about specific dates or events mentioned in their journal, provide that information. If they ask about patterns or insights across multiple entries, analyze the information and provide thoughtful observations.
+
+Important: If the user has journal entries, never say they don't have any. Instead, use the entries shown above to respond contextually. If asked about something not in their entries, you can acknowledge what you do know from their journal and then ask for more information.`;
 
     // Create conversation history
     const messages = [
