@@ -1,4 +1,6 @@
-import { JournalEntryData, MoodType } from "@/components/journal/JournalEntry";
+
+import { JournalEntryData } from "@/components/journal/JournalEntry";
+import { MoodType } from "@/components/journal/MoodPicker";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Json } from "@/integrations/supabase/types";
