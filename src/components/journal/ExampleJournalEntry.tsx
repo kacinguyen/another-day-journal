@@ -72,30 +72,32 @@ const ExampleJournalEntry: React.FC = () => {
     }
   };
 
+  // Truncate content for preview
+  const truncateContent = (content: string, maxLength: number = 60) => {
+    return content.length > maxLength 
+      ? content.substring(0, maxLength) + "..." 
+      : content;
+  };
+
   return (
     <Card className="overflow-hidden">
-      <CardHeader>
+      <CardHeader className="p-4">
         <CardTitle className="text-lg">Example Entry</CardTitle>
         <CardDescription>Here's what your journal entries will look like</CardDescription>
       </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          <div>
-            <h3 className="text-sm font-medium mb-1">Date</h3>
-            <p>{format(new Date(dummyEntry.date), 'MMM dd, yyyy')}</p>
-          </div>
-          
-          <div>
-            <h3 className="text-sm font-medium mb-1">Mood</h3>
-            <span className="flex items-center gap-1">
+      <CardContent className="p-4 pt-0">
+        <div className="space-y-3">
+          <div className="flex justify-between items-center">
+            <span className="text-sm font-medium">{format(new Date(dummyEntry.date), 'MMM dd, yyyy')}</span>
+            <span className="flex items-center gap-1 text-sm">
               {getMoodEmoji(dummyEntry.mood)} {dummyEntry.mood}
             </span>
           </div>
           
           <div>
-            <h3 className="text-sm font-medium mb-1">Emotions</h3>
+            <h3 className="text-xs font-medium mb-1">Emotions</h3>
             <div className="flex flex-wrap gap-1">
-              {dummyEntry.emotions.map(emotion => (
+              {dummyEntry.emotions.slice(0, 2).map(emotion => (
                 <Badge 
                   key={emotion} 
                   variant="outline" 
@@ -105,51 +107,26 @@ const ExampleJournalEntry: React.FC = () => {
                   <span className="capitalize">{emotion}</span>
                 </Badge>
               ))}
-            </div>
-          </div>
-          
-          <div>
-            <h3 className="text-sm font-medium mb-1">Energy</h3>
-            <p>{dummyEntry.energy}%</p>
-          </div>
-          
-          <div>
-            <h3 className="text-sm font-medium mb-1">Events</h3>
-            <div className="flex flex-wrap gap-1">
-              {dummyEntry.eventTypes.map(eventType => (
-                <Badge 
-                  key={eventType} 
-                  variant="outline" 
-                  className="flex items-center gap-1 py-0.5 text-xs"
-                >
-                  {getEventIcon(eventType)}
-                  <span className="capitalize">{eventType}</span>
+              {dummyEntry.emotions.length > 2 && (
+                <Badge variant="outline" className="py-0.5 text-xs">
+                  +{dummyEntry.emotions.length - 2} more
                 </Badge>
-              ))}
+              )}
             </div>
           </div>
           
           <div>
-            <h3 className="text-sm font-medium mb-1">Content</h3>
-            <p>{dummyEntry.content}</p>
-          </div>
-          
-          <div>
-            <h3 className="text-sm font-medium mb-1">Activities</h3>
-            <p>{dummyEntry.activities.join(", ")}</p>
-          </div>
-          
-          <div>
-            <h3 className="text-sm font-medium mb-1">People</h3>
-            <p>{dummyEntry.people.join(", ")}</p>
+            <h3 className="text-xs font-medium mb-1">Content</h3>
+            <p className="text-sm">{truncateContent(dummyEntry.content)}</p>
           </div>
           
           <Button 
             variant="outline" 
-            className="w-full mt-4"
+            size="sm"
+            className="w-full mt-2"
             onClick={() => document.getElementById('journal-form')?.scrollIntoView({ behavior: 'smooth' })}
           >
-            Create Your First Entry <ArrowRight className="ml-2 h-4 w-4" />
+            Create Your First Entry <ArrowRight className="ml-1 h-3 w-3" />
           </Button>
         </div>
       </CardContent>

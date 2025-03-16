@@ -1,17 +1,10 @@
 
 import React from "react";
-import { 
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow 
-} from "@/components/ui/table";
 import { format } from "date-fns";
 import { JournalEntryData } from "@/components/journal/JournalEntry";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { getMoodEmoji } from "@/utils/journalUtils";
 import {
   PartyPopper,
@@ -37,7 +30,7 @@ import {
 } from "lucide-react";
 
 /**
- * Component to display a table of journal entries
+ * Component to display a list of journal entries
  */
 export const JournalEntriesTable: React.FC<{ entries: JournalEntryData[] }> = ({ entries }) => {
   /**
@@ -79,77 +72,58 @@ export const JournalEntriesTable: React.FC<{ entries: JournalEntryData[] }> = ({
     }
   };
 
+  // Truncate content for preview
+  const truncateContent = (content: string, maxLength: number = 60) => {
+    return content.length > maxLength 
+      ? content.substring(0, maxLength) + "..." 
+      : content;
+  };
+
   return (
-    <Card className="overflow-hidden">
-      <div className="overflow-x-auto">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Date</TableHead>
-              <TableHead>Mood</TableHead>
-              <TableHead>Emotions</TableHead>
-              <TableHead>Energy</TableHead>
-              <TableHead>Events</TableHead>
-              <TableHead>Content</TableHead>
-              <TableHead>Activities</TableHead>
-              <TableHead>People</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {entries.map((entry) => (
-              <TableRow key={entry.id}>
-                <TableCell>{format(new Date(entry.date), 'MMM dd, yyyy')}</TableCell>
-                <TableCell>
-                  <span className="flex items-center gap-1">
-                    {getMoodEmoji(entry.mood)} {entry.mood}
-                  </span>
-                </TableCell>
-                <TableCell>
-                  {entry.emotions && entry.emotions.length > 0 ? (
-                    <div className="flex flex-wrap gap-1">
-                      {entry.emotions.map(emotion => (
-                        <Badge 
-                          key={emotion} 
-                          variant="outline" 
-                          className="flex items-center gap-1 py-0.5 text-xs"
-                        >
-                          {getEmotionIcon(emotion)}
-                          <span className="capitalize">{emotion}</span>
-                        </Badge>
-                      ))}
-                    </div>
-                  ) : (
-                    <span className="text-muted-foreground text-xs">None</span>
-                  )}
-                </TableCell>
-                <TableCell>{entry.energy}%</TableCell>
-                <TableCell>
-                  {entry.eventTypes && entry.eventTypes.length > 0 ? (
-                    <div className="flex flex-wrap gap-1">
-                      {entry.eventTypes.map(eventType => (
-                        <Badge 
-                          key={eventType} 
-                          variant="outline" 
-                          className="flex items-center gap-1 py-0.5 text-xs"
-                        >
-                          {getEventIcon(eventType)}
-                          <span className="capitalize">{eventType}</span>
-                        </Badge>
-                      ))}
-                    </div>
-                  ) : (
-                    <span className="text-muted-foreground text-xs">None</span>
-                  )}
-                </TableCell>
-                <TableCell className="max-w-xs truncate">{entry.content}</TableCell>
-                <TableCell>{entry.activities.join(", ")}</TableCell>
-                <TableCell>{entry.people.join(", ")}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+    <ScrollArea className="h-[500px] pr-4">
+      <div className="space-y-4">
+        {entries.map((entry) => (
+          <Card key={entry.id} className="p-4">
+            <div className="space-y-3">
+              <div className="flex justify-between items-center">
+                <span className="text-sm font-medium">{format(new Date(entry.date), 'MMM dd, yyyy')}</span>
+                <span className="flex items-center gap-1 text-sm">
+                  {getMoodEmoji(entry.mood)} {entry.mood}
+                </span>
+              </div>
+              
+              {entry.emotions && entry.emotions.length > 0 && (
+                <div>
+                  <h3 className="text-xs font-medium mb-1">Emotions</h3>
+                  <div className="flex flex-wrap gap-1">
+                    {entry.emotions.slice(0, 2).map(emotion => (
+                      <Badge 
+                        key={emotion} 
+                        variant="outline" 
+                        className="flex items-center gap-1 py-0.5 text-xs"
+                      >
+                        {getEmotionIcon(emotion)}
+                        <span className="capitalize">{emotion}</span>
+                      </Badge>
+                    ))}
+                    {entry.emotions.length > 2 && (
+                      <Badge variant="outline" className="py-0.5 text-xs">
+                        +{entry.emotions.length - 2} more
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+              )}
+              
+              <div>
+                <h3 className="text-xs font-medium mb-1">Content</h3>
+                <p className="text-sm">{truncateContent(entry.content)}</p>
+              </div>
+            </div>
+          </Card>
+        ))}
       </div>
-    </Card>
+    </ScrollArea>
   );
 };
 

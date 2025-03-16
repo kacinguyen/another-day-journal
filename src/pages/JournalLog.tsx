@@ -70,7 +70,7 @@ const JournalLog: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Previous Entries Section */}
         <div className="lg:col-span-4 order-2 lg:order-1">
-          <div className="border rounded-lg p-6 bg-card shadow-sm h-full">
+          <div className="border rounded-lg p-4 bg-card shadow-sm h-full">
             <h2 className="text-xl font-semibold mb-4">Previous Entries</h2>
             
             {entries.length > 0 ? (
