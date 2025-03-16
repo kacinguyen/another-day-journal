@@ -125,15 +125,7 @@ export function useJournalLog() {
         description: `Loaded entry for ${format(date, 'MMMM d, yyyy')}`
       });
     }
-    // Removed the toast for new entries
-    
-    // Scroll to the entry form
-    const journalForm = document.getElementById('journal-form');
-    if (journalForm) {
-      journalForm.scrollIntoView({
-        behavior: 'smooth'
-      });
-    }
+    // Removed the automatic scrolling code
   };
 
   // Determine whether to show the example entry
