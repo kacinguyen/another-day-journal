@@ -44,6 +44,7 @@ const JournalContent: React.FC<JournalContentProps> = ({
             selectedDate={selectedDate}
             onDateSelect={handleDateSelect}
             datesWithEntries={datesWithEntries}
+            entries={entries}
           />
           
           {/* Previous Entries Card */}
