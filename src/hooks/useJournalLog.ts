@@ -117,12 +117,8 @@ export function useJournalLog() {
         title: "Journal Entry Found",
         description: `Loaded entry for ${format(date, 'MMMM d, yyyy')}`
       });
-    } else {
-      toast({
-        title: "New Journal Entry",
-        description: `Create a new entry for ${format(date, 'MMMM d, yyyy')}`
-      });
     }
+    // Removed the toast for new entries
     
     // Scroll to the entry form
     const journalForm = document.getElementById('journal-form');
