@@ -50,6 +50,9 @@ const EnergyTracker: React.FC<EnergyTrackerProps> = ({ value, onChange }) => {
           <span className={cn("text-sm font-medium", energyInfo.color)}>
             {energyInfo.text}
           </span>
+          <span className="ml-1 text-sm text-muted-foreground">
+            ({value}%)
+          </span>
         </div>
       </div>
       
