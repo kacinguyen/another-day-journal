@@ -6,7 +6,7 @@ import { getJournalEntries, saveJournalEntries } from "@/utils/journalUtils";
 import JournalEntriesTable from "@/components/journal/JournalEntriesTable";
 import ExampleJournalEntry from "@/components/journal/ExampleJournalEntry";
 import { Calendar } from "@/components/ui/calendar";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { format } from "date-fns";
 
 /**
@@ -119,44 +119,48 @@ const JournalLog: React.FC = () => {
           <div className="space-y-6">
             {/* Calendar Card */}
             <Card className="border rounded-lg p-4 bg-card shadow-sm">
-              <h2 className="text-xl font-semibold mb-4">Journal Calendar</h2>
-              <div className="flex justify-center">
-                <Calendar
-                  mode="single"
-                  selected={selectedDate}
-                  onSelect={handleDateSelect}
-                  className="rounded-md bg-white pointer-events-auto"
-                  modifiers={{
-                    hasEntry: entries.map(entry => new Date(entry.date))
-                  }}
-                  modifiersStyles={{
-                    hasEntry: {
-                      fontWeight: 'bold',
-                      border: '2px solid currentColor',
-                      color: 'var(--primary)'
-                    }
-                  }}
-                />
+              <div className="space-y-4">
+                <h2 className="text-xl font-semibold">Journal Calendar</h2>
+                <div className="flex justify-center">
+                  <Calendar
+                    mode="single"
+                    selected={selectedDate}
+                    onSelect={handleDateSelect}
+                    className="rounded-md bg-white pointer-events-auto"
+                    modifiers={{
+                      hasEntry: entries.map(entry => new Date(entry.date))
+                    }}
+                    modifiersStyles={{
+                      hasEntry: {
+                        fontWeight: 'bold',
+                        border: '2px solid currentColor',
+                        color: 'var(--primary)'
+                      }
+                    }}
+                  />
+                </div>
               </div>
             </Card>
             
             {/* Previous Entries Card */}
             <Card className="border rounded-lg p-4 bg-card shadow-sm h-full">
-              <h2 className="text-xl font-semibold mb-4">Previous Entries</h2>
-              
-              {entries.length > 0 ? (
-                <JournalEntriesTable entries={entries} />
-              ) : (
-                <div>
-                  {showDummyEntry ? (
-                    <ExampleJournalEntry />
-                  ) : (
-                    <div className="text-sm text-muted-foreground">
-                      Your previous journal entries will appear here.
-                    </div>
-                  )}
-                </div>
-              )}
+              <div className="space-y-4">
+                <h2 className="text-xl font-semibold">Previous Entries</h2>
+                
+                {entries.length > 0 ? (
+                  <JournalEntriesTable entries={entries} />
+                ) : (
+                  <div>
+                    {showDummyEntry ? (
+                      <ExampleJournalEntry />
+                    ) : (
+                      <div className="text-sm text-muted-foreground">
+                        Your previous journal entries will appear here.
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             </Card>
           </div>
         </div>

@@ -103,8 +103,8 @@ const JournalEntry: React.FC<JournalEntryProps> = ({
   };
 
   return (
-    <Card className="glass-card w-full max-w-3xl mx-auto overflow-hidden">
-      <CardContent className="p-6">
+    <Card className="w-full max-w-3xl mx-auto border rounded-lg p-4 bg-card shadow-sm">
+      <CardContent className="p-0 pt-4">
         <div className="space-y-6">
           <div className="space-y-2">
             <div className="flex items-center justify-between">
