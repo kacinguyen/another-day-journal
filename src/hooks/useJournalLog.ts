@@ -67,12 +67,19 @@ export function useJournalLog() {
    * Handles saving a new journal entry or updating an existing one
    */
   const handleSaveEntry = async (entryData: JournalEntryData) => {
-    const savedEntry = await saveJournalEntry(entryData);
+    // Ensure we're using the selected date rather than today's date
+    // This fixes the issue where entries were always saving for the current date
+    const dataToSave = {
+      ...entryData,
+      date: selectedDate
+    };
+    
+    const savedEntry = await saveJournalEntry(dataToSave);
     
     if (savedEntry) {
       // Update the entries list
-      const updatedEntries = entryData.id
-        ? entries.map(entry => entry.id === entryData.id ? savedEntry : entry)
+      const updatedEntries = dataToSave.id
+        ? entries.map(entry => entry.id === dataToSave.id ? savedEntry : entry)
         : [savedEntry, ...entries];
       
       // Make sure entries are unique by date
@@ -92,7 +99,7 @@ export function useJournalLog() {
       setCurrentEntry(savedEntry);
       
       toast({
-        title: entryData.id ? "Entry Updated" : "Entry Created",
+        title: dataToSave.id ? "Entry Updated" : "Entry Created",
         description: "Your journal entry has been saved successfully."
       });
     }

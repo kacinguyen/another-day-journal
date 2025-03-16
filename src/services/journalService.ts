@@ -20,6 +20,9 @@ export const saveJournalEntry = async (entry: JournalEntryData): Promise<Journal
       return null;
     }
 
+    // Format the date correctly for storage
+    const entryDate = format(entry.date, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
+
     // Convert date to ISO string
     const entryData = {
       user_id: user.id,
@@ -32,7 +35,7 @@ export const saveJournalEntry = async (entry: JournalEntryData): Promise<Journal
         people: entry.people,
         eventTypes: entry.eventTypes,
       },
-      created_at: entry.id ? undefined : new Date().toISOString(),
+      created_at: entry.id ? undefined : entryDate,
       updated_at: new Date().toISOString(),
     };
 
@@ -47,10 +50,13 @@ export const saveJournalEntry = async (entry: JournalEntryData): Promise<Journal
         .select()
         .single();
     } else {
-      // Insert new entry
+      // Insert new entry with the specific date
       result = await supabase
         .from('journal_entries')
-        .insert(entryData)
+        .insert({
+          ...entryData,
+          created_at: entryDate
+        })
         .select()
         .single();
     }
