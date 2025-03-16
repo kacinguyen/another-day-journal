@@ -118,13 +118,7 @@ export function useJournalLog() {
     const entry = findEntryForDate(date);
     updateCurrentEntry(entry);
     
-    // If an entry exists, show a toast notification
-    if (entry) {
-      toast({
-        title: "Journal Entry Found",
-        description: `Loaded entry for ${format(date, 'MMMM d, yyyy')}`
-      });
-    }
+    // Removed toast notification for "Journal Entry Found"
     // Removed the automatic scrolling code
   };
 
