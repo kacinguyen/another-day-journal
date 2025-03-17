@@ -54,7 +54,7 @@ const PreviousEntriesList: React.FC<PreviousEntriesListProps> = ({
               onEntryClick={onEntryClick} 
             />
             
-            {hasMoreEntries && (
+            {hasMoreEntries && entries.length > 6 && (
               <div className="flex justify-center">
                 <Button 
                   variant="ghost" 
