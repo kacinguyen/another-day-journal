@@ -30,10 +30,27 @@ const Navbar = () => {
     // AuthContext will handle navigation to login
   };
   
-  // Scroll to top when location changes
+  // Enhanced scroll to top when location changes
   useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo({
+      top: 0,
+      behavior: 'auto'
+    });
   }, [location.pathname]);
+  
+  // Custom navigation handler to ensure scroll to top
+  const handleNavigation = (path) => {
+    // Only navigate if we're not already on that path
+    if (location.pathname !== path) {
+      navigate(path);
+    } else {
+      // If already on the page, just scroll to top
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   return <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-md">
       <div className="container flex h-16 items-center justify-between">
@@ -42,12 +59,21 @@ const Navbar = () => {
           
           {/* Nav items moved here, next to the logo */}
           <nav className="hidden md:flex gap-6">
-            {navItems.map(item => <Link key={item.path} to={item.path} className={cn("flex items-center text-sm font-medium transition-colors hover:text-primary", location.pathname === item.path ? "text-foreground" : "text-muted-foreground")}>
+            {navItems.map(item => (
+              <button
+                key={item.path}
+                onClick={() => handleNavigation(item.path)}
+                className={cn(
+                  "flex items-center text-sm font-medium transition-colors hover:text-primary",
+                  location.pathname === item.path ? "text-foreground" : "text-muted-foreground"
+                )}
+              >
                 <div className="flex items-center gap-1.5">
                   {item.icon}
                   <span>{item.name}</span>
                 </div>
-              </Link>)}
+              </button>
+            ))}
           </nav>
         </div>
         
@@ -117,12 +143,21 @@ const Navbar = () => {
         
         {/* Mobile navigation */}
         <div className="md:hidden flex">
-          {navItems.map(item => <Link key={item.path} to={item.path} className={cn("px-3 py-2", location.pathname === item.path ? "text-foreground" : "text-muted-foreground")}>
+          {navItems.map(item => (
+            <button
+              key={item.path}
+              onClick={() => handleNavigation(item.path)}
+              className={cn(
+                "px-3 py-2",
+                location.pathname === item.path ? "text-foreground" : "text-muted-foreground"
+              )}
+            >
               <div className="flex flex-col items-center gap-0.5">
                 {item.icon}
                 <span className="text-xs">{item.name}</span>
               </div>
-            </Link>)}
+            </button>
+          ))}
         </div>
       </div>
     </header>;
