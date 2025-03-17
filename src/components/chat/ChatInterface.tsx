@@ -9,8 +9,10 @@ const ChatInterface: React.FC<ChatProps> = ({ messages, isLoading, onSendMessage
   const messagesEndRef = React.useRef<HTMLDivElement>(null);
   
   React.useEffect(() => {
-    // Scroll to bottom when messages change
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    // Only scroll to bottom when messages change and there are messages
+    if (messages.length > 0) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
   }, [messages]);
   
   return (

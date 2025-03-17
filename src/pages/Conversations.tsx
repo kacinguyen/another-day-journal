@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { CircleX } from "lucide-react";
@@ -10,6 +10,11 @@ import { useAuth } from "@/context/AuthContext";
 const Conversations = () => {
   const { messages, isLoading, sendMessage, clearConversation } = useConversation();
   const { user } = useAuth();
+
+  // Force scroll to top when this component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <div className="page-container animate-fade-up">
