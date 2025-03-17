@@ -35,7 +35,8 @@ import {
 export const JournalEntriesTable: React.FC<{ 
   entries: JournalEntryData[];
   onEntryClick?: (entry: JournalEntryData) => void;
-}> = ({ entries, onEntryClick }) => {
+  maxHeight?: string;
+}> = ({ entries, onEntryClick, maxHeight = "500px" }) => {
   /**
    * Returns the appropriate icon component for an event type
    */
@@ -83,7 +84,7 @@ export const JournalEntriesTable: React.FC<{
   };
 
   return (
-    <ScrollArea className="h-[500px] pr-4">
+    <ScrollArea className="pr-4" style={{ height: maxHeight }}>
       <div className="space-y-4">
         {entries.map((entry) => (
           <Card 

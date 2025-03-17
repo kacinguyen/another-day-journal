@@ -43,35 +43,16 @@ const PreviousEntriesList: React.FC<PreviousEntriesListProps> = ({
   const hasMoreEntries = entries.length > displayCount;
 
   return (
-    <Card className="border rounded-lg p-4 bg-card shadow-sm h-full flex flex-col">
-      <div className="space-y-4 flex-1">
+    <Card className="border rounded-lg p-4 bg-card shadow-sm">
+      <div className="space-y-4">
         <h2 className="text-xl font-semibold">Previous Entries</h2>
         
         {entries.length > 0 ? (
-          <div className="space-y-4 flex-1">
-            <JournalEntriesTable 
-              entries={displayedEntries} 
-              onEntryClick={onEntryClick} 
-            />
-            
-            {hasMoreEntries && (
-              <div className="flex justify-center">
-                <Button 
-                  variant="ghost" 
-                  onClick={handleSeeMore}
-                  className="text-sm flex items-center gap-1"
-                >
-                  See more <ChevronDown className="h-4 w-4" />
-                </Button>
-              </div>
-            )}
-            
-            {displayCount > 3 && (
-              <div className="text-sm text-muted-foreground text-center p-2 bg-muted/30 rounded-md">
-                Use the calendar to find and view your past entries
-              </div>
-            )}
-          </div>
+          <JournalEntriesTable 
+            entries={displayedEntries} 
+            onEntryClick={onEntryClick} 
+            maxHeight="400px"
+          />
         ) : (
           <div>
             {showDummyEntry ? (
