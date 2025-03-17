@@ -41,6 +41,9 @@ const PreviousEntriesList: React.FC<PreviousEntriesListProps> = ({
   
   // Check if we have more entries to show
   const hasMoreEntries = entries.length > displayCount;
+  
+  // Check if we're showing exactly 6 entries or all entries (whichever is less)
+  const showingSixOrAllEntries = displayCount >= 6 || displayCount >= entries.length;
 
   return (
     <Card className="border rounded-lg p-4 bg-card shadow-sm h-full">
@@ -54,7 +57,7 @@ const PreviousEntriesList: React.FC<PreviousEntriesListProps> = ({
               onEntryClick={onEntryClick} 
             />
             
-            {hasMoreEntries && entries.length > 6 && (
+            {hasMoreEntries && !showingSixOrAllEntries && (
               <div className="flex justify-center">
                 <Button 
                   variant="ghost" 
