@@ -1,4 +1,3 @@
-
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Book, LogIn, LogOut, MessageCircle, User, UserPlus } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -30,7 +29,6 @@ const Navbar = () => {
     // AuthContext will handle navigation to login
   };
   
-  // Enhanced scroll to top when location changes
   useEffect(() => {
     window.scrollTo({
       top: 0,
@@ -38,13 +36,10 @@ const Navbar = () => {
     });
   }, [location.pathname]);
   
-  // Custom navigation handler to ensure scroll to top
   const handleNavigation = (path) => {
-    // Only navigate if we're not already on that path
     if (location.pathname !== path) {
       navigate(path);
     } else {
-      // If already on the page, just scroll to top
       window.scrollTo({
         top: 0,
         behavior: 'smooth'
@@ -55,9 +50,8 @@ const Navbar = () => {
   return <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-md">
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-6">
-          <span className="text-xl font-semibold tracking-tight">Daily Life Log</span>
+          <span className="text-xl font-semibold tracking-tight">Another Day Another Entry</span>
           
-          {/* Nav items moved here, next to the logo */}
           <nav className="hidden md:flex gap-6">
             {navItems.map(item => (
               <button
@@ -141,7 +135,6 @@ const Navbar = () => {
           </DropdownMenu>
         </div>
         
-        {/* Mobile navigation */}
         <div className="md:hidden flex">
           {navItems.map(item => (
             <button
