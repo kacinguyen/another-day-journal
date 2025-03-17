@@ -1,9 +1,11 @@
+
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Book, LogIn, LogOut, MessageCircle, User, UserPlus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/context/AuthContext";
+
 const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -11,6 +13,7 @@ const Navbar = () => {
     user,
     signOut
   } = useAuth();
+
   const navItems = [{
     name: "Journal Log",
     path: "/",
@@ -20,25 +23,27 @@ const Navbar = () => {
     path: "/conversations",
     icon: <MessageCircle className="h-5 w-5" />
   }];
+
   const handleSignOut = async () => {
     await signOut();
     // AuthContext will handle navigation to login
   };
+
   return <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-md">
       <div className="container flex h-16 items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="text-xl font-semibold tracking-tight">Another Day Another Log</span>
+        <div className="flex items-center gap-6">
+          <span className="text-xl font-semibold tracking-tight">Daily Life Log</span>
           
+          {/* Nav items moved here, next to the logo */}
+          <nav className="hidden md:flex gap-6">
+            {navItems.map(item => <Link key={item.path} to={item.path} className={cn("flex items-center text-sm font-medium transition-colors hover:text-primary", location.pathname === item.path ? "text-foreground" : "text-muted-foreground")}>
+                <div className="flex items-center gap-1.5">
+                  {item.icon}
+                  <span>{item.name}</span>
+                </div>
+              </Link>)}
+          </nav>
         </div>
-        
-        <nav className="hidden md:flex gap-6">
-          {navItems.map(item => <Link key={item.path} to={item.path} className={cn("flex items-center text-sm font-medium transition-colors hover:text-primary", location.pathname === item.path ? "text-foreground" : "text-muted-foreground")}>
-              <div className="flex items-center gap-1.5">
-                {item.icon}
-                <span>{item.name}</span>
-              </div>
-            </Link>)}
-        </nav>
         
         <div className="flex items-center gap-2">
           {user ? <>
@@ -104,6 +109,7 @@ const Navbar = () => {
           </DropdownMenu>
         </div>
         
+        {/* Mobile navigation */}
         <div className="md:hidden flex">
           {navItems.map(item => <Link key={item.path} to={item.path} className={cn("px-3 py-2", location.pathname === item.path ? "text-foreground" : "text-muted-foreground")}>
               <div className="flex flex-col items-center gap-0.5">
@@ -115,4 +121,5 @@ const Navbar = () => {
       </div>
     </header>;
 };
+
 export default Navbar;
