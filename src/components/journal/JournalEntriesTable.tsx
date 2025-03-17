@@ -83,7 +83,7 @@ export const JournalEntriesTable: React.FC<{
   };
 
   return (
-    <ScrollArea className="h-[500px] pr-4">
+    <ScrollArea className="pr-4" style={{ maxHeight: entries.length > 0 ? "400px" : "auto" }}>
       <div className="space-y-4">
         {entries.map((entry) => (
           <Card 
