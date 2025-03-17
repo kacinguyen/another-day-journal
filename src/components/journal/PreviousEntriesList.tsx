@@ -43,8 +43,8 @@ const PreviousEntriesList: React.FC<PreviousEntriesListProps> = ({
   const hasMoreEntries = entries.length > displayCount;
 
   return (
-    <Card className="border rounded-lg p-4 bg-card shadow-sm h-full flex flex-col max-h-[calc(100vh-15rem)] overflow-hidden">
-      <div className="space-y-4 flex-1">
+    <Card className="border rounded-lg p-4 bg-card shadow-sm h-full">
+      <div className="space-y-4">
         <h2 className="text-xl font-semibold">Previous Entries</h2>
         
         {entries.length > 0 ? (
@@ -54,7 +54,7 @@ const PreviousEntriesList: React.FC<PreviousEntriesListProps> = ({
               onEntryClick={onEntryClick} 
             />
             
-            {hasMoreEntries && (
+            {hasMoreEntries && entries.length > 6 && (
               <div className="flex justify-center">
                 <Button 
                   variant="ghost" 
