@@ -49,6 +49,7 @@ const PreviousEntriesList: React.FC<PreviousEntriesListProps> = ({
     <Card className="border rounded-lg p-4 bg-card shadow-sm h-full">
       <div className="space-y-4">
         <h2 className="text-xl font-semibold">Previous Entries</h2>
+        <p className="text-xs text-muted-foreground -mt-3 mb-2">Only entries from the past week are shown</p>
         
         {entries.length > 0 ? (
           <div className="space-y-4">
