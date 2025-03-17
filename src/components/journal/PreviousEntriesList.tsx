@@ -44,7 +44,7 @@ const PreviousEntriesList: React.FC<PreviousEntriesListProps> = ({
 
   return (
     <Card className="border rounded-lg p-4 bg-card shadow-sm h-full flex flex-col max-h-[calc(100vh-15rem)] overflow-hidden">
-      <div className="space-y-4 flex-1 overflow-y-auto">
+      <div className="space-y-4 flex-1">
         <h2 className="text-xl font-semibold">Previous Entries</h2>
         
         {entries.length > 0 ? (
