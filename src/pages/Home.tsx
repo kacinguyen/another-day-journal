@@ -36,9 +36,9 @@ const Home = () => {
             )}
           </div>
           
-          {/* Key Features Section - Moved above the fold */}
+          {/* Key Features Section - Renamed and Font Size Reduced */}
           <div className="my-8">
-            <h2 className="text-2xl md:text-3xl font-bold mb-8 pl-0">Key Features</h2>
+            <h2 className="text-1.5xl md:text-2xl font-bold mb-8 pl-0">A new looking glass</h2>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <Card>
