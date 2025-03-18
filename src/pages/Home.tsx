@@ -88,7 +88,7 @@ const Home = () => {
               previewAlt="Journal Log Preview"
               onHover={(isHovering) => handleFeatureHover(isHovering ? 'journal-log' : null)}
             >
-              <Card className="h-full transition-all duration-200 hover:shadow-md">
+              <Card className={`h-full transition-all duration-200 ${hoveredFeature === 'journal-log' ? 'shadow-md' : 'shadow-md'}`}>
                 <CardContent className="p-4 flex flex-col items-start h-full">
                   <div className="flex items-center gap-3 mb-3">
                     <Book className="h-3.5 w-3.5 text-primary flex-shrink-0" />
