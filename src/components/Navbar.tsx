@@ -71,9 +71,12 @@ const Navbar = () => {
         
         <div className="flex items-center gap-2">
           {user ? <>
-              <Button variant="ghost" size="sm" className="hidden md:flex" onClick={handleSignOut}>
+              <button
+                onClick={handleSignOut}
+                className="hidden md:flex text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+              >
                 Log out
-              </Button>
+              </button>
               <Link to="/profile">
                 <Button variant="outline" size="sm" className="hidden md:flex">
                   <User className="mr-2 h-4 w-4" />
