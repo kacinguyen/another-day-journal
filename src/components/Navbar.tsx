@@ -51,7 +51,7 @@ const Navbar = () => {
   return <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-md">
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-6">
-          <Link to="/home" className="text-sm uppercase font-semibold tracking-tight hover:text-primary transition-colors">
+          <Link to="/home" className="text-sm uppercase font-cursive font-semibold tracking-tight hover:text-primary transition-colors">
             Another Day Another Entry
           </Link>
           
