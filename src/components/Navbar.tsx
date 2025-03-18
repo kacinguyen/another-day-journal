@@ -46,13 +46,13 @@ const Navbar = () => {
   };
 
   return <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-md">
-      <div className="container flex h-16 items-center">
-        <div className="flex items-center">
-          <Link to="/home" className="lowercase font-vibur text-2xl hover:text-primary transition-colors mr-6">
+      <div className="container flex h-16 items-center justify-between">
+        <div className="flex items-center space-x-4">
+          <Link to="/home" className="lowercase font-vibur text-2xl hover:text-primary transition-colors">
             another day
           </Link>
           
-          <nav className="hidden md:flex gap-6">
+          <nav className="flex gap-6">
             {navItems.map(item => (
               <button
                 key={item.path}
@@ -68,7 +68,7 @@ const Navbar = () => {
           </nav>
         </div>
         
-        <div className="ml-auto flex items-center gap-2">
+        <div className="flex items-center space-x-4">
           {user ? (
             <Link to="/profile">
               <Button variant="outline" size="sm">
@@ -78,7 +78,7 @@ const Navbar = () => {
             </Link>
           ) : (
             <>
-              <Link to="/login" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors mr-4">
+              <Link to="/login" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
                 Log in
               </Link>
               <Link to="/signup">
@@ -88,23 +88,6 @@ const Navbar = () => {
               </Link>
             </>
           )}
-        </div>
-        
-        <div className="md:hidden flex ml-4">
-          {navItems.map(item => (
-            <button
-              key={item.path}
-              onClick={() => handleNavigation(item.path)}
-              className={cn(
-                "px-3 py-2",
-                location.pathname === item.path ? "text-foreground" : "text-muted-foreground"
-              )}
-            >
-              <div className="flex flex-col items-center gap-0.5">
-                <span className="text-xs">{item.name}</span>
-              </div>
-            </button>
-          ))}
         </div>
       </div>
     </header>;
