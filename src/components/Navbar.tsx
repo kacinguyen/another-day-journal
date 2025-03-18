@@ -96,7 +96,7 @@ const Navbar = () => {
               <Link to="/signup">
                 <Button size="sm" className="hidden md:flex">
                   <UserPlus className="mr-2 h-4 w-4" />
-                  Sign up
+                  Get started
                 </Button>
               </Link>
             </>}
@@ -130,7 +130,7 @@ const Navbar = () => {
                   <DropdownMenuItem asChild>
                     <Link to="/signup" className="w-full cursor-pointer">
                       <UserPlus className="mr-2 h-4 w-4" />
-                      <span>Sign up</span>
+                      <span>Get started</span>
                     </Link>
                   </DropdownMenuItem>
                 </>}
