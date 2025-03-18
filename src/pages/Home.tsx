@@ -12,15 +12,15 @@ const Home = () => {
   return (
     <div className="container mx-auto px-4 flex flex-col">
       {/* Hero Section - Above the fold */}
-      <section className="min-h-[calc(100vh-64px)] flex flex-col items-center justify-center py-12">
-        <div className="max-w-4xl mx-auto text-center">
+      <section className="min-h-[calc(100vh-64px)] flex flex-col justify-center py-12">
+        <div className="max-w-4xl">
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">Another day, another entry.</h1>
           
-          <p className="text-xl mb-10 text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-xl mb-10 text-muted-foreground max-w-2xl">
             Your personal space to document daily thoughts, track moods, and reflect on your journey through journaling and AI-powered conversations.
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 mb-8 justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 mb-8">
             {user ? (
               <Link to="/">
                 <Button size="lg" variant="outline" className="w-full sm:w-auto">
@@ -38,7 +38,7 @@ const Home = () => {
           </div>
           
           <div className="hidden sm:block">
-            <svg className="w-6 h-6 mx-auto mt-16 animate-bounce text-muted-foreground" 
+            <svg className="w-6 h-6 mt-16 animate-bounce text-muted-foreground" 
                  fill="none" 
                  stroke="currentColor" 
                  viewBox="0 0 24 24" 
