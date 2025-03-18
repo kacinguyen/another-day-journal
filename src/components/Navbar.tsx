@@ -71,12 +71,6 @@ const Navbar = () => {
         
         <div className="flex items-center gap-2">
           {user ? <>
-              <button
-                onClick={handleSignOut}
-                className="hidden md:flex text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
-              >
-                Log out
-              </button>
               <Link to="/profile">
                 <Button variant="outline" size="sm" className="hidden md:flex">
                   <User className="mr-2 h-4 w-4" />
@@ -103,9 +97,6 @@ const Navbar = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               {user ? <>
-                  <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
-                    <span>Log out</span>
-                  </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link to="/profile" className="w-full cursor-pointer">
                       <User className="mr-2 h-4 w-4" />
