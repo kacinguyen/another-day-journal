@@ -37,15 +37,15 @@ const Home = () => {
           </div>
           
           {/* Key Features Section - Rearranged to have heading and text alongside cards */}
-          <div className="my-8 grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div className="my-8 grid grid-cols-1 md:grid-cols-12 gap-6 w-full">
             {/* Heading and description column */}
-            <div className="md:col-span-1 flex flex-col justify-center">
+            <div className="md:col-span-3 flex flex-col justify-center">
               <h2 className="text-1.5xl md:text-2xl font-bold mb-3">A new looking glass</h2>
               <p className="text-muted-foreground">Explore deeper and richer insights about yourself</p>
             </div>
             
             {/* Feature cards - now in 3 columns instead of full width */}
-            <div className="md:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="md:col-span-9 grid grid-cols-1 md:grid-cols-3 gap-6">
               <Card>
                 <CardContent className="p-4 flex flex-col items-start h-full">
                   <Book className="h-10 w-10 mb-3 text-primary" />
