@@ -22,7 +22,7 @@ const Home = () => {
             <Link to="/">
               <Button size="lg" variant="outline" className="w-full sm:w-auto">
                 <Book className="mr-2 h-5 w-5" />
-                Journal
+                Go to journal
               </Button>
             </Link>
           ) : (
