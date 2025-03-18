@@ -23,9 +23,9 @@ const Home = () => {
           <div className="flex flex-col sm:flex-row gap-4 mb-12">
             {user ? (
               <Link to="/">
-                <Button size="lg" variant="outline" className="w-full sm:w-auto">
+                <Button size="lg" className="w-full sm:w-auto">
                   <Book className="mr-2 h-5 w-5" />
-                  Go to journal
+                  Create an entry
                 </Button>
               </Link>
             ) : (
