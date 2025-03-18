@@ -3,7 +3,6 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/context/AuthContext";
 import { useEffect } from "react";
 
@@ -48,8 +47,8 @@ const Navbar = () => {
 
   return <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-md">
       <div className="container flex h-16 items-center">
-        <div className="flex items-center gap-6 flex-1">
-          <Link to="/home" className="lowercase font-vibur text-2xl hover:text-primary transition-colors">
+        <div className="flex items-center">
+          <Link to="/home" className="lowercase font-vibur text-2xl hover:text-primary transition-colors mr-6">
             another day
           </Link>
           
@@ -69,7 +68,7 @@ const Navbar = () => {
           </nav>
         </div>
         
-        <div className="flex items-center gap-2 ml-auto">
+        <div className="ml-auto flex items-center gap-2">
           {user ? (
             <Link to="/profile">
               <Button variant="outline" size="sm">
