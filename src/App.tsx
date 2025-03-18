@@ -11,6 +11,7 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import Profile from "./pages/Profile";
+import Home from "./pages/Home";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 
 const queryClient = new QueryClient();
@@ -36,6 +37,7 @@ const AuthenticatedRoutes = () => {
       <Navbar />
       <main className="flex-1">
         <Routes>
+          <Route path="/home" element={<Home />} />
           <Route path="/" element={
             <ProtectedRoute>
               <JournalLog />

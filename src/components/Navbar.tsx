@@ -1,3 +1,4 @@
+
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Book, LogIn, LogOut, MessageCircle, User, UserPlus } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -50,7 +51,9 @@ const Navbar = () => {
   return <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-md">
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-6">
-          <span className="text-xl font-semibold tracking-tight">Another Day Another Entry</span>
+          <Link to="/home" className="text-xl font-semibold tracking-tight hover:text-primary transition-colors">
+            Another Day Another Entry
+          </Link>
           
           <nav className="hidden md:flex gap-6">
             {navItems.map(item => (
