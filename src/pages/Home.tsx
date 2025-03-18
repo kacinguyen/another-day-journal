@@ -56,6 +56,15 @@ const Home = () => {
                 />
               </div>
             )}
+            {hoveredFeature === 'ai-conversations' && (
+              <div className="animate-fade-in absolute inset-0 flex items-center justify-center">
+                <img 
+                  src="/lovable-uploads/d63e3a4e-991a-4d31-a074-11c3d60a4693.png" 
+                  alt="AI Conversations Preview" 
+                  className="max-w-full max-h-full object-contain rounded-lg shadow-lg" 
+                />
+              </div>
+            )}
             {!hoveredFeature && (
               <div className="text-center text-muted-foreground text-sm">
                 <p>Hover over a feature to see a preview</p>
@@ -74,9 +83,10 @@ const Home = () => {
           
           {/* Feature cards - now 8 columns */}
           <div className="md:col-span-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div 
-              onMouseEnter={() => handleFeatureHover('journal-log')}
-              onMouseLeave={() => handleFeatureHover(null)}
+            <FeaturePreview 
+              previewImage="/lovable-uploads/2ec06987-05f6-4aec-bae9-9d3e2aef3cb0.png"
+              previewAlt="Journal Log Preview"
+              onHover={(isHovering) => handleFeatureHover(isHovering ? 'journal-log' : null)}
             >
               <Card className="h-full transition-all duration-200 hover:shadow-md">
                 <CardContent className="p-4 flex flex-col items-start h-full">
@@ -89,21 +99,27 @@ const Home = () => {
                   </p>
                 </CardContent>
               </Card>
-            </div>
+            </FeaturePreview>
             
-            <Card className="h-full">
-              <CardContent className="p-4 flex flex-col items-start h-full">
-                <div className="flex items-center gap-3 mb-3">
-                  <MessageCircle className="h-3.5 w-3.5 text-primary flex-shrink-0" />
-                  <h3 className="text-lg font-semibold w-full break-words">AI Conversations</h3>
-                </div>
-                <p className="text-muted-foreground text-sm">
-                  Chat with an AI companion that helps you process thoughts and gain new insights.
-                </p>
-              </CardContent>
-            </Card>
+            <FeaturePreview
+              previewImage="/lovable-uploads/d63e3a4e-991a-4d31-a074-11c3d60a4693.png"
+              previewAlt="AI Conversations Preview"
+              onHover={(isHovering) => handleFeatureHover(isHovering ? 'ai-conversations' : null)}
+            >
+              <Card className="h-full transition-all duration-200 hover:shadow-md">
+                <CardContent className="p-4 flex flex-col items-start h-full">
+                  <div className="flex items-center gap-3 mb-3">
+                    <MessageCircle className="h-3.5 w-3.5 text-primary flex-shrink-0" />
+                    <h3 className="text-lg font-semibold w-full break-words">AI Conversations</h3>
+                  </div>
+                  <p className="text-muted-foreground text-sm">
+                    Chat with an AI companion that helps you process thoughts and gain new insights.
+                  </p>
+                </CardContent>
+              </Card>
+            </FeaturePreview>
             
-            <Card className="h-full">
+            <Card className="h-full transition-all duration-200 hover:shadow-md">
               <CardContent className="p-4 flex flex-col items-start h-full">
                 <div className="flex items-center gap-3 mb-3">
                   <BarChart className="h-3.5 w-3.5 text-primary flex-shrink-0" />
@@ -117,8 +133,6 @@ const Home = () => {
           </div>
         </div>
       </section>
-      
-      {/* Footer removed as requested */}
     </div>
   );
 };

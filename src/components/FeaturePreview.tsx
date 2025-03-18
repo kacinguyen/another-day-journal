@@ -1,6 +1,5 @@
 
-import React, { useState } from "react";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import React from "react";
 import { cn } from "@/lib/utils";
 
 interface FeaturePreviewProps {
@@ -8,27 +7,23 @@ interface FeaturePreviewProps {
   previewImage: string;
   previewAlt: string;
   className?: string;
+  onHover: (isHovering: boolean) => void;
 }
 
 const FeaturePreview: React.FC<FeaturePreviewProps> = ({ 
   children, 
   previewImage, 
   previewAlt,
-  className 
+  className,
+  onHover
 }) => {
-  const [isHovering, setIsHovering] = useState(false);
-  
   return (
     <div
       className={cn("h-full", className)}
-      onMouseEnter={() => setIsHovering(true)}
-      onMouseLeave={() => setIsHovering(false)}
+      onMouseEnter={() => onHover(true)}
+      onMouseLeave={() => onHover(false)}
     >
-      {/* Content that triggers the preview */}
       {children}
-      
-      {/* Hidden element that passes the hover state to parent */}
-      <span className="sr-only" data-hovering={isHovering} />
     </div>
   );
 };
