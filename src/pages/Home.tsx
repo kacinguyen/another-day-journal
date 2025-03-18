@@ -12,7 +12,7 @@ const Home = () => {
   return (
     <div className="container mx-auto px-4 flex flex-col">
       {/* Hero Section - Above the fold */}
-      <section className="min-h-[calc(100vh-64px)] flex flex-col justify-center py-12 pl-8">
+      <section className="min-h-[calc(100vh-64px)] flex flex-col justify-center py-12 px-8">
         <div className="max-w-full">
           <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-6">Another day, another entry.</h1>
           
@@ -48,8 +48,10 @@ const Home = () => {
             <div className="md:col-span-8 grid grid-cols-1 md:grid-cols-3 gap-6">
               <Card className="h-full">
                 <CardContent className="p-4 flex flex-col items-start h-full">
-                  <Book className="h-10 w-10 mb-3 text-primary" />
-                  <h3 className="text-lg font-semibold mb-2">Journal Log</h3>
+                  <div className="flex items-start gap-3 mb-3">
+                    <Book className="h-10 w-10 text-primary flex-shrink-0" />
+                    <h3 className="text-lg font-semibold">Journal Log</h3>
+                  </div>
                   <p className="text-muted-foreground text-sm">
                     Track your daily moods, activities, and reflections. Keep a record of your personal growth.
                   </p>
@@ -58,8 +60,10 @@ const Home = () => {
               
               <Card className="h-full">
                 <CardContent className="p-4 flex flex-col items-start h-full">
-                  <MessageCircle className="h-10 w-10 mb-3 text-primary" />
-                  <h3 className="text-lg font-semibold mb-2">AI Conversations</h3>
+                  <div className="flex items-start gap-3 mb-3">
+                    <MessageCircle className="h-10 w-10 text-primary flex-shrink-0" />
+                    <h3 className="text-lg font-semibold">AI Conversations</h3>
+                  </div>
                   <p className="text-muted-foreground text-sm">
                     Chat with an AI companion that helps you process thoughts and gain new insights.
                   </p>
@@ -68,8 +72,10 @@ const Home = () => {
               
               <Card className="h-full">
                 <CardContent className="p-4 flex flex-col items-start h-full">
-                  <BarChart className="h-10 w-10 mb-3 text-primary" />
-                  <h3 className="text-lg font-semibold mb-2">Mood Tracking</h3>
+                  <div className="flex items-start gap-3 mb-3">
+                    <BarChart className="h-10 w-10 text-primary flex-shrink-0" />
+                    <h3 className="text-lg font-semibold">Mood Tracking</h3>
+                  </div>
                   <p className="text-muted-foreground text-sm">
                     Visualize patterns in your emotional state over time with intuitive charts.
                   </p>
