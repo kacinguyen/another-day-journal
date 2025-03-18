@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Book, MessageCircle, BarChart } from "lucide-react";
@@ -9,11 +9,11 @@ import FeaturePreview from "@/components/FeaturePreview";
 
 const Home = () => {
   const { user } = useAuth();
-  const [hoveredFeature, setHoveredFeature] = useState<string | null>(null);
+  const [hoveredFeature, setHoveredFeature] = useState<string | null>('journal-log'); // Default to journal-log
   
   // Handle hovering on feature cards
   const handleFeatureHover = (feature: string | null) => {
-    setHoveredFeature(feature);
+    setHoveredFeature(feature || 'journal-log'); // If no feature is hovered, default to journal-log
   };
   
   return (
@@ -68,11 +68,6 @@ const Home = () => {
             {hoveredFeature === 'mood-tracking' && (
               <div className="animate-fade-in absolute inset-0 flex items-center justify-center">
                 <p className="text-center text-muted-foreground">Coming soon</p>
-              </div>
-            )}
-            {!hoveredFeature && (
-              <div className="text-center text-muted-foreground text-sm">
-                <p>Hover over a feature to see a preview</p>
               </div>
             )}
           </div>
