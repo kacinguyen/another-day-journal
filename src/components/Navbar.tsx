@@ -47,8 +47,8 @@ const Navbar = () => {
 
   return <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-md">
       <div className="container flex h-16 items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <Link to="/home" className="lowercase font-vibur text-2xl hover:text-primary transition-colors">
+        <div className="flex items-center">
+          <Link to="/home" className="lowercase font-vibur text-2xl hover:text-primary transition-colors mr-8">
             another day
           </Link>
           
