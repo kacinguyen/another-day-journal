@@ -1,6 +1,6 @@
 
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Book, MessageCircle, LogOut, User } from "lucide-react";
+import { LogOut, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -17,12 +17,10 @@ const Navbar = () => {
 
   const navItems = [{
     name: "Journal Log",
-    path: "/",
-    icon: <Book className="h-5 w-5" />
+    path: "/"
   }, {
     name: "Conversations",
-    path: "/conversations",
-    icon: <MessageCircle className="h-5 w-5" />
+    path: "/conversations"
   }];
 
   const handleSignOut = async () => {
@@ -65,10 +63,7 @@ const Navbar = () => {
                   location.pathname === item.path ? "text-foreground" : "text-muted-foreground"
                 )}
               >
-                <div className="flex items-center gap-1.5">
-                  {item.icon}
-                  <span>{item.name}</span>
-                </div>
+                <span>{item.name}</span>
               </button>
             ))}
           </nav>
@@ -143,7 +138,6 @@ const Navbar = () => {
               )}
             >
               <div className="flex flex-col items-center gap-0.5">
-                {item.icon}
                 <span className="text-xs">{item.name}</span>
               </div>
             </button>
