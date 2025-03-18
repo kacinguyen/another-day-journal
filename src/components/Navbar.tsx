@@ -71,15 +71,15 @@ const Navbar = () => {
         
         <div className="flex items-center gap-2">
           {user ? <>
+              <Button variant="ghost" size="sm" className="hidden md:flex" onClick={handleSignOut}>
+                Log out
+              </Button>
               <Link to="/profile">
                 <Button variant="outline" size="sm" className="hidden md:flex">
                   <User className="mr-2 h-4 w-4" />
                   Profile
                 </Button>
               </Link>
-              <Button variant="ghost" size="sm" className="hidden md:flex" onClick={handleSignOut}>
-                Log out
-              </Button>
             </> : <>
               <Link to="/login" className="hidden md:flex text-sm font-medium text-muted-foreground hover:text-foreground transition-colors mr-4">
                 Log in
@@ -100,14 +100,14 @@ const Navbar = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               {user ? <>
+                  <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
+                    <span>Log out</span>
+                  </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link to="/profile" className="w-full cursor-pointer">
                       <User className="mr-2 h-4 w-4" />
                       <span>Profile</span>
                     </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
-                    <span>Log out</span>
                   </DropdownMenuItem>
                 </> : <>
                   <DropdownMenuItem asChild>
