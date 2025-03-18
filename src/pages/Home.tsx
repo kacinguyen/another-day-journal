@@ -40,7 +40,7 @@ const Home = () => {
               <Link to="/signup">
                 <Button size="lg" className="w-full sm:w-auto">
                   <UserPlus className="mr-2 h-5 w-5" />
-                  Sign up
+                  Get started
                 </Button>
               </Link>
             )}
