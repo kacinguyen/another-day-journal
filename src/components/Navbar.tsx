@@ -47,8 +47,8 @@ const Navbar = () => {
   };
 
   return <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-md">
-      <div className="container flex h-16 items-center justify-between">
-        <div className="flex items-center gap-6">
+      <div className="container flex h-16 items-center">
+        <div className="flex items-center gap-6 flex-1">
           <Link to="/home" className="lowercase font-vibur text-2xl hover:text-primary transition-colors">
             another day
           </Link>
@@ -69,57 +69,29 @@ const Navbar = () => {
           </nav>
         </div>
         
-        <div className="flex items-center gap-2">
-          {user ? <>
-              <Link to="/profile">
-                <Button variant="outline" size="sm" className="hidden md:flex">
-                  <User className="mr-2 h-4 w-4" />
-                  Profile
-                </Button>
-              </Link>
-            </> : <>
-              <Link to="/login" className="hidden md:flex text-sm font-medium text-muted-foreground hover:text-foreground transition-colors mr-4">
+        <div className="flex items-center gap-2 ml-auto">
+          {user ? (
+            <Link to="/profile">
+              <Button variant="outline" size="sm">
+                <User className="mr-2 h-4 w-4" />
+                Profile
+              </Button>
+            </Link>
+          ) : (
+            <>
+              <Link to="/login" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors mr-4">
                 Log in
               </Link>
               <Link to="/signup">
-                <Button size="sm" className="hidden md:flex">
+                <Button size="sm">
                   Get started
                 </Button>
               </Link>
-            </>}
-          
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild className="md:hidden">
-              <Button variant="outline" size="sm">
-                {user ? <User className="h-4 w-4 mr-2" /> : null}
-                Account
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {user ? <>
-                  <DropdownMenuItem asChild>
-                    <Link to="/profile" className="w-full cursor-pointer">
-                      <User className="mr-2 h-4 w-4" />
-                      <span>Profile</span>
-                    </Link>
-                  </DropdownMenuItem>
-                </> : <>
-                  <DropdownMenuItem asChild>
-                    <Link to="/login" className="w-full cursor-pointer">
-                      <span>Log in</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link to="/signup" className="w-full cursor-pointer">
-                      <span>Get started</span>
-                    </Link>
-                  </DropdownMenuItem>
-                </>}
-            </DropdownMenuContent>
-          </DropdownMenu>
+            </>
+          )}
         </div>
         
-        <div className="md:hidden flex">
+        <div className="md:hidden flex ml-4">
           {navItems.map(item => (
             <button
               key={item.path}
