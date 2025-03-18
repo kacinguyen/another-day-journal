@@ -36,8 +36,8 @@ const Home = () => {
             )}
           </div>
           
-          {/* Key Features Section - Rearranged to have heading and text alongside cards */}
-          <div className="my-8 grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-6 w-full">
+          {/* Key Features Section - Added more space above this section */}
+          <div className="mt-20 mb-8 grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-6 w-full">
             {/* Heading and description column - now 4 columns */}
             <div className="md:col-span-4 flex flex-col justify-center pr-4">
               <h2 className="text-1.5xl md:text-2xl font-bold mb-3 whitespace-nowrap">A new looking glass</h2>
@@ -86,9 +86,7 @@ const Home = () => {
         </div>
       </section>
       
-      <footer className="py-10 text-center text-sm text-muted-foreground">
-        <p>© {new Date().getFullYear()} Another Day Another Entry. All rights reserved.</p>
-      </footer>
+      {/* Footer removed as requested */}
     </div>
   );
 };
