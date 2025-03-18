@@ -62,7 +62,7 @@ const PreviousEntriesList: React.FC<PreviousEntriesListProps> = ({
                 <Button 
                   variant="ghost" 
                   onClick={handleSeeMore}
-                  className="text-sm flex items-center gap-1"
+                  className="text-sm flex items-center gap-1 hover:bg-gray-100 dark:hover:bg-gray-800"
                 >
                   See more <ChevronDown className="h-4 w-4" />
                 </Button>
