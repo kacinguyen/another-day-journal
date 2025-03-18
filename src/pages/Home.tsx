@@ -12,7 +12,7 @@ const Home = () => {
   return (
     <div className="container mx-auto px-4 flex flex-col">
       {/* Hero Section - Above the fold */}
-      <section className="min-h-[calc(100vh-64px)] flex flex-col justify-center py-12">
+      <section className="min-h-[calc(100vh-64px)] flex flex-col justify-center py-12 pl-8">
         <div className="max-w-4xl">
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">Another day, another entry.</h1>
           
@@ -53,7 +53,7 @@ const Home = () => {
       </section>
       
       {/* Features Section - Below the fold */}
-      <section className="py-16 bg-muted/30">
+      <section className="py-16 bg-muted/30 pl-8">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Key Features</h2>
           
