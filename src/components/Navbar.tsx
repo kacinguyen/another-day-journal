@@ -71,7 +71,7 @@ const Navbar = () => {
         <div className="flex items-center space-x-4">
           {user ? (
             <Link to="/profile">
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" className="hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-foreground">
                 <User className="mr-2 h-4 w-4" />
                 Profile
               </Button>
