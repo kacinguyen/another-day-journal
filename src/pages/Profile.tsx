@@ -47,7 +47,11 @@ const Profile: React.FC = () => {
             </p>
           </div>
           
-          <Button variant="destructive" onClick={handleSignOut} className="w-full">
+          <Button 
+            variant="destructive" 
+            onClick={handleSignOut} 
+            className="w-full hover:bg-gray-700 dark:hover:bg-gray-800"
+          >
             <LogOut className="mr-2 h-4 w-4" />
             Sign out
           </Button>

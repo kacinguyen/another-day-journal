@@ -22,7 +22,7 @@ const SaveButton: React.FC<SaveButtonProps> = ({
       id="save-button"
       onClick={onClick}
       disabled={disabled}
-      className="relative overflow-hidden transition-all duration-300"
+      className="relative overflow-hidden transition-all duration-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-foreground"
     >
       <div className="flex items-center gap-1.5">
         <Save className="h-4 w-4" />

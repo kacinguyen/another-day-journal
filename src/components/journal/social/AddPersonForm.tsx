@@ -41,7 +41,7 @@ const AddPersonForm: React.FC<AddPersonFormProps> = ({ onAddPerson, onCancel }) 
         onClick={handleAddPerson} 
         variant="outline"
         size="sm"
-        className="h-8 px-2"
+        className="h-8 px-2 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-foreground"
       >
         Add
       </Button>

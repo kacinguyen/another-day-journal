@@ -45,7 +45,7 @@ const Conversations = () => {
               size="sm"
               onClick={clearConversation}
               disabled={messages.length === 0 || isLoading}
-              className="text-muted-foreground"
+              className="text-muted-foreground hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-foreground"
             >
               <CircleX className="mr-2 h-4 w-4" />
               Clear conversation

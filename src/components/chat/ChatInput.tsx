@@ -40,6 +40,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isLoading }) => {
         onClick={handleSend} 
         size="icon" 
         disabled={!message.trim() || isLoading}
+        className="hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-foreground"
       >
         <SendIcon className="h-4 w-4" />
       </Button>
