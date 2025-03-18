@@ -38,7 +38,8 @@ const Home = () => {
           
           {/* Key Features Section - Renamed and Font Size Reduced */}
           <div className="my-8">
-            <h2 className="text-1.5xl md:text-2xl font-bold mb-8 pl-0">A new looking glass</h2>
+            <h2 className="text-1.5xl md:text-2xl font-bold mb-4 pl-0">A new looking glass</h2>
+            <p className="text-muted-foreground mb-8 max-w-2xl">Explore deeper and richer insights about yourself</p>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <Card>
