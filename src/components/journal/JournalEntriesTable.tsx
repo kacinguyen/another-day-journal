@@ -88,7 +88,7 @@ export const JournalEntriesTable: React.FC<{
         {entries.map((entry) => (
           <Card 
             key={entry.id} 
-            className="p-4 cursor-pointer hover:bg-accent/50 transition-colors"
+            className="p-4 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
             onClick={() => onEntryClick && onEntryClick(entry)}
           >
             <div className="space-y-3">

@@ -1,3 +1,4 @@
+
 import React from "react";
 import { format } from "date-fns";
 import { dummyEntry, getMoodEmoji, } from "@/utils/journalUtils";
@@ -79,7 +80,7 @@ const ExampleJournalEntry: React.FC = () => {
   };
 
   return (
-    <Card className="overflow-hidden">
+    <Card className="overflow-hidden hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
       <CardHeader className="p-4">
         <CardTitle className="text-lg">Example Entry</CardTitle>
         <CardDescription>Here's what your journal entries will look like</CardDescription>
