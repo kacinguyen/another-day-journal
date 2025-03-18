@@ -2,7 +2,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Book, MessageCircle, LogIn, UserPlus, BarChart, Clock, Shield } from "lucide-react";
+import { Book, MessageCircle, LogIn, UserPlus, BarChart } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/context/AuthContext";
 
@@ -93,28 +93,6 @@ const Home = () => {
                 <h3 className="text-xl font-semibold mb-2">Mood Tracking</h3>
                 <p className="text-muted-foreground">
                   Visualize patterns in your emotional state over time with intuitive charts and graphs to gain deeper self-awareness.
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
-            <Card>
-              <CardContent className="p-6 flex flex-col items-center text-center h-full">
-                <Clock className="h-12 w-12 mb-4 text-primary" />
-                <h3 className="text-xl font-semibold mb-2">Daily Reminders</h3>
-                <p className="text-muted-foreground">
-                  Never miss a day of journaling with customizable reminders that help you maintain consistency in your practice.
-                </p>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardContent className="p-6 flex flex-col items-center text-center h-full">
-                <Shield className="h-12 w-12 mb-4 text-primary" />
-                <h3 className="text-xl font-semibold mb-2">Privacy First</h3>
-                <p className="text-muted-foreground">
-                  Your thoughts are personal. We ensure your journal entries remain private and secure with end-to-end encryption.
                 </p>
               </CardContent>
             </Card>
