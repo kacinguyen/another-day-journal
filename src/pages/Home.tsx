@@ -1,9 +1,14 @@
+
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Book, MessageCircle, LogIn, UserPlus } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { useAuth } from "@/context/AuthContext";
+
 const Home = () => {
+  const { user } = useAuth();
+  
   return <div className="container mx-auto px-4 py-10 min-h-[calc(100vh-64px)] flex flex-col">
       <div className="flex-1 flex flex-col items-center justify-center max-w-4xl mx-auto text-center">
         <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">Another Day Another Entry</h1>
@@ -13,18 +18,29 @@ const Home = () => {
         </p>
         
         <div className="flex flex-col sm:flex-row gap-4 mb-12">
-          <Link to="/login">
-            <Button size="lg" variant="outline" className="w-full sm:w-auto">
-              <LogIn className="mr-2 h-5 w-5" />
-              Log in
-            </Button>
-          </Link>
-          <Link to="/signup">
-            <Button size="lg" className="w-full sm:w-auto">
-              <UserPlus className="mr-2 h-5 w-5" />
-              Sign up
-            </Button>
-          </Link>
+          {user ? (
+            <Link to="/">
+              <Button size="lg" variant="outline" className="w-full sm:w-auto">
+                <Book className="mr-2 h-5 w-5" />
+                Journal
+              </Button>
+            </Link>
+          ) : (
+            <Link to="/login">
+              <Button size="lg" variant="outline" className="w-full sm:w-auto">
+                <LogIn className="mr-2 h-5 w-5" />
+                Log in
+              </Button>
+            </Link>
+          )}
+          {!user && (
+            <Link to="/signup">
+              <Button size="lg" className="w-full sm:w-auto">
+                <UserPlus className="mr-2 h-5 w-5" />
+                Sign up
+              </Button>
+            </Link>
+          )}
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl">
@@ -55,4 +71,5 @@ const Home = () => {
       </footer>
     </div>;
 };
+
 export default Home;
