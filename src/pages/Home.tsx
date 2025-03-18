@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -14,9 +13,9 @@ const Home = () => {
       {/* Hero Section - Above the fold */}
       <section className="min-h-[calc(100vh-64px)] flex flex-col justify-center py-12 pl-8">
         <div className="max-w-4xl">
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">Another day, another entry.</h1>
+          <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-6">Another day, another entry.</h1>
           
-          <p className="text-xl mb-10 text-muted-foreground max-w-2xl">
+          <p className="text-lg mb-10 text-muted-foreground max-w-2xl">
             Your personal space to document daily thoughts, track moods, and reflect on your journey through journaling and AI-powered conversations.
           </p>
           
