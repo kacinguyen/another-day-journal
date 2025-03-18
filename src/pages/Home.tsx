@@ -17,9 +17,9 @@ const Home = () => {
   };
   
   return (
-    <div className="container mx-auto px-4 flex flex-col">
-      {/* Hero Section - Above the fold */}
-      <section className="min-h-[calc(100vh-64px)] flex flex-col justify-center py-12 px-8">
+    <div className="container mx-auto px-4 flex flex-col h-[100vh]">
+      {/* Hero Section - Adjusted to fit viewport exactly */}
+      <section className="flex flex-col justify-between h-full py-8">
         <div className="max-w-full grid grid-cols-1 md:grid-cols-2 gap-x-16">
           <div className="mb-12 md:mb-0">
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-6">Another day, another entry.</h1>
@@ -78,15 +78,15 @@ const Home = () => {
           </div>
         </div>
           
-        {/* Key Features Section - Added more space above this section */}
-        <div className="mt-20 mb-8 grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-6 w-full">
-          {/* Heading and description column - now 4 columns */}
+        {/* Key Features Section - Now part of the flex layout */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-6 w-full mb-4">
+          {/* Heading and description column */}
           <div className="md:col-span-4 flex flex-col justify-center pr-4">
             <h2 className="text-1.5xl md:text-2xl font-bold mb-3 whitespace-nowrap">A new looking glass</h2>
             <p className="text-muted-foreground">Explore deeper and richer insights about yourself</p>
           </div>
           
-          {/* Feature cards - now 8 columns */}
+          {/* Feature cards */}
           <div className="md:col-span-8 grid grid-cols-1 md:grid-cols-3 gap-6">
             <FeaturePreview 
               previewImage="/lovable-uploads/2ec06987-05f6-4aec-bae9-9d3e2aef3cb0.png"

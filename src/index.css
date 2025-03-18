@@ -86,6 +86,11 @@
   
   body {
     @apply bg-background text-foreground antialiased;
+    overflow-y: auto;
+  }
+
+  html, body {
+    height: 100%;
   }
 }
 
