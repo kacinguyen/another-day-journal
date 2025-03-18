@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Book, MessageCircle, BarChart } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/context/AuthContext";
 import FeaturePreview from "@/components/FeaturePreview";
 
@@ -66,6 +65,11 @@ const Home = () => {
                 />
               </div>
             )}
+            {hoveredFeature === 'mood-tracking' && (
+              <div className="animate-fade-in absolute inset-0 flex items-center justify-center">
+                <p className="text-center text-muted-foreground">Coming soon</p>
+              </div>
+            )}
             {!hoveredFeature && (
               <div className="text-center text-muted-foreground text-sm">
                 <p>Hover over a feature to see a preview</p>
@@ -120,20 +124,23 @@ const Home = () => {
               </Card>
             </FeaturePreview>
             
-            <Card className="h-full">
-              <CardContent className="p-4 flex flex-col items-start h-full">
-                <div className="flex items-center justify-between w-full mb-3">
-                  <div className="flex items-center gap-3">
-                    <BarChart className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0" />
+            <div
+              className="h-full"
+              onMouseEnter={() => handleFeatureHover('mood-tracking')}
+              onMouseLeave={() => handleFeatureHover(null)}
+            >
+              <Card className="h-full transition-all duration-200 hover:shadow-md">
+                <CardContent className="p-4 flex flex-col items-start h-full">
+                  <div className="flex items-center gap-3 mb-3">
+                    <BarChart className="h-3.5 w-3.5 text-primary flex-shrink-0" />
                     <h3 className="text-lg font-semibold w-full break-words">Mood Tracking</h3>
                   </div>
-                  <Badge variant="secondary" className="text-xs font-medium">Coming soon</Badge>
-                </div>
-                <p className="text-muted-foreground text-sm">
-                  Visualize patterns in your emotional state over time with intuitive charts.
-                </p>
-              </CardContent>
-            </Card>
+                  <p className="text-muted-foreground text-sm">
+                    Visualize patterns in your emotional state over time with intuitive charts.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
       </section>
