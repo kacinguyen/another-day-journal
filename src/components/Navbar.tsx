@@ -1,6 +1,6 @@
 
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Book, LogIn, LogOut, MessageCircle, User, UserPlus } from "lucide-react";
+import { Book, MessageCircle, LogOut, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -87,15 +87,11 @@ const Navbar = () => {
                 Log out
               </Button>
             </> : <>
-              <Link to="/login">
-                <Button variant="outline" size="sm" className="hidden md:flex">
-                  <LogIn className="mr-2 h-4 w-4" />
-                  Log in
-                </Button>
+              <Link to="/login" className="hidden md:flex text-sm font-medium text-muted-foreground hover:text-foreground transition-colors mr-4">
+                Log in
               </Link>
               <Link to="/signup">
                 <Button size="sm" className="hidden md:flex">
-                  <UserPlus className="mr-2 h-4 w-4" />
                   Get started
                 </Button>
               </Link>
@@ -104,7 +100,7 @@ const Navbar = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild className="md:hidden">
               <Button variant="outline" size="sm">
-                {user ? <User className="h-4 w-4 mr-2" /> : <LogIn className="h-4 w-4 mr-2" />}
+                {user ? <User className="h-4 w-4 mr-2" /> : null}
                 Account
               </Button>
             </DropdownMenuTrigger>
@@ -123,13 +119,11 @@ const Navbar = () => {
                 </> : <>
                   <DropdownMenuItem asChild>
                     <Link to="/login" className="w-full cursor-pointer">
-                      <LogIn className="mr-2 h-4 w-4" />
                       <span>Log in</span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link to="/signup" className="w-full cursor-pointer">
-                      <UserPlus className="mr-2 h-4 w-4" />
                       <span>Get started</span>
                     </Link>
                   </DropdownMenuItem>

@@ -2,7 +2,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Book, MessageCircle, LogIn, UserPlus, BarChart } from "lucide-react";
+import { Book, MessageCircle, LogIn, BarChart } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/context/AuthContext";
 
@@ -29,17 +29,8 @@ const Home = () => {
                 </Button>
               </Link>
             ) : (
-              <Link to="/login">
-                <Button size="lg" variant="outline" className="w-full sm:w-auto">
-                  <LogIn className="mr-2 h-5 w-5" />
-                  Log in
-                </Button>
-              </Link>
-            )}
-            {!user && (
               <Link to="/signup">
                 <Button size="lg" className="w-full sm:w-auto">
-                  <UserPlus className="mr-2 h-5 w-5" />
                   Get started
                 </Button>
               </Link>
