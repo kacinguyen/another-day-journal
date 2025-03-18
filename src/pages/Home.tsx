@@ -88,7 +88,7 @@ const Home = () => {
               previewAlt="Journal Log Preview"
               onHover={(isHovering) => handleFeatureHover(isHovering ? 'journal-log' : null)}
             >
-              <Card className={`h-full transition-all duration-200 ${hoveredFeature === 'journal-log' ? 'shadow-md' : 'shadow-md'}`}>
+              <Card className={`h-full transition-all duration-200 ${hoveredFeature === 'journal-log' ? 'shadow-md' : ''}`}>
                 <CardContent className="p-4 flex flex-col items-start h-full">
                   <div className="flex items-center gap-3 mb-3">
                     <Book className="h-3.5 w-3.5 text-primary flex-shrink-0" />
@@ -106,7 +106,7 @@ const Home = () => {
               previewAlt="AI Conversations Preview"
               onHover={(isHovering) => handleFeatureHover(isHovering ? 'ai-conversations' : null)}
             >
-              <Card className="h-full transition-all duration-200 hover:shadow-md">
+              <Card className={`h-full transition-all duration-200 ${hoveredFeature === 'ai-conversations' ? 'shadow-md' : ''}`}>
                 <CardContent className="p-4 flex flex-col items-start h-full">
                   <div className="flex items-center gap-3 mb-3">
                     <MessageCircle className="h-3.5 w-3.5 text-primary flex-shrink-0" />
@@ -124,7 +124,7 @@ const Home = () => {
               onMouseEnter={() => handleFeatureHover('mood-tracking')}
               onMouseLeave={() => handleFeatureHover(null)}
             >
-              <Card className="h-full transition-all duration-200 hover:shadow-md">
+              <Card className={`h-full transition-all duration-200 ${hoveredFeature === 'mood-tracking' ? 'shadow-md' : ''}`}>
                 <CardContent className="p-4 flex flex-col items-start h-full">
                   <div className="flex items-center gap-3 mb-3">
                     <BarChart className="h-3.5 w-3.5 text-primary flex-shrink-0" />
