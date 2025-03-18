@@ -48,7 +48,7 @@ const Home = () => {
             <div className="md:col-span-8 grid grid-cols-1 md:grid-cols-3 gap-6">
               <Card className="h-full">
                 <CardContent className="p-4 flex flex-col items-start h-full">
-                  <div className="flex items-start gap-3 mb-3">
+                  <div className="flex items-center gap-3 mb-3">
                     <Book className="h-10 w-10 text-primary flex-shrink-0" />
                     <h3 className="text-lg font-semibold">Journal Log</h3>
                   </div>
@@ -60,9 +60,9 @@ const Home = () => {
               
               <Card className="h-full">
                 <CardContent className="p-4 flex flex-col items-start h-full">
-                  <div className="flex items-start gap-3 mb-3">
+                  <div className="flex items-center gap-3 mb-3">
                     <MessageCircle className="h-10 w-10 text-primary flex-shrink-0" />
-                    <h3 className="text-lg font-semibold">AI Conversations</h3>
+                    <h3 className="text-lg font-semibold break-words">AI Conversations</h3>
                   </div>
                   <p className="text-muted-foreground text-sm">
                     Chat with an AI companion that helps you process thoughts and gain new insights.
@@ -72,7 +72,7 @@ const Home = () => {
               
               <Card className="h-full">
                 <CardContent className="p-4 flex flex-col items-start h-full">
-                  <div className="flex items-start gap-3 mb-3">
+                  <div className="flex items-center gap-3 mb-3">
                     <BarChart className="h-10 w-10 text-primary flex-shrink-0" />
                     <h3 className="text-lg font-semibold">Mood Tracking</h3>
                   </div>

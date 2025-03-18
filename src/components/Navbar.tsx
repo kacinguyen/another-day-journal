@@ -1,6 +1,6 @@
 
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { LogOut, User } from "lucide-react";
+import { User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -77,8 +77,7 @@ const Navbar = () => {
                   Profile
                 </Button>
               </Link>
-              <Button variant="outline" size="sm" className="hidden md:flex" onClick={handleSignOut}>
-                <LogOut className="mr-2 h-4 w-4" />
+              <Button variant="ghost" size="sm" className="hidden md:flex" onClick={handleSignOut}>
                 Log out
               </Button>
             </> : <>
@@ -108,7 +107,6 @@ const Navbar = () => {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
-                    <LogOut className="mr-2 h-4 w-4" />
                     <span>Log out</span>
                   </DropdownMenuItem>
                 </> : <>
