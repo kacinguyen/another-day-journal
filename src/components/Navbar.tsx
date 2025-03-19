@@ -102,7 +102,7 @@ const Navbar = () => {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem 
                   onClick={handleSignOut} 
-                  className="text-destructive hover:bg-gray-100 dark:hover:bg-gray-800"
+                  className="text-destructive !hover:bg-gray-100 dark:!hover:bg-gray-800 cursor-pointer"
                 >
                   Sign out
                 </DropdownMenuItem>
