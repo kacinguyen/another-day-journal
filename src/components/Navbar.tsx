@@ -1,6 +1,6 @@
 
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { User, LogOut } from "lucide-react";
+import { User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
@@ -100,8 +100,10 @@ const Navbar = () => {
                   )}
                 </div>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleSignOut} className="text-destructive">
-                  <LogOut className="mr-2 h-4 w-4" />
+                <DropdownMenuItem 
+                  onClick={handleSignOut} 
+                  className="text-destructive hover:bg-gray-100 dark:hover:bg-gray-800"
+                >
                   Sign out
                 </DropdownMenuItem>
               </DropdownMenuContent>
