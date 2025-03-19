@@ -1,10 +1,18 @@
 
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { User } from "lucide-react";
+import { User, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { useEffect } from "react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Navbar = () => {
   const location = useLocation();
@@ -70,12 +78,34 @@ const Navbar = () => {
         
         <div className="flex items-center space-x-4">
           {user ? (
-            <Link to="/profile">
-              <Button variant="outline" size="sm" className="hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-foreground">
-                <User className="mr-2 h-4 w-4" />
-                Profile
-              </Button>
-            </Link>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-foreground">
+                  <User className="mr-2 h-4 w-4" />
+                  Profile
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <div className="px-2 py-1.5 text-sm">
+                  <div className="font-medium">{user.email}</div>
+                  <div className="text-xs text-muted-foreground mt-1">
+                    ID: {user.id ? user.id.substring(0, 8) + '...' : 'Not available'}
+                  </div>
+                  {user.created_at && (
+                    <div className="text-xs text-muted-foreground mt-1">
+                      Joined: {new Date(user.created_at).toLocaleDateString()}
+                    </div>
+                  )}
+                </div>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleSignOut} className="text-destructive">
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Sign out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           ) : (
             <>
               <Link to="/login" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
