@@ -103,6 +103,12 @@ const Navbar = () => {
                   )}
                 </div>
                 <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link to="/contact" className="w-full cursor-pointer text-sm">
+                    Send feedback
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
                 <DropdownMenuItem 
                   onClick={handleSignOut} 
                   className="text-destructive cursor-pointer"
