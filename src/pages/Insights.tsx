@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useQuery } from "@tanstack/react-query";
@@ -8,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import MoodChart from "@/components/insights/MoodChart";
 import EnergySummary from "@/components/insights/EnergySummary";
 import ActivitySummary from "@/components/insights/ActivitySummary";
+import PositiveActivitiesCard from "@/components/insights/PositiveActivitiesCard";
 import { format, subDays } from "date-fns";
 
 const Insights = () => {
@@ -51,13 +51,11 @@ const Insights = () => {
     );
   }
 
-  // Get date ranges for tabs
   const today = new Date();
   const last7Days = subDays(today, 7);
   const last30Days = subDays(today, 30);
   const last90Days = subDays(today, 90);
 
-  // Filter entries by time periods
   const last7DaysEntries = entries.filter(entry => entry.date >= last7Days);
   const last30DaysEntries = entries.filter(entry => entry.date >= last30Days);
   const last90DaysEntries = entries.filter(entry => entry.date >= last90Days);
@@ -102,7 +100,6 @@ const Insights = () => {
   );
 };
 
-// A component to display mood insights for a specific time period
 const MoodInsightsContent = ({ entries }) => {
   if (entries.length === 0) {
     return (
@@ -149,6 +146,20 @@ const MoodInsightsContent = ({ entries }) => {
         </CardHeader>
         <CardContent>
           <ActivitySummary entries={entries} />
+        </CardContent>
+      </Card>
+
+      <Card className="col-span-2 bg-gradient-to-br from-slate-50 to-white dark:from-slate-950 dark:to-slate-900 border-blue-100 dark:border-blue-900">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <span className="text-blue-600 dark:text-blue-400">Advanced Insights</span>
+          </CardTitle>
+          <CardDescription>
+            Activities associated with your positive moods (great & good)
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <PositiveActivitiesCard entries={entries} />
         </CardContent>
       </Card>
     </div>
