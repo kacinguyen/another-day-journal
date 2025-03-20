@@ -3,6 +3,7 @@ import React from "react";
 import JournalEntry from "@/components/journal/JournalEntry";
 import JournalCalendar from "@/components/journal/JournalCalendar";
 import PreviousEntriesList from "@/components/journal/PreviousEntriesList";
+import ImportCsv from "@/components/journal/ImportCsv";
 import { JournalEntryData } from "@/components/journal/types/journal-types";
 
 interface JournalContentProps {
@@ -15,6 +16,7 @@ interface JournalContentProps {
   handleEntryClick: (entry: JournalEntryData) => void;
   getInitialData: () => JournalEntryData;
   datesWithEntries: Date[];
+  refreshEntries: () => void;
 }
 
 /**
@@ -32,7 +34,8 @@ const JournalContent: React.FC<JournalContentProps> = ({
   handleSaveEntry,
   handleEntryClick,
   getInitialData,
-  datesWithEntries
+  datesWithEntries,
+  refreshEntries
 }) => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -46,6 +49,18 @@ const JournalContent: React.FC<JournalContentProps> = ({
             datesWithEntries={datesWithEntries}
             entries={entries}
           />
+          
+          {/* Import CSV Button */}
+          <div className="bg-card border rounded-md p-4">
+            <div className="flex flex-col space-y-3">
+              <h3 className="text-sm font-medium">Import Journal Entries</h3>
+              <ImportCsv onImportComplete={refreshEntries} />
+              <p className="text-xs text-muted-foreground">
+                Import journal entries from a CSV file. The CSV must include at least
+                "date" and "mood" columns.
+              </p>
+            </div>
+          </div>
           
           {/* Previous Entries Card */}
           <PreviousEntriesList

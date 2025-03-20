@@ -20,35 +20,47 @@ export function useJournalLog() {
   const { toast } = useToast();
   const { user } = useAuth();
 
+  // Load journal entries
+  const loadEntries = useCallback(async () => {
+    if (!user) return;
+    
+    setLoading(true);
+    const journalEntries = await fetchJournalEntries();
+    setEntries(journalEntries);
+    
+    // Set the initial entry for today's date
+    const todayEntry = findEntryForDate(journalEntries, new Date());
+    updateCurrentEntry(todayEntry);
+    
+    setLoading(false);
+  }, [user]);
+
   // Load journal entries when component mounts or user changes
   useEffect(() => {
-    const loadEntries = async () => {
-      if (!user) return;
-      
-      setLoading(true);
-      const journalEntries = await fetchJournalEntries();
-      setEntries(journalEntries);
-      
-      // Set the initial entry for today's date
-      const todayEntry = findEntryForDate(new Date());
-      updateCurrentEntry(todayEntry);
-      
-      setLoading(false);
-    };
-
     loadEntries();
-  }, [user]);
+  }, [loadEntries]);
+
+  /**
+   * Refresh entries data from the server
+   */
+  const refreshEntries = useCallback(async () => {
+    await loadEntries();
+    toast({
+      title: "Entries Refreshed",
+      description: "Journal entries have been updated."
+    });
+  }, [loadEntries, toast]);
 
   /**
    * Find an entry for the selected date or return undefined if none exists
    */
-  const findEntryForDate = useCallback((date: Date) => {
+  const findEntryForDate = useCallback((entriesList: JournalEntryData[], date: Date) => {
     const dateString = format(date, 'yyyy-MM-dd');
-    return entries.find(entry => {
+    return entriesList.find(entry => {
       const entryDate = new Date(entry.date);
       return format(entryDate, 'yyyy-MM-dd') === dateString;
     });
-  }, [entries]);
+  }, []);
 
   /**
    * Update the current entry state based on selected date
@@ -115,9 +127,9 @@ export function useJournalLog() {
     setSelectedDate(date);
     
     // Find an entry for this date or create a new empty one
-    const entry = findEntryForDate(date);
+    const entry = findEntryForDate(entries, date);
     updateCurrentEntry(entry);
-  }, [findEntryForDate, updateCurrentEntry]);
+  }, [entries, findEntryForDate, updateCurrentEntry]);
 
   /**
    * Handle clicking on a previous entry in the list
@@ -170,6 +182,7 @@ export function useJournalLog() {
     handleSaveEntry,
     handleEntryClick,
     getInitialData,
-    isDayWithEntry
+    isDayWithEntry,
+    refreshEntries
   };
 }

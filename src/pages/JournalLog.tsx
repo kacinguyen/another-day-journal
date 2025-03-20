@@ -16,6 +16,7 @@ import { useLocation } from "react-router-dom";
  * - Journal entry form for creating/editing entries
  * - List of previous entries
  * - Automatic loading of entries for selected date
+ * - CSV import functionality for bulk uploading entries
  */
 const JournalLog: React.FC = () => {
   const location = useLocation();
@@ -30,7 +31,8 @@ const JournalLog: React.FC = () => {
     handleEntryClick,
     getInitialData,
     isDayWithEntry,
-    setSelectedDate
+    setSelectedDate,
+    refreshEntries
   } = useJournalLog();
   
   // Handle incoming selectedDate from state when navigating from insights
@@ -61,6 +63,7 @@ const JournalLog: React.FC = () => {
         handleEntryClick={handleEntryClick}
         getInitialData={getInitialData}
         datesWithEntries={datesWithEntries}
+        refreshEntries={refreshEntries}
       />
     </JournalLayout>
   );
