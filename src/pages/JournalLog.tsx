@@ -1,8 +1,9 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import JournalLayout from "@/pages/journal/JournalLayout";
 import JournalContent from "@/pages/journal/JournalContent";
 import { useJournalLog } from "@/hooks/useJournalLog";
+import { useLocation } from "react-router-dom";
 
 /**
  * JournalLog Component
@@ -17,6 +18,8 @@ import { useJournalLog } from "@/hooks/useJournalLog";
  * - Automatic loading of entries for selected date
  */
 const JournalLog: React.FC = () => {
+  const location = useLocation();
+  
   const {
     entries,
     loading,
@@ -26,8 +29,19 @@ const JournalLog: React.FC = () => {
     handleSaveEntry,
     handleEntryClick,
     getInitialData,
-    isDayWithEntry
+    isDayWithEntry,
+    setSelectedDate
   } = useJournalLog();
+  
+  // Handle incoming selectedDate from state when navigating from insights
+  useEffect(() => {
+    if (location.state?.selectedDate) {
+      const date = new Date(location.state.selectedDate);
+      handleDateSelect(date);
+      // Clean up location state to avoid reapplying on refresh
+      history.replaceState({}, document.title);
+    }
+  }, [location.state, handleDateSelect]);
   
   // Get dates that have entries for the calendar highlighting
   const datesWithEntries = entries.map(entry => new Date(entry.date));

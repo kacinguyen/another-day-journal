@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { JournalEntryData } from "@/components/journal/JournalEntry";
 import { fetchJournalEntries, saveJournalEntry } from "@/services/journalService";
 import { useAuth } from "@/context/AuthContext";
@@ -42,18 +42,18 @@ export function useJournalLog() {
   /**
    * Find an entry for the selected date or return undefined if none exists
    */
-  const findEntryForDate = (date: Date) => {
+  const findEntryForDate = useCallback((date: Date) => {
     const dateString = format(date, 'yyyy-MM-dd');
     return entries.find(entry => {
       const entryDate = new Date(entry.date);
       return format(entryDate, 'yyyy-MM-dd') === dateString;
     });
-  };
+  }, [entries]);
 
   /**
    * Update the current entry state based on selected date
    */
-  const updateCurrentEntry = (entry: JournalEntryData | undefined) => {
+  const updateCurrentEntry = useCallback((entry: JournalEntryData | undefined) => {
     if (entry) {
       // Use the existing entry
       setCurrentEntry(entry);
@@ -61,7 +61,7 @@ export function useJournalLog() {
       // Create a new empty entry for the selected date
       setCurrentEntry(undefined);
     }
-  };
+  }, []);
 
   /**
    * Handles saving a new journal entry or updating an existing one
@@ -108,7 +108,7 @@ export function useJournalLog() {
   /**
    * Handle date selection in the calendar
    */
-  const handleDateSelect = (date: Date | undefined) => {
+  const handleDateSelect = useCallback((date: Date | undefined) => {
     if (!date) return;
     
     // Update the selected date
@@ -117,10 +117,7 @@ export function useJournalLog() {
     // Find an entry for this date or create a new empty one
     const entry = findEntryForDate(date);
     updateCurrentEntry(entry);
-    
-    // Removed toast notification for "Journal Entry Found"
-    // Removed the automatic scrolling code
-  };
+  }, [findEntryForDate, updateCurrentEntry]);
 
   /**
    * Handle clicking on a previous entry in the list
@@ -167,6 +164,7 @@ export function useJournalLog() {
     entries,
     loading,
     selectedDate,
+    setSelectedDate,
     showDummyEntry,
     handleDateSelect,
     handleSaveEntry,
