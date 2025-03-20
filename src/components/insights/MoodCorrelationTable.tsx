@@ -138,21 +138,21 @@ const MoodCorrelationTable: React.FC<MoodCorrelationTableProps> = ({ entries, ty
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Name</TableHead>
-          <TableHead className="text-right">Correlation</TableHead>
-          <TableHead className="text-center">Strength</TableHead>
-          <TableHead className="text-right">Count</TableHead>
+          <TableHead className="w-[40%]">Name</TableHead>
+          <TableHead className="w-[30%] text-right">Correlation</TableHead>
+          <TableHead className="w-[20%] text-center">Strength</TableHead>
+          <TableHead className="w-[10%] text-right">Count</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {correlations.map((item) => (
           <TableRow key={item.name}>
-            <TableCell>{item.name}</TableCell>
-            <TableCell className="text-right flex items-center justify-end gap-1">
+            <TableCell className="w-[40%]">{item.name}</TableCell>
+            <TableCell className="w-[30%] text-right flex items-center justify-end gap-1">
               {getCorrelationIcon(item.correlation)}
               {item.correlation.toFixed(2)}
             </TableCell>
-            <TableCell className="text-center">
+            <TableCell className="w-[20%] text-center">
               <span 
                 className={`text-xs px-2 py-0.5 rounded-full ${
                   item.correlation > 0 
@@ -165,7 +165,7 @@ const MoodCorrelationTable: React.FC<MoodCorrelationTableProps> = ({ entries, ty
                 {getCorrelationStrength(item.correlation)}
               </span>
             </TableCell>
-            <TableCell className="text-right">{item.count}</TableCell>
+            <TableCell className="w-[10%] text-right">{item.count}</TableCell>
           </TableRow>
         ))}
       </TableBody>
