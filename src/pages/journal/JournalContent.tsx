@@ -5,6 +5,7 @@ import JournalCalendar from "@/components/journal/JournalCalendar";
 import PreviousEntriesList from "@/components/journal/PreviousEntriesList";
 import ImportCsv from "@/components/journal/ImportCsv";
 import { JournalEntryData } from "@/components/journal/types/journal-types";
+import { Card } from "@/components/ui/card";
 
 interface JournalContentProps {
   entries: JournalEntryData[];
@@ -50,18 +51,6 @@ const JournalContent: React.FC<JournalContentProps> = ({
             entries={entries}
           />
           
-          {/* Import CSV Button */}
-          <div className="bg-card border rounded-md p-4">
-            <div className="flex flex-col space-y-3">
-              <h3 className="text-sm font-medium">Import Journal Entries</h3>
-              <ImportCsv onImportComplete={refreshEntries} />
-              <p className="text-xs text-muted-foreground">
-                Import journal entries from a CSV file. The CSV must include at least
-                "date" and "mood" columns.
-              </p>
-            </div>
-          </div>
-          
           {/* Previous Entries Card */}
           <PreviousEntriesList
             entries={entries}
@@ -73,13 +62,25 @@ const JournalContent: React.FC<JournalContentProps> = ({
       </div>
       
       {/* Journal Entry Form Section */}
-      <div className="lg:col-span-8 order-1 lg:order-2">
+      <div className="lg:col-span-8 order-1 lg:order-2 flex flex-col space-y-6">
         <div id="journal-form">
           <JournalEntry 
             onSave={handleSaveEntry} 
             initialData={getInitialData()} 
           />
         </div>
+        
+        {/* Import CSV Card - now below journal entry and full width */}
+        <Card className="border rounded-md p-4">
+          <div className="flex flex-col space-y-3">
+            <h3 className="text-sm font-medium">Import Journal Entries</h3>
+            <ImportCsv onImportComplete={refreshEntries} />
+            <p className="text-xs text-muted-foreground">
+              Import journal entries from a CSV file. The CSV must include at least
+              "date" and "mood" columns.
+            </p>
+          </div>
+        </Card>
       </div>
     </div>
   );
