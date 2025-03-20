@@ -67,7 +67,11 @@ const Home = () => {
             )}
             {hoveredFeature === 'mood-tracking' && (
               <div className="animate-fade-in absolute inset-0 flex items-center justify-center">
-                <p className="text-center text-muted-foreground">Coming soon</p>
+                <img 
+                  src="/lovable-uploads/6df9d951-5ed2-4bf3-b412-e705f1af0f68.png" 
+                  alt="Mood Tracking Preview" 
+                  className="max-w-full max-h-full object-contain rounded-lg shadow-lg" 
+                />
               </div>
             )}
           </div>
@@ -119,10 +123,10 @@ const Home = () => {
               </Card>
             </FeaturePreview>
             
-            <div
-              className="h-full"
-              onMouseEnter={() => handleFeatureHover('mood-tracking')}
-              onMouseLeave={() => handleFeatureHover(null)}
+            <FeaturePreview
+              previewImage="/lovable-uploads/6df9d951-5ed2-4bf3-b412-e705f1af0f68.png"
+              previewAlt="Mood Tracking Preview"
+              onHover={(isHovering) => handleFeatureHover(isHovering ? 'mood-tracking' : null)}
             >
               <Card className={`h-full transition-all duration-200 ${hoveredFeature === 'mood-tracking' ? 'shadow-md' : ''}`}>
                 <CardContent className="p-4 flex flex-col items-start h-full">
@@ -135,7 +139,7 @@ const Home = () => {
                   </p>
                 </CardContent>
               </Card>
-            </div>
+            </FeaturePreview>
           </div>
         </div>
       </section>
