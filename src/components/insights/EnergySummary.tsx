@@ -79,25 +79,31 @@ const EnergySummary: React.FC<EnergySummaryProps> = ({ entries }) => {
         <div className="space-y-2">
           <div className="text-sm text-muted-foreground">Highest</div>
           <div className="text-2xl font-semibold text-green-500">{stats.high}%</div>
-          <Link 
-            to="/" 
-            state={{ selectedDate: stats.highDate }} 
-            className="text-sm text-blue-500 hover:underline"
-          >
-            {formatDate(stats.highDate)}
-          </Link>
+          <div className="text-sm">
+            Recorded on{" "}
+            <Link 
+              to="/" 
+              state={{ selectedDate: stats.highDate }} 
+              className="text-blue-500 hover:underline"
+            >
+              {formatDate(stats.highDate)}
+            </Link>
+          </div>
         </div>
         
         <div className="space-y-2">
           <div className="text-sm text-muted-foreground">Lowest</div>
           <div className="text-2xl font-semibold text-amber-500">{stats.low}%</div>
-          <Link 
-            to="/" 
-            state={{ selectedDate: stats.lowDate }} 
-            className="text-sm text-blue-500 hover:underline"
-          >
-            {formatDate(stats.lowDate)}
-          </Link>
+          <div className="text-sm">
+            Recorded on{" "}
+            <Link 
+              to="/" 
+              state={{ selectedDate: stats.lowDate }} 
+              className="text-blue-500 hover:underline"
+            >
+              {formatDate(stats.lowDate)}
+            </Link>
+          </div>
         </div>
       </div>
     </div>
