@@ -63,15 +63,15 @@ const JournalContent: React.FC<JournalContentProps> = ({
       
       {/* Journal Entry Form Section */}
       <div className="lg:col-span-8 order-1 lg:order-2 flex flex-col space-y-6">
-        <div id="journal-form">
+        <div id="journal-form" className="w-full max-w-3xl mx-auto">
           <JournalEntry 
             onSave={handleSaveEntry} 
             initialData={getInitialData()} 
           />
         </div>
         
-        {/* Import CSV Card - now below journal entry and full width */}
-        <Card className="border rounded-md p-4">
+        {/* Import CSV Card - now with the same width constraints as the journal form */}
+        <Card className="w-full max-w-3xl mx-auto border rounded-md p-4">
           <div className="flex flex-col space-y-3">
             <h3 className="text-sm font-medium">Import Journal Entries</h3>
             <ImportCsv onImportComplete={refreshEntries} />
