@@ -102,12 +102,14 @@ const Navbar = () => {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem 
                   onClick={handleSignOut} 
-                  className="text-destructive cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800"
+                  className="text-destructive hover:text-destructive cursor-pointer"
                   style={{
                     backgroundColor: "transparent"
                   }}
                 >
-                  Sign out
+                  <div className="hover:bg-gray-100 dark:hover:bg-gray-800 w-full px-2 py-1 rounded">
+                    Sign out
+                  </div>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
