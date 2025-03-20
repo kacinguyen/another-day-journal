@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useCallback } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/context/AuthContext";
 import { useJournalEntry } from "./hooks/useJournalEntry";
@@ -60,6 +60,11 @@ const JournalEntry: React.FC<JournalEntryProps> = ({
     handleSave
   } = useJournalEntry(initialData, onSave);
   
+  // Memoize the save handler
+  const handleSaveWithUser = useCallback(() => {
+    handleSave(user);
+  }, [handleSave, user]);
+  
   return (
     <Card className="w-full max-w-3xl mx-auto border rounded-lg p-4 bg-card shadow-sm">
       <CardContent className="space-y-6 p-0">
@@ -102,7 +107,7 @@ const JournalEntry: React.FC<JournalEntryProps> = ({
                        people.length === 0 && eventTypes.length === 0 && emotions.length === 0}
             />
             <SaveButton
-              onClick={() => handleSave(user)}
+              onClick={handleSaveWithUser}
               disabled={!isFormValid || isSaving || !user}
               isSaving={isSaving}
             />

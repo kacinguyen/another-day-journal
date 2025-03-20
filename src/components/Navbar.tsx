@@ -4,7 +4,7 @@ import { User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
-import { useEffect } from "react";
+import { useEffect, useMemo, useCallback } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,26 +17,19 @@ import {
 const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const {
-    user,
-    signOut
-  } = useAuth();
+  const { user, signOut } = useAuth();
 
-  const navItems = [{
-    name: "Journal Log",
-    path: "/"
-  }, {
-    name: "Insights",
-    path: "/insights"
-  }, {
-    name: "Conversations",
-    path: "/conversations"
-  }];
+  // Memoize nav items to avoid recreating on each render
+  const navItems = useMemo(() => [
+    { name: "Journal Log", path: "/" },
+    { name: "Insights", path: "/insights" },
+    { name: "Conversations", path: "/conversations" }
+  ], []);
 
-  const handleSignOut = async () => {
+  const handleSignOut = useCallback(async () => {
     await signOut();
     // AuthContext will handle navigation to login
-  };
+  }, [signOut]);
   
   useEffect(() => {
     window.scrollTo({
@@ -45,7 +38,7 @@ const Navbar = () => {
     });
   }, [location.pathname]);
   
-  const handleNavigation = (path) => {
+  const handleNavigation = useCallback((path: string) => {
     if (location.pathname !== path) {
       navigate(path);
     } else {
@@ -54,9 +47,10 @@ const Navbar = () => {
         behavior: 'smooth'
       });
     }
-  };
+  }, [location.pathname, navigate]);
 
-  return <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-md">
+  return (
+    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-md">
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center">
           <Link to="/home" className="lowercase font-vibur text-2xl hover:text-primary transition-colors mr-8">
@@ -131,7 +125,8 @@ const Navbar = () => {
           )}
         </div>
       </div>
-    </header>;
+    </header>
+  );
 };
 
 export default Navbar;

@@ -1,11 +1,11 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Book, MessageCircle, BarChart } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/context/AuthContext";
 import FeaturePreview from "@/components/FeaturePreview";
+import FeatureCard from "@/components/home/FeatureCard";
 
 const Home = () => {
   const { user } = useAuth();
@@ -92,17 +92,12 @@ const Home = () => {
               previewAlt="Journal Log Preview"
               onHover={(isHovering) => handleFeatureHover(isHovering ? 'journal-log' : null)}
             >
-              <Card className={`h-full transition-all duration-200 ${hoveredFeature === 'journal-log' ? 'shadow-md' : ''}`}>
-                <CardContent className="p-4 flex flex-col items-start h-full">
-                  <div className="flex items-center gap-3 mb-3">
-                    <Book className="h-3.5 w-3.5 text-primary flex-shrink-0" />
-                    <h3 className="text-lg font-semibold w-full break-words">Journal Log</h3>
-                  </div>
-                  <p className="text-muted-foreground text-sm">
-                    Track your daily moods, activities, and reflections. Keep a record of your personal growth.
-                  </p>
-                </CardContent>
-              </Card>
+              <FeatureCard 
+                title="Journal Log"
+                description="Track your daily moods, activities, and reflections. Keep a record of your personal growth."
+                icon={<Book className="h-3.5 w-3.5 text-primary flex-shrink-0" />}
+                isActive={hoveredFeature === 'journal-log'}
+              />
             </FeaturePreview>
             
             <FeaturePreview
@@ -110,17 +105,12 @@ const Home = () => {
               previewAlt="AI Conversations Preview"
               onHover={(isHovering) => handleFeatureHover(isHovering ? 'ai-conversations' : null)}
             >
-              <Card className={`h-full transition-all duration-200 ${hoveredFeature === 'ai-conversations' ? 'shadow-md' : ''}`}>
-                <CardContent className="p-4 flex flex-col items-start h-full">
-                  <div className="flex items-center gap-3 mb-3">
-                    <MessageCircle className="h-3.5 w-3.5 text-primary flex-shrink-0" />
-                    <h3 className="text-lg font-semibold w-full break-words">AI Conversations</h3>
-                  </div>
-                  <p className="text-muted-foreground text-sm">
-                    Chat with an AI companion that helps you process thoughts and gain new insights.
-                  </p>
-                </CardContent>
-              </Card>
+              <FeatureCard 
+                title="AI Conversations"
+                description="Chat with an AI companion that helps you process thoughts and gain new insights."
+                icon={<MessageCircle className="h-3.5 w-3.5 text-primary flex-shrink-0" />}
+                isActive={hoveredFeature === 'ai-conversations'}
+              />
             </FeaturePreview>
             
             <FeaturePreview
@@ -128,17 +118,12 @@ const Home = () => {
               previewAlt="Mood Tracking Preview"
               onHover={(isHovering) => handleFeatureHover(isHovering ? 'mood-tracking' : null)}
             >
-              <Card className={`h-full transition-all duration-200 ${hoveredFeature === 'mood-tracking' ? 'shadow-md' : ''}`}>
-                <CardContent className="p-4 flex flex-col items-start h-full">
-                  <div className="flex items-center gap-3 mb-3">
-                    <BarChart className="h-3.5 w-3.5 text-primary flex-shrink-0" />
-                    <h3 className="text-lg font-semibold w-full break-words">Mood Tracking</h3>
-                  </div>
-                  <p className="text-muted-foreground text-sm">
-                    Visualize patterns in your emotional state over time with intuitive charts.
-                  </p>
-                </CardContent>
-              </Card>
+              <FeatureCard 
+                title="Mood Tracking"
+                description="Visualize patterns in your emotional state over time with intuitive charts."
+                icon={<BarChart className="h-3.5 w-3.5 text-primary flex-shrink-0" />}
+                isActive={hoveredFeature === 'mood-tracking'}
+              />
             </FeaturePreview>
           </div>
         </div>
