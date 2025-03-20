@@ -11,6 +11,7 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import Home from "./pages/Home";
+import Insights from "./pages/Insights";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 
 const queryClient = new QueryClient();
@@ -45,6 +46,11 @@ const AuthenticatedRoutes = () => {
           <Route path="/conversations" element={
             <ProtectedRoute>
               <Conversations />
+            </ProtectedRoute>
+          } />
+          <Route path="/insights" element={
+            <ProtectedRoute>
+              <Insights />
             </ProtectedRoute>
           } />
           <Route path="/login" element={<Login />} />

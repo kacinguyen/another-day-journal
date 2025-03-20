@@ -26,6 +26,9 @@ const Navbar = () => {
     name: "Journal Log",
     path: "/"
   }, {
+    name: "Insights",
+    path: "/insights"
+  }, {
     name: "Conversations",
     path: "/conversations"
   }];
