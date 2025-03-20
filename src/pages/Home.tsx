@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Book, MessageCircle, BarChart } from "lucide-react";
+import { Book, MessageCircle, BarChart, MessageSquare } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/context/AuthContext";
 import FeaturePreview from "@/components/FeaturePreview";
@@ -138,9 +138,28 @@ const Home = () => {
             </div>
           </div>
         </div>
+
+        {/* Feedback Section */}
+        <div className="w-full my-16 px-4 py-8 bg-muted/40 rounded-lg">
+          <div className="max-w-3xl mx-auto text-center">
+            <div className="inline-block mb-4">
+              <MessageSquare className="h-8 w-8 text-primary mx-auto" />
+            </div>
+            <h2 className="text-2xl font-semibold mb-3">We Value Your Feedback</h2>
+            <p className="text-muted-foreground mb-6">
+              Help us improve your journaling experience. Share your thoughts, suggestions, or report any issues you encounter.
+            </p>
+            <Button variant="outline" className="bg-card hover:bg-card/80">
+              <Link to="/contact" className="flex items-center gap-2">
+                <span>Send Feedback</span>
+              </Link>
+            </Button>
+          </div>
+        </div>
       </section>
     </div>
   );
 };
 
 export default Home;
+
