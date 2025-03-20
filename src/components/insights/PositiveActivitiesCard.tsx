@@ -2,8 +2,9 @@
 import React, { useMemo } from 'react';
 import { JournalEntryData } from '@/components/journal/types/journal-types';
 import { Badge } from '@/components/ui/badge';
-import { Activity, ArrowUp, Users, Calendar } from 'lucide-react';
+import { Activity, ArrowUp, Users, Calendar, BarChart } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import MoodCorrelationTable from './MoodCorrelationTable';
 
 interface PositiveActivitiesCardProps {
   entries: JournalEntryData[];
@@ -69,6 +70,7 @@ const PositiveActivitiesCard: React.FC<PositiveActivitiesCardProps> = ({ entries
 
   const { activities, people, events } = positiveInsights;
   const hasNoData = activities.length === 0 && people.length === 0 && events.length === 0;
+  const hasEnoughEntriesForCorrelation = entries.length >= 5;
 
   if (hasNoData) {
     return (
@@ -93,6 +95,12 @@ const PositiveActivitiesCard: React.FC<PositiveActivitiesCardProps> = ({ entries
           <Calendar className="h-4 w-4 mr-2" />
           Events
         </TabsTrigger>
+        {hasEnoughEntriesForCorrelation && (
+          <TabsTrigger value="correlations">
+            <BarChart className="h-4 w-4 mr-2" />
+            Correlations
+          </TabsTrigger>
+        )}
       </TabsList>
       
       <TabsContent value="activities" className="mt-0">
@@ -130,9 +138,42 @@ const PositiveActivitiesCard: React.FC<PositiveActivitiesCardProps> = ({ entries
           />
         )}
       </TabsContent>
+
+      {hasEnoughEntriesForCorrelation && (
+        <TabsContent value="correlations" className="mt-0">
+          <div className="space-y-6">
+            <div>
+              <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
+                <Activity className="h-4 w-4 text-green-500" />
+                Activities correlation with mood
+              </h4>
+              <MoodCorrelationTable entries={entries} type="activities" />
+            </div>
+            
+            <div>
+              <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
+                <Users className="h-4 w-4 text-blue-500" />
+                People correlation with mood
+              </h4>
+              <MoodCorrelationTable entries={entries} type="people" />
+            </div>
+            
+            <div>
+              <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
+                <Calendar className="h-4 w-4 text-purple-500" />
+                Events correlation with mood
+              </h4>
+              <MoodCorrelationTable entries={entries} type="events" />
+            </div>
+          </div>
+        </TabsContent>
+      )}
       
       <p className="text-xs text-muted-foreground mt-4">
-        These correlate with your positive moods (great & good)
+        {hasEnoughEntriesForCorrelation ? 
+          "Positive correlations indicate factors that may improve your mood" :
+          "These correlate with your positive moods (great & good)"
+        }
       </p>
     </Tabs>
   );
