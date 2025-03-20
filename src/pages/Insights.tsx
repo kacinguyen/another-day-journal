@@ -152,7 +152,7 @@ const MoodInsightsContent = ({ entries }) => {
       <Card className="col-span-2 bg-gradient-to-br from-slate-50 to-white dark:from-slate-950 dark:to-slate-900 border-blue-100 dark:border-blue-900">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <span className="text-blue-600 dark:text-blue-400">Advanced Insights</span>
+            <span className="text-black dark:text-white">Advanced Insights</span>
           </CardTitle>
           <CardDescription>
             Activities associated with your positive moods (great & good)
