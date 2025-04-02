@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useCallback, useRef } from "react";
 import { format } from "date-fns";
 import { JournalEntryData } from "../types/journal-types";
@@ -24,9 +25,9 @@ export const useJournalEntry = (
   const [autoSaveEnabled, setAutoSaveEnabled] = useState(true);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   
-  const isModified = useRef(false);
+  const contentChangedRef = useRef(false);
   const autoSaveTimerRef = useRef<number | null>(null);
-  const currentEntryRef = useRef<JournalEntryData>({...initialData});
+  const currentContentRef = useRef<string>(initialData.content || "");
 
   useEffect(() => {
     const currentDateStr = format(date, 'yyyy-MM-dd');
@@ -43,9 +44,8 @@ export const useJournalEntry = (
       setEventTypes(initialData.eventTypes || []);
       setEmotions(initialData.emotions || []);
       
-      currentEntryRef.current = {...initialData};
-      
-      isModified.current = false;
+      currentContentRef.current = initialData.content || "";
+      contentChangedRef.current = false;
     } 
     else if (!initialData.id) {
       setDate(initialData.date);
@@ -58,35 +58,24 @@ export const useJournalEntry = (
     }
     
     autoSaveTimerRef.current = window.setTimeout(() => {
-      if (isModified.current && autoSaveEnabled && mood !== null) {
+      if (contentChangedRef.current && autoSaveEnabled && mood !== null) {
         handleSave(undefined, true);
-        isModified.current = false;
+        contentChangedRef.current = false;
       }
     }, 2000);
   }, [autoSaveEnabled, mood]);
 
   useEffect(() => {
-    const entryData = {
-      id: initialData.id,
-      date,
-      content,
-      mood,
-      energy,
-      activities,
-      people,
-      eventTypes,
-      emotions
-    };
-    
-    if (JSON.stringify(entryData) !== JSON.stringify(currentEntryRef.current)) {
-      isModified.current = true;
-      currentEntryRef.current = {...entryData};
+    // Only track changes to the content field for auto-save
+    if (content !== currentContentRef.current) {
+      contentChangedRef.current = true;
+      currentContentRef.current = content;
       
       if (mood !== null) {
         debouncedAutoSave();
       }
     }
-  }, [content, mood, energy, activities, people, eventTypes, emotions, debouncedAutoSave]);
+  }, [content, debouncedAutoSave]);
 
   useEffect(() => {
     return () => {
