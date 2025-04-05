@@ -29,11 +29,6 @@ export type { JournalEntryData } from "./types/journal-types";
  * 
  * The component manages state through the useJournalEntry hook and
  * provides a unified interface for saving entries.
- * 
- * Features:
- * - Auto-save functionality that saves changes after 2 seconds of inactivity
- * - Manual save button
- * - Form validation
  */
 const JournalEntry: React.FC<JournalEntryProps> = ({
   onSave,
@@ -52,8 +47,6 @@ const JournalEntry: React.FC<JournalEntryProps> = ({
     emotions,
     isSaving,
     isFormValid,
-    autoSaveEnabled,
-    lastSaved,
     setContent,
     setMood,
     setEnergy,
@@ -117,8 +110,6 @@ const JournalEntry: React.FC<JournalEntryProps> = ({
               onClick={handleSaveWithUser}
               disabled={!isFormValid || isSaving || !user}
               isSaving={isSaving}
-              autoSaveEnabled={autoSaveEnabled}
-              lastSaved={lastSaved}
             />
           </div>
         </div>

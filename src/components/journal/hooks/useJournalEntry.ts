@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect } from "react";
 import { format } from "date-fns";
 import { JournalEntryData } from "../types/journal-types";
 import { MoodType } from "../MoodPicker";
@@ -22,13 +22,8 @@ export const useJournalEntry = (
   const [eventTypes, setEventTypes] = useState<EventType[]>(initialData.eventTypes || []);
   const [emotions, setEmotions] = useState<EmotionType[]>(initialData.emotions || []);
   const [isSaving, setIsSaving] = useState(false);
-  const [autoSaveEnabled, setAutoSaveEnabled] = useState(true);
-  const [lastSaved, setLastSaved] = useState<Date | null>(null);
-  
-  const contentChangedRef = useRef(false);
-  const autoSaveTimerRef = useRef<number | null>(null);
-  const currentContentRef = useRef<string>(initialData.content || "");
 
+  // Update state when initialData changes
   useEffect(() => {
     const currentDateStr = format(date, 'yyyy-MM-dd');
     const newDateStr = format(initialData.date, 'yyyy-MM-dd');
@@ -43,48 +38,13 @@ export const useJournalEntry = (
       setPeople(initialData.people || []);
       setEventTypes(initialData.eventTypes || []);
       setEmotions(initialData.emotions || []);
-      
-      currentContentRef.current = initialData.content || "";
-      contentChangedRef.current = false;
     } 
     else if (!initialData.id) {
       setDate(initialData.date);
     }
   }, [initialData]);
 
-  const debouncedAutoSave = useCallback(() => {
-    if (autoSaveTimerRef.current !== null) {
-      window.clearTimeout(autoSaveTimerRef.current);
-    }
-    
-    autoSaveTimerRef.current = window.setTimeout(() => {
-      if (contentChangedRef.current && autoSaveEnabled && mood !== null) {
-        handleSave(undefined, true);
-        contentChangedRef.current = false;
-      }
-    }, 2000);
-  }, [autoSaveEnabled, mood]);
-
-  useEffect(() => {
-    // Only track changes to the content field for auto-save
-    if (content !== currentContentRef.current) {
-      contentChangedRef.current = true;
-      currentContentRef.current = content;
-      
-      if (mood !== null) {
-        debouncedAutoSave();
-      }
-    }
-  }, [content, debouncedAutoSave]);
-
-  useEffect(() => {
-    return () => {
-      if (autoSaveTimerRef.current !== null) {
-        window.clearTimeout(autoSaveTimerRef.current);
-      }
-    };
-  }, []);
-
+  // Handle activity management
   const handleAddActivity = (activity: string) => {
     setActivities([...activities, activity]);
   };
@@ -93,6 +53,7 @@ export const useJournalEntry = (
     setActivities(activities.filter((_, i) => i !== index));
   };
 
+  // Handle people management
   const handleAddPerson = (person: string) => {
     setPeople([...people, person]);
   };
@@ -101,7 +62,9 @@ export const useJournalEntry = (
     setPeople(people.filter((_, i) => i !== index));
   };
 
+  // Handle clear operation
   const handleClear = () => {
+    // Keep the date but reset all other fields
     setContent("");
     setMood(null);
     setEnergy(50);
@@ -111,11 +74,13 @@ export const useJournalEntry = (
     setEmotions([]);
   };
 
-  const handleSave = (user: any, isAutoSave = false) => {
-    if (!isAutoSave && !user) {
+  // Handle save operation
+  const handleSave = (user: any) => {
+    if (!user) {
       return;
     }
     
+    // Only mood is required now
     if (mood === null) return;
     
     setIsSaving(true);
@@ -133,27 +98,21 @@ export const useJournalEntry = (
     };
     
     onSave(entryData);
-    setLastSaved(new Date());
     
     setTimeout(() => {
       setIsSaving(false);
       
-      if (!isAutoSave) {
-        const saveButton = document.getElementById("save-button");
-        if (saveButton) {
-          saveButton.classList.add("animate-pulse");
-          setTimeout(() => {
-            saveButton.classList.remove("animate-pulse");
-          }, 1000);
-        }
+      const saveButton = document.getElementById("save-button");
+      if (saveButton) {
+        saveButton.classList.add("animate-pulse");
+        setTimeout(() => {
+          saveButton.classList.remove("animate-pulse");
+        }, 1000);
       }
     }, 600);
   };
 
-  const toggleAutoSave = () => {
-    setAutoSaveEnabled(!autoSaveEnabled);
-  };
-
+  // Check if the form is valid - only mood is required now
   const isFormValid = mood !== null;
 
   return {
@@ -167,8 +126,6 @@ export const useJournalEntry = (
     emotions,
     isSaving,
     isFormValid,
-    autoSaveEnabled,
-    lastSaved,
     setContent,
     setMood,
     setEnergy,
@@ -179,7 +136,6 @@ export const useJournalEntry = (
     handleAddPerson,
     handleRemovePerson,
     handleClear,
-    handleSave,
-    toggleAutoSave
+    handleSave
   };
 };
