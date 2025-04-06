@@ -20,11 +20,16 @@ export async function saveCustomTags(type: 'activities' | 'events', tags: string
     }
 
     // First get existing tags
-    const { data: existingData } = await supabase
+    const { data: existingData, error: fetchError } = await supabase
       .from('profiles')
       .select('custom_tags')
       .eq('id', user.id)
       .single();
+    
+    if (fetchError) {
+      console.error("Error fetching custom tags:", fetchError);
+      return false;
+    }
     
     // Prepare the new tags object
     const existingTags: CustomTagsData = existingData?.custom_tags || {};
