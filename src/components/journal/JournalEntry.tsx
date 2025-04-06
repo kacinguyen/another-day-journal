@@ -103,7 +103,7 @@ const JournalEntry: React.FC<JournalEntryProps> = ({
           <div className="flex justify-between pt-2">
             <ClearButton 
               onClear={handleClear}
-              disabled={!content && !mood && energy === 50 && activities.length === 0 && 
+              disabled={!content && !mood && (energy === null || energy === 50) && activities.length === 0 && 
                        people.length === 0 && eventTypes.length === 0 && emotions.length === 0}
             />
             <SaveButton

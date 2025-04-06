@@ -1,18 +1,25 @@
 
 import React from "react";
 import { Slider } from "@/components/ui/slider";
-import { Battery, BatteryFull, BatteryMedium, BatteryLow } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Battery, BatteryFull, BatteryMedium, BatteryLow, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface EnergyTrackerProps {
-  value: number;
-  onChange: (value: number) => void;
+  value: number | null;
+  onChange: (value: number | null) => void;
 }
 
 const EnergyTracker: React.FC<EnergyTrackerProps> = ({ value, onChange }) => {
   // Get the appropriate icon and text based on energy level
   const getEnergyInfo = () => {
-    if (value >= 75) {
+    if (!value) {
+      return {
+        icon: <Battery className="h-5 w-5 text-muted-foreground" />,
+        text: "Not Set",
+        color: "text-muted-foreground"
+      };
+    } else if (value >= 75) {
       return {
         icon: <BatteryFull className="h-5 w-5 text-green-500" />,
         text: "High Energy",
@@ -40,6 +47,10 @@ const EnergyTracker: React.FC<EnergyTrackerProps> = ({ value, onChange }) => {
   };
 
   const energyInfo = getEnergyInfo();
+  
+  const handleClear = () => {
+    onChange(null);
+  };
 
   return (
     <div className="space-y-3">
@@ -50,26 +61,52 @@ const EnergyTracker: React.FC<EnergyTrackerProps> = ({ value, onChange }) => {
           <span className={cn("text-sm font-medium", energyInfo.color)}>
             {energyInfo.text}
           </span>
-          <span className="ml-1 text-sm text-muted-foreground">
-            ({value}%)
-          </span>
+          {value !== null && (
+            <span className="ml-1 text-sm text-muted-foreground">
+              ({value}%)
+            </span>
+          )}
+          {value !== null && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-6 w-6 p-0 ml-1"
+              onClick={handleClear}
+              title="Clear energy level"
+            >
+              <X className="h-3 w-3" />
+            </Button>
+          )}
         </div>
       </div>
       
-      <Slider
-        value={[value]}
-        min={0}
-        max={100}
-        step={1}
-        onValueChange={(values) => onChange(values[0])}
-        className="py-2"
-      />
-      
-      <div className="flex justify-between text-xs text-muted-foreground">
-        <span>Low</span>
-        <span>Medium</span>
-        <span>High</span>
-      </div>
+      {value !== null ? (
+        <>
+          <Slider
+            value={[value]}
+            min={0}
+            max={100}
+            step={1}
+            onValueChange={(values) => onChange(values[0])}
+            className="py-2"
+          />
+          
+          <div className="flex justify-between text-xs text-muted-foreground">
+            <span>Low</span>
+            <span>Medium</span>
+            <span>High</span>
+          </div>
+        </>
+      ) : (
+        <Button 
+          variant="outline" 
+          size="sm" 
+          className="w-full"
+          onClick={() => onChange(50)}
+        >
+          Set Energy Level
+        </Button>
+      )}
     </div>
   );
 };

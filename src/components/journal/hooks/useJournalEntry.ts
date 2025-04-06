@@ -16,7 +16,7 @@ export const useJournalEntry = (
   const [date, setDate] = useState<Date>(initialData.date || new Date());
   const [content, setContent] = useState(initialData.content || "");
   const [mood, setMood] = useState<MoodType>(initialData.mood || null);
-  const [energy, setEnergy] = useState(initialData.energy || 50);
+  const [energy, setEnergy] = useState<number | null>(initialData.energy !== undefined ? initialData.energy : null);
   const [activities, setActivities] = useState<string[]>(initialData.activities || []);
   const [people, setPeople] = useState<string[]>(initialData.people || []);
   const [eventTypes, setEventTypes] = useState<EventType[]>(initialData.eventTypes || []);
@@ -33,7 +33,7 @@ export const useJournalEntry = (
       setDate(initialData.date);
       setContent(initialData.content || "");
       setMood(initialData.mood || null);
-      setEnergy(initialData.energy || 50);
+      setEnergy(initialData.energy !== undefined ? initialData.energy : null);
       setActivities(initialData.activities || []);
       setPeople(initialData.people || []);
       setEventTypes(initialData.eventTypes || []);
@@ -67,7 +67,7 @@ export const useJournalEntry = (
     // Keep the date but reset all other fields
     setContent("");
     setMood(null);
-    setEnergy(50);
+    setEnergy(null);
     setActivities([]);
     setPeople([]);
     setEventTypes([]);

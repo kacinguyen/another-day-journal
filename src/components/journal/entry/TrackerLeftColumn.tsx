@@ -8,10 +8,10 @@ import { EmotionType } from "../types/emotion-types";
 interface TrackerLeftColumnProps {
   mood: MoodType;
   emotions: EmotionType[];
-  energy: number;
+  energy: number | null;
   onMoodChange: (mood: MoodType) => void;
   onEmotionsChange: (emotions: EmotionType[]) => void;
-  onEnergyChange: (energy: number) => void;
+  onEnergyChange: (energy: number | null) => void;
 }
 
 /**

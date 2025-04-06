@@ -27,7 +27,7 @@ export function mapDbToJournalEntry(entry: JournalEntryDB): JournalEntryData {
     date: new Date(entry.created_at),
     content: entry.content || "",
     mood: (entry.mood as MoodType) || "neutral", // Cast to MoodType with default
-    energy: entry.energy_level || 50,
+    energy: entry.energy_level !== null ? entry.energy_level : null,
     activities: entry.activities || [],
     people: socialInteractions?.people || [],
     eventTypes: socialInteractions?.eventTypes || [],
