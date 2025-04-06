@@ -1,10 +1,11 @@
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Book, Dumbbell, Utensils, Pencil, Brain, Plus, Tag, X, Tv, TreeDeciduous, Code, Cake, Bike } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { loadCustomTags, saveCustomTags } from "@/services/journal/tagsService";
+import { useAuth } from "@/context/AuthContext";
 
 interface ActivitySelectorProps {
   activities: string[];
@@ -29,6 +30,7 @@ const ActivitySelector: React.FC<ActivitySelectorProps> = ({
   const [showInput, setShowInput] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [customActivities, setCustomActivities] = useState<ActivityOption[]>([]);
+  const { user } = useAuth();
 
   const defaultActivityOptions: ActivityOption[] = [
     { value: "reading", label: "Reading", icon: <Book className="h-4 w-4" /> },
@@ -43,6 +45,28 @@ const ActivitySelector: React.FC<ActivitySelectorProps> = ({
     { value: "biking", label: "Biking", icon: <Bike className="h-4 w-4" /> },
     { value: "learning", label: "Learning", icon: <Brain className="h-4 w-4" /> },
   ];
+
+  // Load custom activities on component mount
+  useEffect(() => {
+    const fetchCustomTags = async () => {
+      if (user) {
+        const tags = await loadCustomTags();
+        
+        if (tags.activities && tags.activities.length > 0) {
+          const customOptions = tags.activities.map(activity => ({
+            value: activity.toLowerCase().replace(/\s+/g, ''),
+            label: activity,
+            icon: <Tag className="h-4 w-4" />,
+            isCustom: true
+          }));
+          
+          setCustomActivities(customOptions);
+        }
+      }
+    };
+    
+    fetchCustomTags();
+  }, [user]);
 
   // Convert existing activities to proper format
   const normalizeExistingActivities = () => {
@@ -67,6 +91,21 @@ const ActivitySelector: React.FC<ActivitySelectorProps> = ({
   React.useEffect(() => {
     normalizeExistingActivities();
   }, []);
+
+  // Save custom activities when they change
+  useEffect(() => {
+    const saveCustomActivities = async () => {
+      if (user && customActivities.length > 0) {
+        const activityLabels = customActivities.map(activity => activity.label);
+        await saveCustomTags('activities', activityLabels);
+      }
+    };
+    
+    // Only save if we have custom activities and they're not just from the initial normalization
+    if (customActivities.length > 0) {
+      saveCustomActivities();
+    }
+  }, [customActivities, user]);
 
   const allActivityOptions = [...defaultActivityOptions, ...customActivities];
 

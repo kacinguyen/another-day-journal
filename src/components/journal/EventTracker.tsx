@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { 
   PartyPopper, 
   UtensilsCrossed, 
@@ -18,6 +18,8 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { loadCustomTags, saveCustomTags } from "@/services/journal/tagsService";
+import { useAuth } from "@/context/AuthContext";
 
 export type EventType = 
   | "party" 
@@ -49,6 +51,7 @@ const EventTracker: React.FC<EventTrackerProps> = ({ values, onChange }) => {
   const [showInput, setShowInput] = useState(false);
   const [newTagName, setNewTagName] = useState("");
   const [customEventOptions, setCustomEventOptions] = useState<EventOption[]>([]);
+  const { user } = useAuth();
 
   const defaultEventOptions: EventOption[] = [
     { value: "party", label: "Party", icon: <PartyPopper className="h-4 w-4" /> },
@@ -62,6 +65,43 @@ const EventTracker: React.FC<EventTrackerProps> = ({ values, onChange }) => {
     { value: "travel", label: "Travel", icon: <Plane className="h-4 w-4" /> },
     { value: "hangout", label: "Hangout", icon: <Users className="h-4 w-4" /> },
   ];
+
+  // Load custom events on component mount
+  useEffect(() => {
+    const fetchCustomTags = async () => {
+      if (user) {
+        const tags = await loadCustomTags();
+        
+        if (tags.events && tags.events.length > 0) {
+          const customOptions = tags.events.map(event => ({
+            value: event.toLowerCase().replace(/\s+/g, ''),
+            label: event,
+            icon: <Tag className="h-4 w-4" />,
+            isCustom: true
+          }));
+          
+          setCustomEventOptions(customOptions);
+        }
+      }
+    };
+    
+    fetchCustomTags();
+  }, [user]);
+
+  // Save custom events when they change
+  useEffect(() => {
+    const saveCustomEvents = async () => {
+      if (user && customEventOptions.length > 0) {
+        const eventLabels = customEventOptions.map(event => event.label);
+        await saveCustomTags('events', eventLabels);
+      }
+    };
+    
+    // Only save if we have custom events
+    if (customEventOptions.length > 0) {
+      saveCustomEvents();
+    }
+  }, [customEventOptions, user]);
 
   const allEventOptions = [...defaultEventOptions, ...customEventOptions];
 
