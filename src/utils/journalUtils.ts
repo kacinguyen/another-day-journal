@@ -1,5 +1,5 @@
 
-import { JournalEntryData } from "@/components/journal/JournalEntry";
+import { JournalEntryData } from "@/components/journal/types/journal-types";
 
 /**
  * Retrieves journal entries from local storage
@@ -30,7 +30,9 @@ export const dummyEntry: JournalEntryData = {
   eventTypes: ["cafe", "outdoors"],
   content: "Today was a great day. I went for a morning coffee and then had a relaxing walk in the park.",
   activities: ["Reading", "Walking"],
-  people: ["Alex", "Sam"]
+  people: ["Alex", "Sam"],
+  createdAt: new Date(),
+  updatedAt: new Date()
 };
 
 /**

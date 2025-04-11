@@ -85,6 +85,8 @@ export const useJournalEntry = (
     
     setIsSaving(true);
     
+    const now = new Date();
+    
     const entryData: JournalEntryData = {
       id: initialData.id,
       date,
@@ -94,7 +96,9 @@ export const useJournalEntry = (
       activities,
       people,
       eventTypes,
-      emotions
+      emotions,
+      createdAt: initialData.createdAt || now,
+      updatedAt: now
     };
     
     onSave(entryData);
