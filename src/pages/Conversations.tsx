@@ -2,12 +2,11 @@
 import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { CircleX, MessageSquarePlus } from "lucide-react";
+import { CircleX } from "lucide-react";
 import ChatInterface from "@/components/chat/ChatInterface";
 import { useConversation } from "@/hooks/useConversation";
 import { useAuth } from "@/context/AuthContext";
 import { PromptManager } from "@/components/chat/PromptManager";
-import { ConversationHistory } from "@/components/chat/ConversationHistory";
 import { 
   ResizablePanelGroup, 
   ResizablePanel, 
@@ -15,18 +14,7 @@ import {
 } from "@/components/ui/resizable";
 
 const Conversations = () => {
-  const { 
-    messages, 
-    conversations,
-    activeConversationId,
-    isLoading, 
-    sendMessage, 
-    clearConversation,
-    createNewConversation,
-    switchConversation,
-    deleteConversation,
-    renameConversation
-  } = useConversation();
+  const { messages, isLoading, sendMessage, clearConversation } = useConversation();
   const { user } = useAuth();
 
   // Force scroll to top when this component mounts
@@ -64,17 +52,7 @@ const Conversations = () => {
         </Card>
       ) : (
         <div className="flex flex-col space-y-4">
-          <div className="flex justify-between">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={createNewConversation}
-              className="text-foreground"
-            >
-              <MessageSquarePlus className="mr-2 h-4 w-4" />
-              New Conversation
-            </Button>
-            
+          <div className="flex justify-end">
             <Button
               variant="ghost"
               size="sm"
@@ -91,25 +69,6 @@ const Conversations = () => {
             direction="horizontal"
             className="min-h-[600px] rounded-lg border"
           >
-            {/* Conversation history panel */}
-            <ResizablePanel 
-              defaultSize={25} 
-              minSize={20}
-              maxSize={40}
-              className="bg-background"
-            >
-              <ConversationHistory 
-                conversations={conversations}
-                activeConversationId={activeConversationId}
-                onSwitchConversation={switchConversation}
-                onDeleteConversation={deleteConversation}
-                onRenameConversation={renameConversation}
-                onNewConversation={createNewConversation}
-              />
-            </ResizablePanel>
-            
-            <ResizableHandle withHandle />
-            
             {/* Prompts panel */}
             <ResizablePanel 
               defaultSize={25} 
@@ -123,7 +82,7 @@ const Conversations = () => {
             <ResizableHandle withHandle />
             
             {/* Chat panel */}
-            <ResizablePanel defaultSize={50}>
+            <ResizablePanel defaultSize={75}>
               <div className="h-[600px]">
                 <ChatInterface 
                   messages={messages} 
