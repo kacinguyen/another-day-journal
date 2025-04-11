@@ -1,0 +1,21 @@
+
+import { MoodType } from "../MoodPicker";
+import { EventType } from "../event/types";
+import { EmotionType } from "./emotion-types";
+
+export interface JournalEntryData {
+  id?: string;
+  date: Date;
+  content: string;
+  mood: MoodType;
+  energy: number;
+  activities: string[];
+  people: string[];
+  eventTypes: EventType[];
+  emotions: EmotionType[];
+}
+
+export interface JournalEntryProps {
+  onSave: (data: JournalEntryData) => void;
+  initialData: JournalEntryData;
+}

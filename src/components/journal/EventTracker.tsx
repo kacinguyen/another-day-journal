@@ -125,5 +125,6 @@ const EventTracker: React.FC<EventTrackerProps> = ({ values, onChange }) => {
 };
 
 // Export EventTracker as default, but also re-export EventType to maintain backward compatibility
-export { EventType } from "./event/types";
+// Using export type to fix the isolatedModules error
+export type { EventType } from "./event/types";
 export default EventTracker;
