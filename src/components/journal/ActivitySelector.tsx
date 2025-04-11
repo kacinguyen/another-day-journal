@@ -1,11 +1,7 @@
 
-import React, { useState, useEffect } from "react";
-import { Book, Dumbbell, Utensils, Pencil, Brain, Plus, Tag, X, Tv, TreeDeciduous, Code, Cake, Bike } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import React from "react";
+import { ActivityOption, ActivityTag, AddActivityInput, useActivityTags } from "./activity";
 import { useAuth } from "@/context/AuthContext";
-import { fetchCustomTags, addCustomActivityTag, removeCustomActivityTag } from "@/services/journal/tagsService";
 
 interface ActivitySelectorProps {
   activities: string[];
@@ -14,191 +10,58 @@ interface ActivitySelectorProps {
   suggestions?: string[];
 }
 
-interface ActivityOption {
-  value: string;
-  label: string;
-  icon: React.ReactNode;
-  isCustom?: boolean;
-}
-
+/**
+ * ActivitySelector Component
+ * 
+ * Allows users to select activities and create custom activity tags
+ */
 const ActivitySelector: React.FC<ActivitySelectorProps> = ({
   activities,
   onAddActivity,
   onRemoveActivity,
-  suggestions = ["Reading", "Weight Lifting", "Hiking", "Writing", "Cooking", "Learning", "Meditating", "TV & Content", "Crafts", "Building", "Baking", "Biking"]
+  suggestions = [] // This parameter is currently unused but kept for API compatibility
 }) => {
   const { user } = useAuth();
-  const [showInput, setShowInput] = useState(false);
-  const [inputValue, setInputValue] = useState("");
-  const [customActivities, setCustomActivities] = useState<ActivityOption[]>([]);
-  const [isLoadingTags, setIsLoadingTags] = useState(false);
+  
+  const {
+    allActivityOptions,
+    showInput,
+    inputValue,
+    isActivitySelected,
+    handleToggleActivity,
+    removeCustomTag,
+    addNewActivity,
+    handleInputChange,
+    toggleShowInput,
+    handleKeyDown
+  } = useActivityTags(user?.id, activities);
 
-  const defaultActivityOptions: ActivityOption[] = [
-    { value: "reading", label: "Reading", icon: <Book className="h-4 w-4" /> },
-    { value: "weightLifting", label: "Weight Lifting", icon: <Dumbbell className="h-4 w-4" /> },
-    { value: "hiking", label: "Hiking", icon: <TreeDeciduous className="h-4 w-4" /> },
-    { value: "tvContent", label: "TV & Content", icon: <Tv className="h-4 w-4" /> },
-    { value: "cooking", label: "Cooking", icon: <Utensils className="h-4 w-4" /> },
-    { value: "writing", label: "Writing", icon: <Pencil className="h-4 w-4" /> },
-    { value: "crafts", label: "Crafts", icon: <Pencil className="h-4 w-4" /> },
-    { value: "building", label: "Building", icon: <Code className="h-4 w-4" /> },
-    { value: "baking", label: "Baking", icon: <Cake className="h-4 w-4" /> },
-    { value: "biking", label: "Biking", icon: <Bike className="h-4 w-4" /> },
-    { value: "learning", label: "Learning", icon: <Brain className="h-4 w-4" /> },
-  ];
-
-  // Load custom tags when user changes
-  useEffect(() => {
-    const loadCustomTags = async () => {
-      if (!user?.id) return;
-      
-      setIsLoadingTags(true);
-      try {
-        const customTags = await fetchCustomTags(user.id);
-        if (customTags?.activities) {
-          const customOptions = Object.values(customTags.activities).map(tag => ({
-            value: tag.value,
-            label: tag.label,
-            icon: <Tag className="h-4 w-4" />,
-            isCustom: true
-          }));
-          setCustomActivities(customOptions);
-        }
-      } catch (error) {
-        console.error("Error loading custom activity tags:", error);
-      } finally {
-        setIsLoadingTags(false);
-      }
-    };
-    
-    loadCustomTags();
-  }, [user]);
-
-  // Convert existing activities to proper format
-  const normalizeExistingActivities = () => {
-    activities.forEach(activity => {
-      const normalized = activity.toLowerCase().replace(/\s+/g, '');
-      const exists = [...defaultActivityOptions, ...customActivities]
-        .some(option => option.value === normalized);
-      
-      if (!exists) {
-        const newCustomActivity = {
-          value: normalized,
-          label: activity,
-          icon: <Tag className="h-4 w-4" />,
-          isCustom: true
-        };
-        setCustomActivities(prev => [...prev, newCustomActivity]);
-      }
-    });
+  /**
+   * Wrapper for handling the toggle of an activity
+   */
+  const onToggleActivity = (option: ActivityOption) => {
+    handleToggleActivity(option, onAddActivity, onRemoveActivity);
   };
 
-  // Call once on initial render
-  useEffect(() => {
-    normalizeExistingActivities();
-  }, []);
-
-  const allActivityOptions = [...defaultActivityOptions, ...customActivities];
-
-  const isActivitySelected = (value: string) => {
-    // Check if the activity is selected by checking either the exact value or label match
-    return activities.some(
-      activity => 
-        activity.toLowerCase() === value.toLowerCase() || 
-        activity === allActivityOptions.find(opt => opt.value === value)?.label
-    );
+  /**
+   * Wrapper for removing a custom tag
+   */
+  const onRemoveTag = (option: ActivityOption, e: React.MouseEvent) => {
+    removeCustomTag(option, e, onRemoveActivity);
   };
 
-  const handleToggleActivity = (option: ActivityOption) => {
-    if (isActivitySelected(option.value)) {
-      // Find the index to remove
-      const indexToRemove = activities.findIndex(
-        activity => 
-          activity.toLowerCase() === option.value.toLowerCase() || 
-          activity === option.label
-      );
-      if (indexToRemove >= 0) {
-        onRemoveActivity(indexToRemove);
-      }
-    } else {
-      onAddActivity(option.label);
-    }
+  /**
+   * Wrapper for handling key down events
+   */
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    handleKeyDown(e, onAddActivity);
   };
 
-  const handleRemoveTag = async (option: ActivityOption, e: React.MouseEvent) => {
-    e.stopPropagation();
-    
-    if (!user?.id || !option.isCustom) return;
-    
-    // Remove from selected values if present
-    if (isActivitySelected(option.value)) {
-      const indexToRemove = activities.findIndex(
-        activity => 
-          activity.toLowerCase() === option.value.toLowerCase() || 
-          activity === option.label
-      );
-      if (indexToRemove >= 0) {
-        onRemoveActivity(indexToRemove);
-      }
-    }
-    
-    // Remove from UI
-    setCustomActivities(prev => prev.filter(tag => tag.value !== option.value));
-    
-    // Remove from database
-    await removeCustomActivityTag(user.id, option.value);
-  };
-
-  const handleAddNewActivity = async () => {
-    if (inputValue.trim() === "" || !user?.id) return;
-    
-    const newActivityValue = inputValue.toLowerCase().replace(/\s+/g, '');
-    
-    // Check if the activity already exists
-    const existingOption = allActivityOptions.find(
-      option => option.value === newActivityValue || option.label.toLowerCase() === inputValue.toLowerCase()
-    );
-    
-    if (existingOption) {
-      // Add the existing activity if it's not already selected
-      if (!isActivitySelected(existingOption.value)) {
-        handleToggleActivity(existingOption);
-      }
-    } else {
-      // Create the new custom activity
-      const newActivity: ActivityOption = {
-        value: newActivityValue,
-        label: inputValue.trim(),
-        icon: <Tag className="h-4 w-4" />,
-        isCustom: true
-      };
-      
-      // Add to UI immediately
-      setCustomActivities([...customActivities, newActivity]);
-      
-      // Select the new activity
-      onAddActivity(inputValue.trim());
-      
-      // Save to database
-      await addCustomActivityTag(user.id, {
-        value: newActivityValue,
-        label: inputValue.trim()
-      });
-    }
-    
-    // Reset and close input
-    setInputValue("");
-    setShowInput(false);
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      handleAddNewActivity();
-    } else if (e.key === "Escape") {
-      setShowInput(false);
-      setInputValue("");
-    }
+  /**
+   * Wrapper for adding a new activity
+   */
+  const onAddNewActivity = () => {
+    addNewActivity(onAddActivity);
   };
 
   return (
@@ -207,57 +70,23 @@ const ActivitySelector: React.FC<ActivitySelectorProps> = ({
       
       <div className="flex flex-wrap gap-2">
         {allActivityOptions.map((option) => (
-          <div 
+          <ActivityTag
             key={option.value}
-            className={`
-              inline-flex items-center gap-1 px-3 py-1.5 rounded-md cursor-pointer transition-colors
-              ${isActivitySelected(option.value) 
-                ? 'bg-primary text-primary-foreground' 
-                : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'}
-              ${option.isCustom ? 'border border-dashed border-primary/30' : ''}
-            `}
-            onClick={() => handleToggleActivity(option)}
-          >
-            {option.icon}
-            <span className="text-xs font-medium">{option.label}</span>
-            {option.isCustom && (
-              <X 
-                className="h-3 w-3 ml-1 hover:text-destructive cursor-pointer" 
-                onClick={(e) => handleRemoveTag(option, e)}
-              />
-            )}
-          </div>
+            option={option}
+            isSelected={isActivitySelected(option.value)}
+            onToggle={onToggleActivity}
+            onRemove={option.isCustom ? onRemoveTag : undefined}
+          />
         ))}
 
-        {/* Add new activity button or input field */}
-        {showInput ? (
-          <div className="flex gap-2 w-full md:w-auto animate-fade-in">
-            <Input
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Enter activity..."
-              className="flex-1 h-8 min-w-[140px]"
-              autoFocus
-            />
-            <Button 
-              onClick={handleAddNewActivity} 
-              variant="outline"
-              size="sm"
-              className="h-8 px-2"
-            >
-              Add
-            </Button>
-          </div>
-        ) : (
-          <div 
-            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md cursor-pointer transition-colors bg-secondary/50 hover:bg-secondary border border-dashed border-primary/30"
-            onClick={() => setShowInput(true)}
-          >
-            <Plus className="h-4 w-4" />
-            <span className="text-xs font-medium">Add activity</span>
-          </div>
-        )}
+        <AddActivityInput
+          showInput={showInput}
+          inputValue={inputValue}
+          onInputChange={handleInputChange}
+          onKeyDown={onKeyDown}
+          onAddActivity={onAddNewActivity}
+          onShowInput={toggleShowInput}
+        />
       </div>
     </div>
   );
