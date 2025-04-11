@@ -8,3 +8,10 @@
 // Re-export all journal service functions to maintain the existing API
 export { saveJournalEntry, fetchJournalEntries, deleteJournalEntry } from './journal/core';
 export { importJournalEntries } from './journal/import';
+export { 
+  fetchCustomTags, 
+  addCustomEventTag, 
+  removeCustomEventTag,
+  addCustomActivityTag,
+  removeCustomActivityTag
+} from './journal/tagsService';

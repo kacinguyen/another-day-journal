@@ -1,10 +1,11 @@
 
-import React, { useState } from "react";
-import { Badge } from "@/components/ui/badge";
+import React, { useState, useEffect } from "react";
 import { Book, Dumbbell, Utensils, Pencil, Brain, Plus, Tag, X, Tv, TreeDeciduous, Code, Cake, Bike } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/context/AuthContext";
+import { fetchCustomTags, addCustomActivityTag, removeCustomActivityTag } from "@/services/journal/tagsService";
 
 interface ActivitySelectorProps {
   activities: string[];
@@ -26,9 +27,11 @@ const ActivitySelector: React.FC<ActivitySelectorProps> = ({
   onRemoveActivity,
   suggestions = ["Reading", "Weight Lifting", "Hiking", "Writing", "Cooking", "Learning", "Meditating", "TV & Content", "Crafts", "Building", "Baking", "Biking"]
 }) => {
+  const { user } = useAuth();
   const [showInput, setShowInput] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [customActivities, setCustomActivities] = useState<ActivityOption[]>([]);
+  const [isLoadingTags, setIsLoadingTags] = useState(false);
 
   const defaultActivityOptions: ActivityOption[] = [
     { value: "reading", label: "Reading", icon: <Book className="h-4 w-4" /> },
@@ -43,6 +46,33 @@ const ActivitySelector: React.FC<ActivitySelectorProps> = ({
     { value: "biking", label: "Biking", icon: <Bike className="h-4 w-4" /> },
     { value: "learning", label: "Learning", icon: <Brain className="h-4 w-4" /> },
   ];
+
+  // Load custom tags when user changes
+  useEffect(() => {
+    const loadCustomTags = async () => {
+      if (!user?.id) return;
+      
+      setIsLoadingTags(true);
+      try {
+        const customTags = await fetchCustomTags(user.id);
+        if (customTags?.activities) {
+          const customOptions = Object.values(customTags.activities).map(tag => ({
+            value: tag.value,
+            label: tag.label,
+            icon: <Tag className="h-4 w-4" />,
+            isCustom: true
+          }));
+          setCustomActivities(customOptions);
+        }
+      } catch (error) {
+        console.error("Error loading custom activity tags:", error);
+      } finally {
+        setIsLoadingTags(false);
+      }
+    };
+    
+    loadCustomTags();
+  }, [user]);
 
   // Convert existing activities to proper format
   const normalizeExistingActivities = () => {
@@ -64,7 +94,7 @@ const ActivitySelector: React.FC<ActivitySelectorProps> = ({
   };
 
   // Call once on initial render
-  React.useEffect(() => {
+  useEffect(() => {
     normalizeExistingActivities();
   }, []);
 
@@ -95,8 +125,32 @@ const ActivitySelector: React.FC<ActivitySelectorProps> = ({
     }
   };
 
-  const handleAddNewActivity = () => {
-    if (inputValue.trim() === "") return;
+  const handleRemoveTag = async (option: ActivityOption, e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    if (!user?.id || !option.isCustom) return;
+    
+    // Remove from selected values if present
+    if (isActivitySelected(option.value)) {
+      const indexToRemove = activities.findIndex(
+        activity => 
+          activity.toLowerCase() === option.value.toLowerCase() || 
+          activity === option.label
+      );
+      if (indexToRemove >= 0) {
+        onRemoveActivity(indexToRemove);
+      }
+    }
+    
+    // Remove from UI
+    setCustomActivities(prev => prev.filter(tag => tag.value !== option.value));
+    
+    // Remove from database
+    await removeCustomActivityTag(user.id, option.value);
+  };
+
+  const handleAddNewActivity = async () => {
+    if (inputValue.trim() === "" || !user?.id) return;
     
     const newActivityValue = inputValue.toLowerCase().replace(/\s+/g, '');
     
@@ -111,7 +165,7 @@ const ActivitySelector: React.FC<ActivitySelectorProps> = ({
         handleToggleActivity(existingOption);
       }
     } else {
-      // Add the new custom activity
+      // Create the new custom activity
       const newActivity: ActivityOption = {
         value: newActivityValue,
         label: inputValue.trim(),
@@ -119,10 +173,17 @@ const ActivitySelector: React.FC<ActivitySelectorProps> = ({
         isCustom: true
       };
       
+      // Add to UI immediately
       setCustomActivities([...customActivities, newActivity]);
       
       // Select the new activity
       onAddActivity(inputValue.trim());
+      
+      // Save to database
+      await addCustomActivityTag(user.id, {
+        value: newActivityValue,
+        label: inputValue.trim()
+      });
     }
     
     // Reset and close input
@@ -159,6 +220,12 @@ const ActivitySelector: React.FC<ActivitySelectorProps> = ({
           >
             {option.icon}
             <span className="text-xs font-medium">{option.label}</span>
+            {option.isCustom && (
+              <X 
+                className="h-3 w-3 ml-1 hover:text-destructive cursor-pointer" 
+                onClick={(e) => handleRemoveTag(option, e)}
+              />
+            )}
           </div>
         ))}
 

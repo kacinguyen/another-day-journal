@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { 
   PartyPopper, 
   UtensilsCrossed, 
@@ -18,6 +18,8 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/context/AuthContext";
+import { fetchCustomTags, addCustomEventTag, removeCustomEventTag } from "@/services/journal/tagsService";
 
 export type EventType = 
   | "party" 
@@ -46,9 +48,11 @@ interface EventOption {
 }
 
 const EventTracker: React.FC<EventTrackerProps> = ({ values, onChange }) => {
+  const { user } = useAuth();
   const [showInput, setShowInput] = useState(false);
   const [newTagName, setNewTagName] = useState("");
   const [customEventOptions, setCustomEventOptions] = useState<EventOption[]>([]);
+  const [isLoadingTags, setIsLoadingTags] = useState(false);
 
   const defaultEventOptions: EventOption[] = [
     { value: "party", label: "Party", icon: <PartyPopper className="h-4 w-4" /> },
@@ -65,6 +69,33 @@ const EventTracker: React.FC<EventTrackerProps> = ({ values, onChange }) => {
 
   const allEventOptions = [...defaultEventOptions, ...customEventOptions];
 
+  // Load custom tags when user changes
+  useEffect(() => {
+    const loadCustomTags = async () => {
+      if (!user?.id) return;
+      
+      setIsLoadingTags(true);
+      try {
+        const customTags = await fetchCustomTags(user.id);
+        if (customTags?.events) {
+          const customOptions = Object.values(customTags.events).map(tag => ({
+            value: tag.value,
+            label: tag.label,
+            icon: <Tag className="h-4 w-4" />,
+            isCustom: true
+          }));
+          setCustomEventOptions(customOptions);
+        }
+      } catch (error) {
+        console.error("Error loading custom tags:", error);
+      } finally {
+        setIsLoadingTags(false);
+      }
+    };
+    
+    loadCustomTags();
+  }, [user]);
+
   const handleToggleEvent = (event: EventType) => {
     if (values.includes(event)) {
       onChange(values.filter(v => v !== event));
@@ -73,8 +104,8 @@ const EventTracker: React.FC<EventTrackerProps> = ({ values, onChange }) => {
     }
   };
 
-  const handleAddNewTag = () => {
-    if (newTagName.trim() === "") return;
+  const handleAddNewTag = async () => {
+    if (newTagName.trim() === "" || !user?.id) return;
     
     const newTagValue = newTagName.toLowerCase().replace(/\s+/g, '');
     
@@ -85,7 +116,7 @@ const EventTracker: React.FC<EventTrackerProps> = ({ values, onChange }) => {
         handleToggleEvent(newTagValue);
       }
     } else {
-      // Add the new custom tag
+      // Create the new custom tag
       const newTag: EventOption = {
         value: newTagValue,
         label: newTagName.trim(),
@@ -93,17 +124,41 @@ const EventTracker: React.FC<EventTrackerProps> = ({ values, onChange }) => {
         isCustom: true
       };
       
-      setCustomEventOptions([...customEventOptions, newTag]);
+      // Add to UI immediately
+      setCustomEventOptions(prev => [...prev, newTag]);
       
       // Select the new tag
       if (!values.includes(newTagValue)) {
         handleToggleEvent(newTagValue);
       }
+      
+      // Save to database
+      await addCustomEventTag(user.id, {
+        value: newTagValue,
+        label: newTagName.trim()
+      });
     }
     
     // Reset and close input
     setNewTagName("");
     setShowInput(false);
+  };
+
+  const handleRemoveTag = async (option: EventOption, e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    if (!user?.id || !option.isCustom) return;
+    
+    // Remove from selected values if present
+    if (values.includes(option.value)) {
+      onChange(values.filter(v => v !== option.value));
+    }
+    
+    // Remove from UI
+    setCustomEventOptions(prev => prev.filter(tag => tag.value !== option.value));
+    
+    // Remove from database
+    await removeCustomEventTag(user.id, option.value);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -135,6 +190,12 @@ const EventTracker: React.FC<EventTrackerProps> = ({ values, onChange }) => {
           >
             {option.icon}
             <span className="text-xs font-medium">{option.label}</span>
+            {option.isCustom && (
+              <X 
+                className="h-3 w-3 ml-1 hover:text-destructive cursor-pointer" 
+                onClick={(e) => handleRemoveTag(option, e)}
+              />
+            )}
           </div>
         ))}
 
