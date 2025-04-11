@@ -6,6 +6,12 @@ import { CircleX } from "lucide-react";
 import ChatInterface from "@/components/chat/ChatInterface";
 import { useConversation } from "@/hooks/useConversation";
 import { useAuth } from "@/context/AuthContext";
+import { PromptManager } from "@/components/chat/PromptManager";
+import { 
+  ResizablePanelGroup, 
+  ResizablePanel, 
+  ResizableHandle 
+} from "@/components/ui/resizable";
 
 const Conversations = () => {
   const { messages, isLoading, sendMessage, clearConversation } = useConversation();
@@ -15,6 +21,13 @@ const Conversations = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  // Handler for when a saved prompt is selected
+  const handleSelectPrompt = (promptText: string) => {
+    if (promptText.trim() !== "") {
+      sendMessage(promptText);
+    }
+  };
 
   return (
     <div className="page-container animate-fade-up">
@@ -52,13 +65,33 @@ const Conversations = () => {
             </Button>
           </div>
           
-          <Card className="w-full h-[600px]">
-            <ChatInterface 
-              messages={messages} 
-              isLoading={isLoading} 
-              onSendMessage={sendMessage} 
-            />
-          </Card>
+          <ResizablePanelGroup
+            direction="horizontal"
+            className="min-h-[600px] rounded-lg border"
+          >
+            {/* Prompts panel */}
+            <ResizablePanel 
+              defaultSize={25} 
+              minSize={20}
+              maxSize={40}
+              className="bg-background"
+            >
+              <PromptManager onSelectPrompt={handleSelectPrompt} />
+            </ResizablePanel>
+            
+            <ResizableHandle withHandle />
+            
+            {/* Chat panel */}
+            <ResizablePanel defaultSize={75}>
+              <div className="h-[600px]">
+                <ChatInterface 
+                  messages={messages} 
+                  isLoading={isLoading} 
+                  onSendMessage={sendMessage} 
+                />
+              </div>
+            </ResizablePanel>
+          </ResizablePanelGroup>
         </div>
       )}
     </div>
