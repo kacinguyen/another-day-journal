@@ -1,7 +1,7 @@
 
 import React from "react";
 import { format } from "date-fns";
-import { JournalEntryData } from "@/components/journal/JournalEntry";
+import { JournalEntryData } from "@/components/journal/types/journal-types";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -26,7 +26,8 @@ import {
   Heart,
   Cloud,
   Smile,
-  Check
+  Check,
+  Clock
 } from "lucide-react";
 
 /**
@@ -82,6 +83,33 @@ export const JournalEntriesTable: React.FC<{
       : content;
   };
 
+  // Format a date relative to now (e.g., "2 hours ago", "yesterday", etc.)
+  const formatRelativeTime = (date: Date) => {
+    const now = new Date();
+    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+    
+    if (diffInSeconds < 60) {
+      return 'just now';
+    }
+    
+    const diffInMinutes = Math.floor(diffInSeconds / 60);
+    if (diffInMinutes < 60) {
+      return `${diffInMinutes} minute${diffInMinutes !== 1 ? 's' : ''} ago`;
+    }
+    
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    if (diffInHours < 24) {
+      return `${diffInHours} hour${diffInHours !== 1 ? 's' : ''} ago`;
+    }
+    
+    const diffInDays = Math.floor(diffInHours / 24);
+    if (diffInDays < 7) {
+      return `${diffInDays} day${diffInDays !== 1 ? 's' : ''} ago`;
+    }
+    
+    return format(date, 'MMM dd, yyyy');
+  };
+
   return (
     <ScrollArea className="h-[500px] pr-4">
       <div className="space-y-4">
@@ -97,6 +125,11 @@ export const JournalEntriesTable: React.FC<{
                 <span className="flex items-center gap-1 text-sm">
                   {getMoodEmoji(entry.mood)} {entry.mood}
                 </span>
+              </div>
+              
+              <div className="text-xs text-muted-foreground flex items-center gap-1">
+                <Clock className="h-3 w-3" />
+                <span>Updated {formatRelativeTime(entry.updatedAt)}</span>
               </div>
               
               {entry.emotions && entry.emotions.length > 0 && (

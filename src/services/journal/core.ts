@@ -1,3 +1,4 @@
+
 import { JournalEntryData } from "@/components/journal/types/journal-types";
 import { MoodType } from "@/components/journal/MoodPicker";
 import { supabase } from "@/integrations/supabase/client";
@@ -34,6 +35,7 @@ export const saveJournalEntry = async (entry: JournalEntryData): Promise<Journal
 
     // Format the date correctly for storage
     const entryDate = format(entry.date, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
+    const currentTimestamp = new Date().toISOString();
 
     // Prepare entry data for database
     const entryData = mapJournalEntryToDb(entry, user.id);
@@ -46,7 +48,7 @@ export const saveJournalEntry = async (entry: JournalEntryData): Promise<Journal
         .from('journal_entries')
         .update({
           ...entryData,
-          updated_at: new Date().toISOString()
+          updated_at: currentTimestamp
         })
         .eq('id', entry.id)
         .select()
@@ -58,7 +60,7 @@ export const saveJournalEntry = async (entry: JournalEntryData): Promise<Journal
         .insert({
           ...entryData,
           created_at: entryDate,
-          updated_at: new Date().toISOString()
+          updated_at: currentTimestamp
         })
         .select()
         .single();
@@ -84,7 +86,7 @@ export const saveJournalEntry = async (entry: JournalEntryData): Promise<Journal
 
 /**
  * Fetch all journal entries for the current user
- * Returns entries sorted by date (newest first) with only the latest entry for each date
+ * Returns entries sorted by updated_at (most recently edited first)
  * 
  * @returns Array of journal entries
  */
@@ -100,7 +102,7 @@ export const fetchJournalEntries = async (): Promise<JournalEntryData[]> => {
       .from('journal_entries')
       .select('*')
       .eq('user_id', user.id)
-      .order('created_at', { ascending: false });
+      .order('updated_at', { ascending: false });
 
     if (error) {
       console.error("Error fetching journal entries:", error);
@@ -122,14 +124,14 @@ export const fetchJournalEntries = async (): Promise<JournalEntryData[]> => {
       
       // If this date isn't in our map yet, or this entry is newer than what we have
       if (!uniqueEntriesByDate.has(dateString) || 
-          entry.date > uniqueEntriesByDate.get(dateString)!.date) {
+          entry.updatedAt > uniqueEntriesByDate.get(dateString)!.updatedAt) {
         uniqueEntriesByDate.set(dateString, entry);
       }
     });
     
-    // Convert map back to array and sort by date (newest first)
+    // Convert map back to array and sort by updatedAt (newest first)
     return Array.from(uniqueEntriesByDate.values())
-      .sort((a, b) => b.date.getTime() - a.date.getTime());
+      .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
   } catch (error) {
     console.error("Error in fetchJournalEntries:", error);
     return [];

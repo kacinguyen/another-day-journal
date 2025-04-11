@@ -13,6 +13,8 @@ export interface JournalEntryData {
   people: string[];
   eventTypes: EventType[];
   emotions: EmotionType[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface JournalEntryProps {

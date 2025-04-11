@@ -1,54 +1,42 @@
 
 import { JournalEntryData } from "@/components/journal/types/journal-types";
-import { MoodType } from "@/components/journal/MoodPicker";
-import { EmotionType } from "@/components/journal/types/emotion-types";
-import { format } from "date-fns";
-import { JournalEntryDB } from "./types";
 
 /**
- * Maps a database journal entry to the application JournalEntryData format
+ * Map a database journal entry to the JournalEntryData type
  */
-export function mapDbToJournalEntry(entry: JournalEntryDB): JournalEntryData {
-  // Parse the social_interactions object
-  const socialInteractions = entry.social_interactions as { 
-    people?: string[], 
-    eventTypes?: string[] 
-  } | null;
+export const mapDbToJournalEntry = (dbEntry: any): JournalEntryData => {
+  return {
+    id: dbEntry.id,
+    date: new Date(dbEntry.created_at),
+    content: dbEntry.content || "",
+    mood: dbEntry.mood || null,
+    energy: dbEntry.energy_level !== null ? dbEntry.energy_level : null,
+    activities: dbEntry.activities || [],
+    people: dbEntry.social_interactions?.people || [],
+    eventTypes: dbEntry.social_interactions?.eventTypes || [],
+    emotions: dbEntry.emotions?.list || [],
+    createdAt: new Date(dbEntry.created_at),
+    updatedAt: new Date(dbEntry.updated_at)
+  };
+};
 
-  // Handle emotions array conversion - ensure it's an array of strings (EmotionType)
-  const emotions: EmotionType[] = Array.isArray(entry.emotions) 
-    ? (entry.emotions as any[]).map(emotion => 
-        typeof emotion === 'string' ? emotion as EmotionType : String(emotion) as EmotionType
-      )
-    : [];
-
+/**
+ * Map a JournalEntryData object to the database format
+ */
+export const mapJournalEntryToDb = (entry: JournalEntryData, userId: string) => {
   return {
     id: entry.id,
-    date: new Date(entry.created_at),
-    content: entry.content || "",
-    mood: (entry.mood as MoodType) || "neutral", // Cast to MoodType with default
-    energy: entry.energy_level !== null ? entry.energy_level : null,
-    activities: entry.activities || [],
-    people: socialInteractions?.people || [],
-    eventTypes: socialInteractions?.eventTypes || [],
-    emotions: emotions,
-  };
-}
-
-/**
- * Maps a JournalEntryData to the format expected by the database
- */
-export function mapJournalEntryToDb(entry: JournalEntryData, userId: string): Omit<JournalEntryDB, 'id' | 'created_at' | 'updated_at'> {
-  return {
     user_id: userId,
-    content: entry.content || "",
+    content: entry.content,
     mood: entry.mood,
     energy_level: entry.energy,
     activities: entry.activities,
-    emotions: entry.emotions,
     social_interactions: {
       people: entry.people,
-      eventTypes: entry.eventTypes,
+      eventTypes: entry.eventTypes
+    },
+    emotions: {
+      list: entry.emotions
     }
   };
-}
+};

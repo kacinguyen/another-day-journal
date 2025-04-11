@@ -60,13 +60,13 @@ export function useJournalEntries() {
       updatedEntries.forEach(entry => {
         const dateString = format(entry.date, 'yyyy-MM-dd');
         if (!uniqueEntries.has(dateString) || 
-            entry.date > uniqueEntries.get(dateString)!.date) {
+            entry.updatedAt > uniqueEntries.get(dateString)!.updatedAt) {
           uniqueEntries.set(dateString, entry);
         }
       });
       
       const finalEntries = Array.from(uniqueEntries.values())
-        .sort((a, b) => b.date.getTime() - a.date.getTime());
+        .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
         
       setEntries(finalEntries);
       
