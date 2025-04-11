@@ -1,6 +1,5 @@
 
 import React, { useCallback } from "react";
-import { Tag } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { EventType, EventOption } from "./event/types";
 import { useEventTags } from "./event/useEventTags";

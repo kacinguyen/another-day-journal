@@ -1,11 +1,8 @@
 
-import React, { useState, useEffect } from "react";
-import { User } from "lucide-react";
+import React from "react";
+import { usePeopleTags } from "./social/usePeopleTags";
+import { PersonOptionButton, AddPersonButton, AddPersonForm } from "./social";
 import { PersonOption } from "./social/types";
-import { DEFAULT_PEOPLE_OPTIONS } from "./social/defaultOptions";
-import PersonOptionButton from "./social/PersonOptionButton";
-import AddPersonForm from "./social/AddPersonForm";
-import AddPersonButton from "./social/AddPersonButton";
 
 /**
  * SocialTracker Component
@@ -29,57 +26,13 @@ const SocialTracker: React.FC<SocialTrackerProps> = ({
   onAddPerson,
   onRemovePerson
 }) => {
-  // State for controlling the add person input
-  const [showInput, setShowInput] = useState(false);
-  
-  // State for tracking custom-added people
-  const [customPeople, setCustomPeople] = useState<PersonOption[]>([]);
-
-  // Combine default and custom people options
-  const allPeopleOptions = [...DEFAULT_PEOPLE_OPTIONS, ...customPeople];
-
-  /**
-   * Normalize and add existing people to custom options if needed
-   */
-  const normalizeExistingPeople = () => {
-    people.forEach(person => {
-      const normalized = person.toLowerCase().replace(/\s+/g, '');
-      const exists = allPeopleOptions.some(option => option.value === normalized);
-      
-      if (!exists) {
-        addToCustomPeople(normalized, person);
-      }
-    });
-  };
-
-  /**
-   * Helper to add a person to the custom people list
-   */
-  const addToCustomPeople = (value: string, label: string) => {
-    const newCustomPerson = {
-      value,
-      label,
-      icon: <User className="h-4 w-4" />,
-      isCustom: true
-    };
-    setCustomPeople(prev => [...prev, newCustomPerson]);
-  };
-
-  // Initialize existing people on component mount
-  useEffect(() => {
-    normalizeExistingPeople();
-  }, []);
-
-  /**
-   * Check if a person is currently selected
-   */
-  const isPersonSelected = (value: string): boolean => {
-    return people.some(
-      person => 
-        person.toLowerCase() === value.toLowerCase() || 
-        person === allPeopleOptions.find(opt => opt.value === value)?.label
-    );
-  };
+  const {
+    allPeopleOptions,
+    showInput,
+    setShowInput,
+    isPersonSelected,
+    addNewPerson
+  } = usePeopleTags(people);
 
   /**
    * Toggle a person's selection status
@@ -104,25 +57,10 @@ const SocialTracker: React.FC<SocialTrackerProps> = ({
    * Add a new custom person from input
    */
   const handleAddNewPerson = (inputValue: string): void => {
-    if (inputValue.trim() === "") return;
+    const newPersonLabel = addNewPerson(inputValue);
     
-    const newPersonValue = inputValue.toLowerCase().replace(/\s+/g, '');
-    
-    // Check if person already exists
-    const existingOption = allPeopleOptions.find(
-      option => option.value === newPersonValue || 
-                option.label.toLowerCase() === inputValue.toLowerCase()
-    );
-    
-    if (existingOption) {
-      // Use existing person if not already selected
-      if (!isPersonSelected(existingOption.value)) {
-        handleTogglePerson(existingOption);
-      }
-    } else {
-      // Add as new custom person
-      addToCustomPeople(newPersonValue, inputValue.trim());
-      onAddPerson(inputValue.trim());
+    if (newPersonLabel && !isPersonSelected(newPersonLabel)) {
+      onAddPerson(newPersonLabel);
     }
     
     // Reset input state

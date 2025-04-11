@@ -8,6 +8,7 @@ import {
   removeCustomEventTag 
 } from "@/services/journal/tagsService";
 import { Tag } from "lucide-react";
+import { toast } from "sonner";
 
 /**
  * Hook for managing event tags
@@ -48,6 +49,7 @@ export function useEventTags(userId: string | undefined, initialValues: EventTyp
       }
     } catch (error) {
       console.error("Error loading custom tags:", error);
+      toast.error("Failed to load custom tags");
     } finally {
       setIsLoadingTags(false);
     }
@@ -70,13 +72,22 @@ export function useEventTags(userId: string | undefined, initialValues: EventTyp
     // Add to UI immediately
     setCustomEventOptions(prev => [...prev, newTag]);
     
-    // Save to database
-    await addCustomEventTag(userId, {
-      value,
-      label
-    });
-
-    return newTag;
+    try {
+      // Save to database
+      await addCustomEventTag(userId, {
+        value,
+        label
+      });
+      
+      toast.success("Tag added successfully");
+      return newTag;
+    } catch (error) {
+      // Rollback UI change on error
+      setCustomEventOptions(prev => prev.filter(tag => tag.value !== value));
+      console.error("Error adding custom tag:", error);
+      toast.error("Failed to add custom tag");
+      return null;
+    }
   }, [userId]);
 
   /**
@@ -85,12 +96,23 @@ export function useEventTags(userId: string | undefined, initialValues: EventTyp
   const removeCustomTag = useCallback(async (option: EventOption) => {
     if (!userId || !option.isCustom) return;
     
+    // Store original state for potential rollback
+    const originalState = [...customEventOptions];
+    
     // Remove from UI
     setCustomEventOptions(prev => prev.filter(tag => tag.value !== option.value));
     
-    // Remove from database
-    await removeCustomEventTag(userId, option.value);
-  }, [userId]);
+    try {
+      // Remove from database
+      await removeCustomEventTag(userId, option.value);
+      toast.success("Tag removed successfully");
+    } catch (error) {
+      // Rollback UI change on error
+      setCustomEventOptions(originalState);
+      console.error("Error removing custom tag:", error);
+      toast.error("Failed to remove tag");
+    }
+  }, [userId, customEventOptions]);
 
   // Input related handlers
   const handleInputChange = useCallback((value: string) => {

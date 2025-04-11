@@ -1,9 +1,7 @@
 
-// Export all types from the types file
+// Export all types and components
 export * from './types';
-
-// Export all components
+export { DEFAULT_EVENT_OPTIONS } from './defaultOptions';
+export { useEventTags } from './useEventTags';
 export { default as EventOptionTag } from './EventOptionTag';
 export { default as AddTagInput } from './AddTagInput';
-export { useEventTags } from './useEventTags';
-export { DEFAULT_EVENT_OPTIONS } from './defaultOptions';
