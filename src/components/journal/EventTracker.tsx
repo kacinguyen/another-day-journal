@@ -1,5 +1,6 @@
 
 import React, { useCallback } from "react";
+import { Tag } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { EventType, EventOption } from "./event/types";
 import { useEventTags } from "./event/useEventTags";
@@ -123,6 +124,7 @@ const EventTracker: React.FC<EventTrackerProps> = ({ values, onChange }) => {
   );
 };
 
-// Re-export EventType to maintain backward compatibility
+// Export EventTracker as default, but also re-export EventType to maintain backward compatibility
+// Using export type to fix the isolatedModules error
 export type { EventType } from "./event/types";
 export default EventTracker;
