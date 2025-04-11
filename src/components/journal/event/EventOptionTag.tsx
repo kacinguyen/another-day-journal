@@ -33,7 +33,7 @@ const EventOptionTag: React.FC<EventOptionTagProps> = ({
     >
       {option.icon}
       <span className="text-xs font-medium">{option.label}</span>
-      {option.isCustom && onRemove && (
+      {onRemove && (
         <X 
           className="h-3 w-3 ml-1 hover:text-destructive cursor-pointer" 
           onClick={(e) => onRemove(option, e)}

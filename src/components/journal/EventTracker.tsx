@@ -69,7 +69,7 @@ const EventTracker: React.FC<EventTrackerProps> = ({ values, onChange }) => {
   };
 
   /**
-   * Removes a custom tag
+   * Removes a tag
    */
   const handleRemoveTag = async (option: EventOption, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -79,8 +79,10 @@ const EventTracker: React.FC<EventTrackerProps> = ({ values, onChange }) => {
       onChange(values.filter(v => v !== option.value));
     }
     
-    // Remove from database and UI
-    await removeCustomTag(option);
+    // If it's a custom tag, also remove from database and UI
+    if (option.isCustom) {
+      await removeCustomTag(option);
+    }
   };
 
   /**
@@ -106,7 +108,7 @@ const EventTracker: React.FC<EventTrackerProps> = ({ values, onChange }) => {
             option={option}
             isSelected={values.includes(option.value)}
             onToggle={handleToggleEvent}
-            onRemove={option.isCustom ? handleRemoveTag : undefined}
+            onRemove={handleRemoveTag}
           />
         ))}
         
