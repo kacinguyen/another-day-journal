@@ -23,7 +23,7 @@ export const fetchCustomTags = async (userId: string): Promise<CustomTags | null
   try {
     const { data, error } = await supabase
       .from('profiles')
-      .select('custom_tags')
+      .select('*')
       .eq('id', userId)
       .single();
 
@@ -33,7 +33,9 @@ export const fetchCustomTags = async (userId: string): Promise<CustomTags | null
     }
 
     // If there are no custom tags yet, return empty object
-    return data?.custom_tags || { events: {}, activities: {} };
+    // Use type assertion to safely access custom_tags
+    const customTags = (data as any)?.custom_tags;
+    return customTags || { events: {}, activities: {} };
   } catch (error) {
     console.error('Error in fetchCustomTags:', error);
     return null;
@@ -50,9 +52,12 @@ export const saveCustomTags = async (
   if (!userId) return false;
 
   try {
+    // Use type assertion for the update to handle the custom_tags property
     const { error } = await supabase
       .from('profiles')
-      .update({ custom_tags: customTags })
+      .update({ 
+        custom_tags: customTags 
+      } as any)
       .eq('id', userId);
 
     if (error) {
