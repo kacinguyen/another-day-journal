@@ -1,10 +1,10 @@
 
 import React from "react";
 import { useAuth } from "@/context/AuthContext";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { LogOut } from "lucide-react";
+import { LogOut, Settings } from "lucide-react";
 
 const Profile: React.FC = () => {
   const { user, signOut } = useAuth();
@@ -18,6 +18,10 @@ const Profile: React.FC = () => {
   const handleSignOut = async () => {
     await signOut();
     // AuthContext will handle navigation to login
+  };
+
+  const navigateToSettings = () => {
+    navigate("/settings");
   };
 
   return (
@@ -46,12 +50,18 @@ const Profile: React.FC = () => {
               {user.created_at ? new Date(user.created_at).toLocaleDateString() : "Not available"}
             </p>
           </div>
+        </CardContent>
+        <CardFooter className="flex flex-col space-y-3">
+          <Button variant="outline" onClick={navigateToSettings} className="w-full">
+            <Settings className="mr-2 h-4 w-4" />
+            Settings
+          </Button>
           
           <Button variant="destructive" onClick={handleSignOut} className="w-full">
             <LogOut className="mr-2 h-4 w-4" />
             Sign out
           </Button>
-        </CardContent>
+        </CardFooter>
       </Card>
     </div>
   );

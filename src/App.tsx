@@ -12,6 +12,8 @@ import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import Home from "./pages/Home";
 import Insights from "./pages/Insights";
+import Settings from "./pages/Settings";
+import Profile from "./pages/Profile";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 
@@ -45,6 +47,16 @@ const AuthenticatedRoutes = () => {
           <Route path="/insights" element={
             <ProtectedRoute>
               <Insights />
+            </ProtectedRoute>
+          } />
+          <Route path="/profile" element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          } />
+          <Route path="/settings" element={
+            <ProtectedRoute>
+              <Settings />
             </ProtectedRoute>
           } />
           <Route path="/login" element={<Login />} />

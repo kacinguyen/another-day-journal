@@ -98,6 +98,16 @@ const Navbar = () => {
                 </div>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
+                  <Link to="/profile" className="w-full cursor-pointer text-sm">
+                    Profile
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/settings" className="w-full cursor-pointer text-sm">
+                    Settings
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
                   <Link to="/contact" className="w-full cursor-pointer text-sm">
                     Send feedback
                   </Link>

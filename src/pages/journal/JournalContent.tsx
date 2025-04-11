@@ -3,11 +3,7 @@ import React from "react";
 import JournalEntry from "@/components/journal/JournalEntry";
 import JournalCalendar from "@/components/journal/JournalCalendar";
 import PreviousEntriesList from "@/components/journal/PreviousEntriesList";
-import ImportCsv from "@/components/journal/ImportCsv";
-import ExportCsv from "@/components/journal/ExportCsv";
 import { JournalEntryData } from "@/components/journal/types/journal-types";
-import { Card } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 
 interface JournalContentProps {
   entries: JournalEntryData[];
@@ -37,8 +33,7 @@ const JournalContent: React.FC<JournalContentProps> = ({
   handleSaveEntry,
   handleEntryClick,
   getInitialData,
-  datesWithEntries,
-  refreshEntries
+  datesWithEntries
 }) => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -71,21 +66,6 @@ const JournalContent: React.FC<JournalContentProps> = ({
             initialData={getInitialData()} 
           />
         </div>
-        
-        {/* Import/Export CSV Card */}
-        <Card className="w-full max-w-3xl mx-auto border rounded-md p-4">
-          <div className="flex flex-col space-y-3">
-            <h3 className="text-sm font-medium">Import/Export Journal Entries</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <ImportCsv onImportComplete={refreshEntries} />
-              <ExportCsv entries={entries} disabled={loading} />
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Import/export journal entries from/to a CSV file. The CSV must include at least
-              "date" and "mood" columns.
-            </p>
-          </div>
-        </Card>
       </div>
     </div>
   );
