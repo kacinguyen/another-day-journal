@@ -2,7 +2,7 @@
 import React, { useCallback } from "react";
 import { Tag } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
-import { EventType } from "./event/types";
+import { EventType, EventOption } from "./event/types";
 import { useEventTags } from "./event/useEventTags";
 import EventOptionTag from "./event/EventOptionTag";
 import AddTagInput from "./event/AddTagInput";
@@ -124,4 +124,6 @@ const EventTracker: React.FC<EventTrackerProps> = ({ values, onChange }) => {
   );
 };
 
+// Export EventTracker as default, but also re-export EventType to maintain backward compatibility
+export { EventType } from "./event/types";
 export default EventTracker;

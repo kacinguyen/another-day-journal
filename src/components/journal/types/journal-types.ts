@@ -1,6 +1,6 @@
 
 import { MoodType } from "../MoodPicker";
-import { EventType } from "../EventTracker";
+import { EventType } from "../event/types";
 import { EmotionType } from "./emotion-types";
 
 export interface JournalEntryData {

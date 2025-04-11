@@ -1,7 +1,7 @@
 
 import { JournalEntryData } from "@/components/journal/types/journal-types";
 import { MoodType } from "@/components/journal/MoodPicker";
-import { EventType } from "@/components/journal/EventTracker";
+import { EventType } from "@/components/journal/event/types";
 import { EmotionType } from "@/components/journal/types/emotion-types";
 import { parse } from "date-fns";
 

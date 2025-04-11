@@ -1,6 +1,7 @@
 
 import React from "react";
-import EventTracker, { EventType } from "../EventTracker";
+import EventTracker from "../EventTracker";
+import { EventType } from "../event/types";
 import ActivitySelector from "../ActivitySelector";
 import SocialTracker from "../SocialTracker";
 

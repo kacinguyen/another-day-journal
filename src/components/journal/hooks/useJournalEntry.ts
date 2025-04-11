@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { format } from "date-fns";
 import { JournalEntryData } from "../types/journal-types";
 import { MoodType } from "../MoodPicker";
-import { EventType } from "../EventTracker";
+import { EventType } from "../event/types";
 import { EmotionType } from "../types/emotion-types";
 
 /**
