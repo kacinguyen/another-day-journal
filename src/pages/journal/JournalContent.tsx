@@ -14,8 +14,10 @@ interface JournalContentProps {
   handleSaveEntry: (data: JournalEntryData) => void;
   handleEntryClick: (entry: JournalEntryData) => void;
   getInitialData: () => JournalEntryData;
+  isLoadingContent?: boolean;
   datesWithEntries: Date[];
   refreshEntries: () => void;
+  onMonthChange?: (month: Date) => void;
 }
 
 /**
@@ -33,7 +35,9 @@ const JournalContent: React.FC<JournalContentProps> = ({
   handleSaveEntry,
   handleEntryClick,
   getInitialData,
-  datesWithEntries
+  isLoadingContent,
+  datesWithEntries,
+  onMonthChange
 }) => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -46,6 +50,7 @@ const JournalContent: React.FC<JournalContentProps> = ({
             onDateSelect={handleDateSelect}
             datesWithEntries={datesWithEntries}
             entries={entries}
+            onMonthChange={onMonthChange}
           />
           
           {/* Previous Entries Card */}
@@ -61,9 +66,10 @@ const JournalContent: React.FC<JournalContentProps> = ({
       {/* Journal Entry Form Section */}
       <div className="lg:col-span-8 order-1 lg:order-2 flex flex-col space-y-6">
         <div id="journal-form" className="w-full max-w-3xl mx-auto">
-          <JournalEntry 
-            onSave={handleSaveEntry} 
-            initialData={getInitialData()} 
+          <JournalEntry
+            onSave={handleSaveEntry}
+            initialData={getInitialData()}
+            isLoadingContent={isLoadingContent}
           />
         </div>
       </div>

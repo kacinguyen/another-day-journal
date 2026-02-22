@@ -10,6 +10,7 @@ interface JournalCalendarProps {
   onDateSelect: (date: Date | undefined) => void;
   datesWithEntries: Date[];
   entries: JournalEntryData[];
+  onMonthChange?: (month: Date) => void;
 }
 
 /**
@@ -22,7 +23,8 @@ const JournalCalendar: React.FC<JournalCalendarProps> = ({
   selectedDate,
   onDateSelect,
   datesWithEntries,
-  entries
+  entries,
+  onMonthChange
 }) => {
   // Create a map of dates to mood types for styling
   const dateMoodMap = new Map<string, string>();
@@ -89,10 +91,11 @@ const JournalCalendar: React.FC<JournalCalendarProps> = ({
     <Card className="border rounded-lg p-4 bg-card shadow-sm">
       <div className="space-y-4">
         <h2 className="text-xl font-semibold">Calendar</h2>
-        <Calendar 
-          mode="single" 
-          selected={selectedDate} 
-          onSelect={onDateSelect} 
+        <Calendar
+          mode="single"
+          selected={selectedDate}
+          onSelect={onDateSelect}
+          onMonthChange={onMonthChange}
           className="rounded-md bg-white mx-auto w-full pointer-events-auto"
           modifiers={modifiers}
           modifiersClassNames={modifiersClassNames}

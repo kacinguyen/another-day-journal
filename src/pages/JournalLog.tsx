@@ -30,9 +30,11 @@ const JournalLog: React.FC = () => {
     handleSaveEntry,
     handleEntryClick,
     getInitialData,
+    isLoadingContent,
     isDayWithEntry,
     setSelectedDate,
-    refreshEntries
+    refreshEntries,
+    handleMonthChange
   } = useJournalLog();
   
   // Handle incoming selectedDate from state when navigating from insights
@@ -62,8 +64,10 @@ const JournalLog: React.FC = () => {
         handleSaveEntry={handleSaveEntry}
         handleEntryClick={handleEntryClick}
         getInitialData={getInitialData}
+        isLoadingContent={isLoadingContent}
         datesWithEntries={datesWithEntries}
         refreshEntries={refreshEntries}
+        onMonthChange={handleMonthChange}
       />
     </JournalLayout>
   );

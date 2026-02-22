@@ -22,7 +22,8 @@ export function useJournalLog() {
     refreshEntries,
     saveEntry,
     findEntryForDate,
-    isDayWithEntry
+    isDayWithEntry,
+    fetchEntriesForMonth
   } = useJournalEntries();
 
   // Use the current entry hook for managing the currently selected entry
@@ -30,6 +31,7 @@ export function useJournalLog() {
     selectedDate,
     setSelectedDate,
     currentEntry,
+    isLoadingContent,
     updateCurrentEntry,
     handleDateSelect: handleEntryDateSelect,
     handleEntryClick,
@@ -75,6 +77,10 @@ export function useJournalLog() {
     }
   };
 
+  const handleMonthChange = useCallback((month: Date) => {
+    fetchEntriesForMonth(month);
+  }, [fetchEntriesForMonth]);
+
   // Determine whether to show the example entry
   const showDummyEntry = entries.length === 0 && !loading;
 
@@ -88,7 +94,9 @@ export function useJournalLog() {
     handleSaveEntry,
     handleEntryClick,
     getInitialData,
+    isLoadingContent,
     isDayWithEntry,
-    refreshEntries
+    refreshEntries,
+    handleMonthChange
   };
 }
