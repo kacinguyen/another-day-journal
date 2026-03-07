@@ -20,4 +20,5 @@ export interface JournalEntryData {
 export interface JournalEntryProps {
   onSave: (data: JournalEntryData) => void;
   initialData: JournalEntryData;
+  isLoadingContent?: boolean;
 }

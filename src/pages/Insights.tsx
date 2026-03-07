@@ -1,5 +1,4 @@
 import React from "react";
-import { useAuth } from "@/context/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { fetchJournalEntries } from "@/services/journalService";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,12 +10,9 @@ import PositiveActivitiesCard from "@/components/insights/PositiveActivitiesCard
 import { format, subDays } from "date-fns";
 
 const Insights = () => {
-  const { user } = useAuth();
-  
   const { data: entries = [], isLoading } = useQuery({
-    queryKey: ['journal-entries'],
-    queryFn: fetchJournalEntries,
-    enabled: !!user,
+    queryKey: ['journal-entries-all'],
+    queryFn: () => fetchJournalEntries({ all: true }),
   });
 
   if (isLoading) {
@@ -24,17 +20,6 @@ const Insights = () => {
       <div className="container py-10">
         <div className="flex items-center justify-center h-64">
           <div className="text-lg text-muted-foreground">Loading insights...</div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!user) {
-    return (
-      <div className="container py-10">
-        <div className="flex flex-col items-center justify-center h-64 space-y-4">
-          <h2 className="text-2xl font-semibold">Sign in to view insights</h2>
-          <p className="text-muted-foreground">You need to be logged in to view your journal insights.</p>
         </div>
       </div>
     );

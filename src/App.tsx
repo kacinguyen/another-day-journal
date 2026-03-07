@@ -8,14 +8,9 @@ import Navbar from "./components/Navbar";
 import JournalLog from "./pages/JournalLog";
 import Conversations from "./pages/Conversations";
 import NotFound from "./pages/NotFound";
-import Login from "./pages/Login";
-import SignUp from "./pages/SignUp";
 import Home from "./pages/Home";
 import Insights from "./pages/Insights";
 import Settings from "./pages/Settings";
-import Profile from "./pages/Profile";
-import { AuthProvider } from "./context/AuthContext";
-import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 // Create a client for React Query with better caching defaults
 const queryClient = new QueryClient({
@@ -27,40 +22,17 @@ const queryClient = new QueryClient({
   },
 });
 
-const AuthenticatedRoutes = () => {
+const AppRoutes = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1">
         <Routes>
           <Route path="/home" element={<Home />} />
-          <Route path="/" element={
-            <ProtectedRoute>
-              <JournalLog />
-            </ProtectedRoute>
-          } />
-          <Route path="/conversations" element={
-            <ProtectedRoute>
-              <Conversations />
-            </ProtectedRoute>
-          } />
-          <Route path="/insights" element={
-            <ProtectedRoute>
-              <Insights />
-            </ProtectedRoute>
-          } />
-          <Route path="/profile" element={
-            <ProtectedRoute>
-              <Profile />
-            </ProtectedRoute>
-          } />
-          <Route path="/settings" element={
-            <ProtectedRoute>
-              <Settings />
-            </ProtectedRoute>
-          } />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
+          <Route path="/" element={<JournalLog />} />
+          <Route path="/conversations" element={<Conversations />} />
+          <Route path="/insights" element={<Insights />} />
+          <Route path="/settings" element={<Settings />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
@@ -71,13 +43,11 @@ const AuthenticatedRoutes = () => {
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <BrowserRouter>
-      <AuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <AuthenticatedRoutes />
-        </TooltipProvider>
-      </AuthProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <AppRoutes />
+      </TooltipProvider>
     </BrowserRouter>
   </QueryClientProvider>
 );

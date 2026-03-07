@@ -11,7 +11,8 @@ import { EmotionType } from "../types/emotion-types";
  */
 export const useJournalEntry = (
   initialData: JournalEntryData,
-  onSave: (data: JournalEntryData) => void
+  onSave: (data: JournalEntryData) => void,
+  isLoadingContent?: boolean
 ) => {
   const [date, setDate] = useState<Date>(initialData.date || new Date());
   const [content, setContent] = useState(initialData.content || "");
@@ -28,7 +29,7 @@ export const useJournalEntry = (
     const currentDateStr = format(date, 'yyyy-MM-dd');
     const newDateStr = format(initialData.date, 'yyyy-MM-dd');
     const isNewDate = currentDateStr !== newDateStr;
-    
+
     if (isNewDate || initialData.id) {
       setDate(initialData.date);
       setContent(initialData.content || "");
@@ -38,13 +39,12 @@ export const useJournalEntry = (
       setPeople(initialData.people || []);
       setEventTypes(initialData.eventTypes || []);
       setEmotions(initialData.emotions || []);
-    } 
+    }
     else if (!initialData.id) {
       setDate(initialData.date);
     }
   }, [initialData]);
 
-  // Handle activity management
   const handleAddActivity = (activity: string) => {
     setActivities([...activities, activity]);
   };
@@ -53,7 +53,6 @@ export const useJournalEntry = (
     setActivities(activities.filter((_, i) => i !== index));
   };
 
-  // Handle people management
   const handleAddPerson = (person: string) => {
     setPeople([...people, person]);
   };
@@ -62,9 +61,7 @@ export const useJournalEntry = (
     setPeople(people.filter((_, i) => i !== index));
   };
 
-  // Handle clear operation
   const handleClear = () => {
-    // Keep the date but reset all other fields
     setContent("");
     setMood(null);
     setEnergy(null);
@@ -74,19 +71,13 @@ export const useJournalEntry = (
     setEmotions([]);
   };
 
-  // Handle save operation
-  const handleSave = (user: any) => {
-    if (!user) {
-      return;
-    }
-    
-    // Only mood is required now
+  const handleSave = () => {
     if (mood === null) return;
-    
+
     setIsSaving(true);
-    
+
     const now = new Date();
-    
+
     const entryData: JournalEntryData = {
       id: initialData.id,
       date,
@@ -100,12 +91,12 @@ export const useJournalEntry = (
       createdAt: initialData.createdAt || now,
       updatedAt: now
     };
-    
+
     onSave(entryData);
-    
+
     setTimeout(() => {
       setIsSaving(false);
-      
+
       const saveButton = document.getElementById("save-button");
       if (saveButton) {
         saveButton.classList.add("animate-pulse");
@@ -116,7 +107,6 @@ export const useJournalEntry = (
     }, 600);
   };
 
-  // Check if the form is valid - only mood is required now
   const isFormValid = mood !== null;
 
   return {
@@ -129,6 +119,7 @@ export const useJournalEntry = (
     eventTypes,
     emotions,
     isSaving,
+    isLoadingContent: isLoadingContent ?? false,
     isFormValid,
     setContent,
     setMood,

@@ -1,6 +1,5 @@
 
 import React, { useCallback } from "react";
-import { useAuth } from "@/context/AuthContext";
 import { EventType, EventOption } from "./event/types";
 import { useEventTags } from "./event/useEventTags";
 import EventOptionTag from "./event/EventOptionTag";
@@ -11,14 +10,7 @@ interface EventTrackerProps {
   onChange: (values: EventType[]) => void;
 }
 
-/**
- * EventTracker Component
- * 
- * Allows users to select event types and create custom event tags
- */
 const EventTracker: React.FC<EventTrackerProps> = ({ values, onChange }) => {
-  const { user } = useAuth();
-  
   const {
     allEventOptions,
     showInput,
@@ -28,11 +20,8 @@ const EventTracker: React.FC<EventTrackerProps> = ({ values, onChange }) => {
     handleInputChange,
     toggleShowInput,
     resetInput
-  } = useEventTags(user?.id, values);
+  } = useEventTags(values);
 
-  /**
-   * Toggles an event in the selected values array
-   */
   const handleToggleEvent = useCallback((event: EventType) => {
     if (values.includes(event)) {
       onChange(values.filter(v => v !== event));
@@ -41,51 +30,36 @@ const EventTracker: React.FC<EventTrackerProps> = ({ values, onChange }) => {
     }
   }, [values, onChange]);
 
-  /**
-   * Adds a new custom tag
-   */
   const handleAddNewTag = async () => {
-    if (newTagName.trim() === "" || !user?.id) return;
-    
+    if (newTagName.trim() === "") return;
+
     const newTagValue = newTagName.toLowerCase().replace(/\s+/g, '');
-    
-    // Check if the tag already exists
+
     if (allEventOptions.some(option => option.value === newTagValue)) {
-      // Add the existing tag if it's not already selected
       if (!values.includes(newTagValue)) {
         handleToggleEvent(newTagValue);
       }
     } else {
       const newTag = await addNewCustomTag(newTagValue, newTagName.trim());
-      
-      // Select the new tag
+
       if (newTag && !values.includes(newTag.value)) {
         handleToggleEvent(newTag.value);
       }
     }
-    
-    // Reset and close input
+
     resetInput();
   };
 
-  /**
-   * Removes a custom tag
-   */
   const handleRemoveTag = async (option: EventOption, e: React.MouseEvent) => {
     e.stopPropagation();
-    
-    // Remove from selected values if present
+
     if (values.includes(option.value)) {
       onChange(values.filter(v => v !== option.value));
     }
-    
-    // Remove from database and UI
+
     await removeCustomTag(option);
   };
 
-  /**
-   * Handles keyboard events for the new tag input
-   */
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -94,11 +68,11 @@ const EventTracker: React.FC<EventTrackerProps> = ({ values, onChange }) => {
       resetInput();
     }
   };
-  
+
   return (
     <div className="space-y-3">
       <label className="text-sm font-medium">Event Tags</label>
-      
+
       <div className="flex flex-wrap gap-2">
         {allEventOptions.map(option => (
           <EventOptionTag
@@ -109,7 +83,7 @@ const EventTracker: React.FC<EventTrackerProps> = ({ values, onChange }) => {
             onRemove={option.isCustom ? handleRemoveTag : undefined}
           />
         ))}
-        
+
         <AddTagInput
           showInput={showInput}
           inputValue={newTagName}
@@ -123,7 +97,5 @@ const EventTracker: React.FC<EventTrackerProps> = ({ values, onChange }) => {
   );
 };
 
-// Export EventTracker as default, but also re-export EventType to maintain backward compatibility
-// Using export type to fix the isolatedModules error
 export type { EventType } from "./event/types";
 export default EventTracker;

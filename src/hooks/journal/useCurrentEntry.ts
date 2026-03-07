@@ -1,7 +1,8 @@
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { JournalEntryData } from "@/components/journal/types/journal-types";
 import { format } from "date-fns";
+import { fetchEntryContent } from "@/services/journalService";
 
 /**
  * A hook to manage the current journal entry state
@@ -9,6 +10,7 @@ import { format } from "date-fns";
 export function useCurrentEntry() {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [currentEntry, setCurrentEntry] = useState<JournalEntryData | null>(null);
+  const [isLoadingContent, setIsLoadingContent] = useState(false);
 
   /**
    * Update the current entry
@@ -16,6 +18,23 @@ export function useCurrentEntry() {
   const updateCurrentEntry = useCallback((entry: JournalEntryData | null | undefined) => {
     setCurrentEntry(entry || null);
   }, []);
+
+  // Lazy-load content when an existing entry is selected but has no content
+  useEffect(() => {
+    if (currentEntry?.id && !currentEntry.content) {
+      let cancelled = false;
+      setIsLoadingContent(true);
+      fetchEntryContent(currentEntry.id).then((content) => {
+        if (!cancelled) {
+          setCurrentEntry((prev) =>
+            prev && prev.id === currentEntry.id ? { ...prev, content } : prev
+          );
+          setIsLoadingContent(false);
+        }
+      });
+      return () => { cancelled = true; };
+    }
+  }, [currentEntry?.id, currentEntry?.content]);
 
   /**
    * Handle date selection
@@ -78,6 +97,7 @@ export function useCurrentEntry() {
     selectedDate,
     setSelectedDate,
     currentEntry,
+    isLoadingContent,
     updateCurrentEntry,
     handleDateSelect,
     handleEntryClick,

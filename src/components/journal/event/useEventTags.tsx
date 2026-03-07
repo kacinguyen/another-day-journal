@@ -1,120 +1,40 @@
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { EventOption, EventType } from "./types";
 import { DEFAULT_EVENT_OPTIONS } from "./defaultOptions";
-import { 
-  fetchCustomTags, 
-  addCustomEventTag, 
-  removeCustomEventTag 
-} from "@/services/journal/tagsService";
 import { Tag } from "lucide-react";
 import { toast } from "sonner";
 
 /**
  * Hook for managing event tags
+ * Custom tags are managed locally — Notion auto-creates multi-select options when entries are saved
  */
-export function useEventTags(userId: string | undefined, initialValues: EventType[]) {
+export function useEventTags(initialValues: EventType[]) {
   const [customEventOptions, setCustomEventOptions] = useState<EventOption[]>([]);
-  const [isLoadingTags, setIsLoadingTags] = useState(false);
   const [showInput, setShowInput] = useState(false);
   const [newTagName, setNewTagName] = useState("");
 
-  // Combine default and custom options
   const allEventOptions = [...DEFAULT_EVENT_OPTIONS, ...customEventOptions];
 
-  /**
-   * Load custom tags when user changes
-   */
-  useEffect(() => {
-    loadCustomTags();
-  }, [userId]);
-
-  /**
-   * Fetches and loads custom tags from the database
-   */
-  const loadCustomTags = async () => {
-    if (!userId) return;
-    
-    setIsLoadingTags(true);
-    try {
-      const customTags = await fetchCustomTags(userId);
-      if (customTags?.events) {
-        const customOptions = Object.values(customTags.events).map(tag => ({
-          value: tag.value,
-          label: tag.label,
-          icon: <Tag className="h-4 w-4" />,
-          isCustom: true
-        }));
-        setCustomEventOptions(customOptions);
-      }
-    } catch (error) {
-      console.error("Error loading custom tags:", error);
-      toast.error("Failed to load custom tags");
-    } finally {
-      setIsLoadingTags(false);
-    }
-  };
-
-  /**
-   * Adds a new custom tag
-   */
   const addNewCustomTag = useCallback(async (value: string, label: string) => {
-    if (!userId) return;
-
-    // Create the new custom tag
     const newTag: EventOption = {
       value,
       label,
       icon: <Tag className="h-4 w-4" />,
       isCustom: true
     };
-    
-    // Add to UI immediately
+
     setCustomEventOptions(prev => [...prev, newTag]);
-    
-    try {
-      // Save to database
-      await addCustomEventTag(userId, {
-        value,
-        label
-      });
-      
-      toast.success("Tag added successfully");
-      return newTag;
-    } catch (error) {
-      // Rollback UI change on error
-      setCustomEventOptions(prev => prev.filter(tag => tag.value !== value));
-      console.error("Error adding custom tag:", error);
-      toast.error("Failed to add custom tag");
-      return null;
-    }
-  }, [userId]);
+    toast.success("Tag added successfully");
+    return newTag;
+  }, []);
 
-  /**
-   * Removes a custom tag
-   */
   const removeCustomTag = useCallback(async (option: EventOption) => {
-    if (!userId || !option.isCustom) return;
-    
-    // Store original state for potential rollback
-    const originalState = [...customEventOptions];
-    
-    // Remove from UI
+    if (!option.isCustom) return;
     setCustomEventOptions(prev => prev.filter(tag => tag.value !== option.value));
-    
-    try {
-      // Remove from database
-      await removeCustomEventTag(userId, option.value);
-      toast.success("Tag removed successfully");
-    } catch (error) {
-      // Rollback UI change on error
-      setCustomEventOptions(originalState);
-      console.error("Error removing custom tag:", error);
-      toast.error("Failed to remove tag");
-    }
-  }, [userId, customEventOptions]);
+    toast.success("Tag removed successfully");
+  }, []);
 
-  // Input related handlers
   const handleInputChange = useCallback((value: string) => {
     setNewTagName(value);
   }, []);
@@ -131,7 +51,6 @@ export function useEventTags(userId: string | undefined, initialValues: EventTyp
   return {
     allEventOptions,
     customEventOptions,
-    isLoadingTags,
     showInput,
     newTagName,
     addNewCustomTag,

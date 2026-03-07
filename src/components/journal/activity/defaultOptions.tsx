@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Book, Dumbbell, Utensils, Pencil, Brain, Tv, TreeDeciduous, Code, Cake, Bike } from "lucide-react";
+import { Book, Dumbbell, Utensils, Pencil, Brain, Tv, TreeDeciduous, Code, Cake, Bike, Warehouse } from "lucide-react";
 import { ActivityOption } from "./types";
 
 /**
@@ -18,4 +18,5 @@ export const DEFAULT_ACTIVITY_OPTIONS: ActivityOption[] = [
   { value: "baking", label: "Baking", icon: <Cake className="h-4 w-4" /> },
   { value: "biking", label: "Biking", icon: <Bike className="h-4 w-4" /> },
   { value: "learning", label: "Learning", icon: <Brain className="h-4 w-4" /> },
+  { value: "gym", label: "Gym", icon: <Warehouse className="h-4 w-4" /> },
 ];

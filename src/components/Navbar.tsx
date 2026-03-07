@@ -1,23 +1,11 @@
 
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { User } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { useAuth } from "@/context/AuthContext";
 import { useEffect, useMemo, useCallback } from "react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, signOut } = useAuth();
 
   // Memoize nav items to avoid recreating on each render
   const navItems = useMemo(() => [
@@ -26,18 +14,13 @@ const Navbar = () => {
     { name: "Conversations", path: "/conversations" }
   ], []);
 
-  const handleSignOut = useCallback(async () => {
-    await signOut();
-    // AuthContext will handle navigation to login
-  }, [signOut]);
-  
   useEffect(() => {
     window.scrollTo({
       top: 0,
       behavior: 'auto'
     });
   }, [location.pathname]);
-  
+
   const handleNavigation = useCallback((path: string) => {
     if (location.pathname !== path) {
       navigate(path);
@@ -56,7 +39,7 @@ const Navbar = () => {
           <Link to="/home" className="lowercase font-vibur text-2xl hover:text-primary transition-colors mr-8">
             another day
           </Link>
-          
+
           <nav className="flex gap-6">
             {navItems.map(item => (
               <button
@@ -71,68 +54,6 @@ const Navbar = () => {
               </button>
             ))}
           </nav>
-        </div>
-        
-        <div className="flex items-center space-x-4">
-          {user ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-foreground">
-                  <User className="mr-2 h-4 w-4" />
-                  Profile
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <div className="px-2 py-1.5 text-sm">
-                  <div className="font-medium">{user.email}</div>
-                  <div className="text-xs text-muted-foreground mt-1">
-                    ID: {user.id ? user.id.substring(0, 8) + '...' : 'Not available'}
-                  </div>
-                  {user.created_at && (
-                    <div className="text-xs text-muted-foreground mt-1">
-                      Joined: {new Date(user.created_at).toLocaleDateString()}
-                    </div>
-                  )}
-                </div>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link to="/profile" className="w-full cursor-pointer text-sm">
-                    Profile
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/settings" className="w-full cursor-pointer text-sm">
-                    Settings
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/contact" className="w-full cursor-pointer text-sm">
-                    Send feedback
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem 
-                  onClick={handleSignOut} 
-                  className="text-destructive cursor-pointer"
-                >
-                  Sign out
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          ) : (
-            <>
-              <Link to="/login" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-                Log in
-              </Link>
-              <Link to="/signup">
-                <Button size="sm">
-                  Get started
-                </Button>
-              </Link>
-            </>
-          )}
         </div>
       </div>
     </header>

@@ -1,33 +1,20 @@
 
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { parseJournalCsv } from "@/utils/csvUtils";
-import { ImportStats } from "./types";
+import { ImportStats, JournalEntryDB } from "./types";
 import { mapJournalEntryToDb } from "./mappers";
+import { apiGet, apiPost, apiPatch } from "../api";
 
 /**
  * Import journal entries from CSV
  * Parses CSV content and saves entries to the database
- * 
- * @param csvContent CSV content as string
- * @returns Statistics about the import operation
  */
 export const importJournalEntries = async (csvContent: string): Promise<ImportStats> => {
   try {
-    // Get the current user
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) {
-      toast("You must be logged in to import journal entries", {
-        description: "Please log in and try again",
-      });
-      return { total: 0, success: 0, failed: 0 };
-    }
-
     // Parse CSV data
     const { entries, errors } = parseJournalCsv(csvContent);
-    
+
     if (entries.length === 0) {
       if (errors.length > 0) {
         toast("Failed to parse CSV", {
@@ -40,71 +27,43 @@ export const importJournalEntries = async (csvContent: string): Promise<ImportSt
       }
       return { total: 0, success: 0, failed: 0 };
     }
-    
-    // Log parsing errors if any
+
     if (errors.length > 0) {
       console.warn("CSV parsing errors:", errors);
     }
 
-    // Import each entry
+    // Fetch existing entries for dedup checking
+    const existingEntries = await apiGet<JournalEntryDB[]>("/notion/entries");
+
     let successCount = 0;
     let failedCount = 0;
-    
+
     for (const entry of entries) {
       try {
-        // Format the date correctly for storage
-        const entryDate = format(entry.date, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
-        
-        // Prepare entry data for Supabase
-        const entryData = mapJournalEntryToDb(entry, user.id);
-        
+        const entryData = mapJournalEntryToDb(entry);
+        const dateString = format(entry.date, 'yyyy-MM-dd');
+
         // Check if an entry already exists for this date
-        const { data: existingEntries } = await supabase
-          .from('journal_entries')
-          .select('id, created_at')
-          .eq('user_id', user.id)
-          .gte('created_at', new Date(entry.date.setHours(0, 0, 0, 0)).toISOString())
-          .lt('created_at', new Date(entry.date.setHours(23, 59, 59, 999)).toISOString());
-          
-        if (existingEntries && existingEntries.length > 0) {
-          // Update existing entry
-          const { error } = await supabase
-            .from('journal_entries')
-            .update({
-              ...entryData,
-              updated_at: new Date().toISOString()
-            })
-            .eq('id', existingEntries[0].id);
-            
-          if (error) {
-            console.error("Error updating entry:", error);
-            failedCount++;
-          } else {
-            successCount++;
-          }
+        const existing = existingEntries.find(e => {
+          const existingDate = new Date(e.created_at);
+          return format(existingDate, 'yyyy-MM-dd') === dateString;
+        });
+
+        if (existing) {
+          await apiPatch(`/notion/entries/${existing.id}`, entryData);
         } else {
-          // Insert new entry
-          const { error } = await supabase
-            .from('journal_entries')
-            .insert({
-              ...entryData,
-              created_at: entryDate,
-              updated_at: new Date().toISOString()
-            });
-            
-          if (error) {
-            console.error("Error inserting entry:", error);
-            failedCount++;
-          } else {
-            successCount++;
-          }
+          await apiPost("/notion/entries", {
+            ...entryData,
+            created_at: entry.date.toISOString(),
+          });
         }
+        successCount++;
       } catch (error) {
         console.error("Error importing entry:", error);
         failedCount++;
       }
     }
-    
+
     return {
       total: entries.length,
       success: successCount,

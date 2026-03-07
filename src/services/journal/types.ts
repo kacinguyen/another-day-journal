@@ -1,5 +1,4 @@
 
-import { Json } from "@/integrations/supabase/types";
 import { JournalEntryData } from "@/components/journal/types/journal-types";
 import { MoodType } from "@/components/journal/MoodPicker";
 import { EventType } from "@/components/journal/event/types";
@@ -7,11 +6,10 @@ import { EmotionType } from "@/components/journal/types/emotion-types";
 
 /**
  * Database representation of a journal entry
- * Maps to the Supabase journal_entries table
+ * Maps to the Notion database schema
  */
 export interface JournalEntryDB {
   id: string;
-  user_id: string;
   content: string | null;
   mood: string | null;
   energy_level: number | null;
