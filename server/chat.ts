@@ -54,10 +54,24 @@ chatRouter.post("/", async (req: Request, res: Response) => {
   try {
     const { message, history } = req.body;
 
-    if (!message) {
+    if (!message || typeof message !== "string") {
       res.status(400).json({ error: "No message provided" });
       return;
     }
+
+    // Validate and sanitize chat history — only allow user/assistant roles with string content
+    const MAX_HISTORY = 50;
+    const sanitizedHistory: OpenAI.ChatCompletionMessageParam[] = (
+      Array.isArray(history) ? history : []
+    )
+      .filter(
+        (msg: any) =>
+          msg &&
+          (msg.role === "user" || msg.role === "assistant") &&
+          typeof msg.content === "string"
+      )
+      .slice(-MAX_HISTORY)
+      .map((msg: any) => ({ role: msg.role, content: msg.content }));
 
     const journalEntries = await getEntries();
     const journalContext = formatJournalContext(journalEntries);
@@ -77,7 +91,7 @@ IMPORTANT: If the user has journal entries (${journalEntries.length} found), DO 
 
     const messages: OpenAI.ChatCompletionMessageParam[] = [
       { role: "system", content: systemPrompt },
-      ...(history || []),
+      ...sanitizedHistory,
       { role: "user", content: message },
     ];
 

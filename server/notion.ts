@@ -1,4 +1,4 @@
-import { Router, Request, Response } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 import { Client } from "@notionhq/client";
 import { getCachedEntries, setCachedEntries, invalidateEntriesCache } from "./cache";
 
@@ -6,6 +6,19 @@ const notion = new Client({ auth: process.env.NOTION_API_KEY });
 const DATABASE_ID = process.env.NOTION_DATABASE_ID!;
 
 export const notionRouter = Router();
+
+// Notion uses UUIDs (with or without dashes)
+const UUID_RE = /^[0-9a-f]{8}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{12}$/i;
+const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+
+// Middleware: validate :id param as UUID
+function validateId(req: Request, res: Response, next: NextFunction) {
+  if (!UUID_RE.test(req.params.id as string)) {
+    res.status(400).json({ error: "Invalid entry ID format" });
+    return;
+  }
+  next();
+}
 
 // Types
 interface JournalEntryDB {
@@ -242,7 +255,12 @@ notionRouter.get("/entries", async (req: Request, res: Response) => {
     if (req.query.all === "true") {
       since = undefined;
     } else if (req.query.since) {
-      since = req.query.since as string;
+      const raw = req.query.since as string;
+      if (!DATE_RE.test(raw)) {
+        res.status(400).json({ error: "Invalid 'since' format. Expected YYYY-MM-DD." });
+        return;
+      }
+      since = raw;
     } else {
       // Default to 1 month ago
       const d = new Date();
@@ -254,18 +272,18 @@ notionRouter.get("/entries", async (req: Request, res: Response) => {
     res.json(entries);
   } catch (error: any) {
     console.error("Error fetching entries:", error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
 // GET /api/notion/entries/:id/content — fetch page body content for a single entry
-notionRouter.get("/entries/:id/content", async (req: Request, res: Response) => {
+notionRouter.get("/entries/:id/content", validateId, async (req: Request, res: Response) => {
   try {
     const content = await fetchPageContent(req.params.id);
     res.json({ content });
   } catch (error: any) {
     console.error("Error fetching entry content:", error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
@@ -296,12 +314,12 @@ notionRouter.post("/entries", async (req: Request, res: Response) => {
     res.json(entry);
   } catch (error: any) {
     console.error("Error creating entry:", error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
 // PATCH /api/notion/entries/:id — update an existing entry
-notionRouter.patch("/entries/:id", async (req: Request, res: Response) => {
+notionRouter.patch("/entries/:id", validateId, async (req: Request, res: Response) => {
   try {
     const properties = entryToNotionProperties(req.body);
 
@@ -321,12 +339,12 @@ notionRouter.patch("/entries/:id", async (req: Request, res: Response) => {
     res.json(entry);
   } catch (error: any) {
     console.error("Error updating entry:", error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
 // DELETE /api/notion/entries/:id — archive a page
-notionRouter.delete("/entries/:id", async (req: Request, res: Response) => {
+notionRouter.delete("/entries/:id", validateId, async (req: Request, res: Response) => {
   try {
     await notion.pages.update({
       page_id: req.params.id,
@@ -336,7 +354,7 @@ notionRouter.delete("/entries/:id", async (req: Request, res: Response) => {
     res.json({ success: true });
   } catch (error: any) {
     console.error("Error deleting entry:", error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
@@ -356,7 +374,7 @@ notionRouter.get("/tags", async (_req: Request, res: Response) => {
     res.json(tags);
   } catch (error: any) {
     console.error("Error fetching tags:", error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 

@@ -1,6 +1,8 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
 import path from "path";
 import { notionRouter, getEntries } from "./notion";
 import { chatRouter } from "./chat";
@@ -8,9 +10,50 @@ import { chatRouter } from "./chat";
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-app.use(cors());
-app.use(express.json());
+// Security headers
+app.use(helmet());
 
+// CORS — restrict to allowed origin
+app.use(
+  cors({
+    origin: process.env.ALLOWED_ORIGIN || "http://localhost:8080",
+  })
+);
+
+// Body size limit
+app.use(express.json({ limit: "100kb" }));
+
+// API authentication middleware — requires API_SECRET env var
+function apiAuth(
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) {
+  const secret = process.env.API_SECRET;
+  if (!secret) {
+    // If no secret is configured, skip auth (development convenience)
+    return next();
+  }
+
+  const authHeader = req.headers.authorization;
+  if (!authHeader || authHeader !== `Bearer ${secret}`) {
+    res.status(401).json({ error: "Unauthorized" });
+    return;
+  }
+  next();
+}
+
+// Rate limit on chat endpoint (20 requests per minute)
+const chatLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: "Too many requests, please try again later" },
+});
+
+app.use("/api/chat", chatLimiter);
+app.use("/api", apiAuth);
 app.use("/api/notion", notionRouter);
 app.use("/api/chat", chatRouter);
 
