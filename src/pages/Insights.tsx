@@ -1,12 +1,16 @@
 import React from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchJournalEntries } from "@/services/journalService";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { CircleX } from "lucide-react";
 import MoodChart from "@/components/insights/MoodChart";
 import EnergySummary from "@/components/insights/EnergySummary";
 import ActivitySummary from "@/components/insights/ActivitySummary";
 import PositiveActivitiesCard from "@/components/insights/PositiveActivitiesCard";
+import ChatInterface from "@/components/chat/ChatInterface";
+import { useConversation } from "@/hooks/useConversation";
 import { format, subDays } from "date-fns";
 
 const Insights = () => {
@@ -14,6 +18,15 @@ const Insights = () => {
     queryKey: ['journal-entries-all'],
     queryFn: () => fetchJournalEntries({ all: true }),
   });
+  const { messages, isLoading: isChatLoading, sendMessage, clearConversation } = useConversation();
+  const queryClient = useQueryClient();
+
+  React.useEffect(() => {
+    queryClient.prefetchQuery({
+      queryKey: ['journal-entries'],
+      queryFn: () => fetchJournalEntries(),
+    });
+  }, [queryClient]);
 
   if (isLoading) {
     return (
@@ -57,30 +70,67 @@ const Insights = () => {
         </p>
       </div>
 
-      <Tabs defaultValue="7days" className="space-y-6">
-        <TabsList>
-          <TabsTrigger value="7days">Last 7 Days</TabsTrigger>
-          <TabsTrigger value="30days">Last 30 Days</TabsTrigger>
-          <TabsTrigger value="90days">Last 90 Days</TabsTrigger>
-          <TabsTrigger value="all">All Time</TabsTrigger>
-        </TabsList>
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-8">
+        <div>
+          <Tabs defaultValue="7days" className="space-y-6">
+            <TabsList>
+              <TabsTrigger value="7days">Last 7 Days</TabsTrigger>
+              <TabsTrigger value="30days">Last 30 Days</TabsTrigger>
+              <TabsTrigger value="90days">Last 90 Days</TabsTrigger>
+              <TabsTrigger value="all">All Time</TabsTrigger>
+            </TabsList>
 
-        <TabsContent value="7days" className="space-y-6">
-          <MoodInsightsContent entries={last7DaysEntries} />
-        </TabsContent>
+            <TabsContent value="7days" className="space-y-6">
+              <MoodInsightsContent entries={last7DaysEntries} />
+            </TabsContent>
 
-        <TabsContent value="30days" className="space-y-6">
-          <MoodInsightsContent entries={last30DaysEntries} />
-        </TabsContent>
+            <TabsContent value="30days" className="space-y-6">
+              <MoodInsightsContent entries={last30DaysEntries} />
+            </TabsContent>
 
-        <TabsContent value="90days" className="space-y-6">
-          <MoodInsightsContent entries={last90DaysEntries} />
-        </TabsContent>
+            <TabsContent value="90days" className="space-y-6">
+              <MoodInsightsContent entries={last90DaysEntries} />
+            </TabsContent>
 
-        <TabsContent value="all" className="space-y-6">
-          <MoodInsightsContent entries={entries} />
-        </TabsContent>
-      </Tabs>
+            <TabsContent value="all" className="space-y-6">
+              <MoodInsightsContent entries={entries} />
+            </TabsContent>
+          </Tabs>
+        </div>
+
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <div className="inline-block">
+                <span className="text-xs font-medium text-journal-accent-foreground bg-journal-accent/10 px-2 py-0.5 rounded-full">
+                  AI Assistant
+                </span>
+              </div>
+              <h2 className="text-lg font-bold tracking-tight">Conversations</h2>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={clearConversation}
+              disabled={messages.length === 0 || isChatLoading}
+              className="text-muted-foreground hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-foreground"
+            >
+              <CircleX className="mr-2 h-4 w-4" />
+              Clear
+            </Button>
+          </div>
+
+          <div className="rounded-lg border lg:sticky lg:top-24">
+            <div className="h-[700px]">
+              <ChatInterface
+                messages={messages}
+                isLoading={isChatLoading}
+                onSendMessage={sendMessage}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

@@ -6,7 +6,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import JournalLog from "./pages/JournalLog";
-import Conversations from "./pages/Conversations";
 import NotFound from "./pages/NotFound";
 import Home from "./pages/Home";
 import Insights from "./pages/Insights";
@@ -30,7 +29,6 @@ const AppRoutes = () => {
         <Routes>
           <Route path="/home" element={<Home />} />
           <Route path="/" element={<JournalLog />} />
-          <Route path="/conversations" element={<Conversations />} />
           <Route path="/insights" element={<Insights />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="*" element={<NotFound />} />

@@ -10,8 +10,7 @@ const Navbar = () => {
   // Memoize nav items to avoid recreating on each render
   const navItems = useMemo(() => [
     { name: "Journal Log", path: "/" },
-    { name: "Insights", path: "/insights" },
-    { name: "Conversations", path: "/conversations" }
+    { name: "Insights", path: "/insights" }
   ], []);
 
   useEffect(() => {
