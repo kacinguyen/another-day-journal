@@ -7,9 +7,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import JournalLog from "./pages/JournalLog";
 import NotFound from "./pages/NotFound";
-import Home from "./pages/Home";
-import Insights from "./pages/Insights";
 import Settings from "./pages/Settings";
+import Eras from "./pages/Eras";
 
 // Create a client for React Query with better caching defaults
 const queryClient = new QueryClient({
@@ -27,10 +26,10 @@ const AppRoutes = () => {
       <Navbar />
       <main className="flex-1">
         <Routes>
-          <Route path="/home" element={<Home />} />
           <Route path="/" element={<JournalLog />} />
-          <Route path="/insights" element={<Insights />} />
+          <Route path="/home" element={<JournalLog />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/eras" element={<Eras />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

@@ -25,3 +25,9 @@ dist-ssr
 
 # Environment variables
 .env
+
+# Exported data
+exports/
+
+# Generated era images
+public/era-images/*.png

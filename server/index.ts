@@ -2,10 +2,11 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
-import rateLimit from "express-rate-limit";
+
 import path from "path";
 import { notionRouter, getEntries } from "./notion";
-import { chatRouter } from "./chat";
+import { imageRouter } from "./image";
+import { erasRouter } from "./eras";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -43,19 +44,13 @@ function apiAuth(
   next();
 }
 
-// Rate limit on chat endpoint (20 requests per minute)
-const chatLimiter = rateLimit({
-  windowMs: 60 * 1000,
-  max: 20,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { error: "Too many requests, please try again later" },
-});
-
-app.use("/api/chat", chatLimiter);
 app.use("/api", apiAuth);
 app.use("/api/notion", notionRouter);
-app.use("/api/chat", chatRouter);
+app.use("/api/image", imageRouter);
+app.use("/api/eras", erasRouter);
+
+// Serve generated era images
+app.use("/era-images", express.static(path.resolve(import.meta.dirname, "../public/era-images")));
 
 // In production, serve the built frontend
 if (process.env.NODE_ENV === "production") {

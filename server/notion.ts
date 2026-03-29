@@ -118,24 +118,30 @@ function monthFilter(since: string): object {
 }
 
 // Shared entry fetcher with caching. Optionally filter to a date range.
-// Content is NOT fetched here — use the /entries/:id/content endpoint instead.
-async function getEntries(since?: string): Promise<JournalEntryDB[]> {
-  const cached = getCachedEntries(since);
+// Content is NOT fetched by default — use includeContent to fetch page body text.
+async function getEntries(since?: string, includeContent = false): Promise<JournalEntryDB[]> {
+  const cacheKey = includeContent ? `${since ?? "all"}:withContent` : since;
+  const cached = getCachedEntries(cacheKey);
   if (cached) {
-    console.log(`[cache] Serving entries from cache (since=${since ?? "all"})`);
+    console.log(`[cache] Serving entries from cache (since=${since ?? "all"}, content=${includeContent})`);
     return cached;
   }
 
   const filterLabel = since ? ` (since ${since})` : "";
-  console.log(`[cache] Cache miss — fetching from Notion${filterLabel}`);
+  console.log(`[cache] Cache miss — fetching from Notion${filterLabel}, content=${includeContent}`);
 
   const filter = since ? monthFilter(since) : undefined;
   const pages = await fetchPages(filter);
 
-  // Skip content fetch — entries are returned with content: null
-  const entries = pages.map((page) => pageToEntry(page));
+  let entries: JournalEntryDB[];
+  if (includeContent) {
+    const contentMap = await fetchPageContentBatched(pages);
+    entries = pages.map((page) => pageToEntry(page, contentMap.get(page.id) || undefined));
+  } else {
+    entries = pages.map((page) => pageToEntry(page));
+  }
 
-  setCachedEntries(entries, since);
+  setCachedEntries(entries, cacheKey);
 
   return entries;
 }

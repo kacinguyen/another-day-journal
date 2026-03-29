@@ -9,8 +9,7 @@ const Navbar = () => {
 
   // Memoize nav items to avoid recreating on each render
   const navItems = useMemo(() => [
-    { name: "Journal Log", path: "/" },
-    { name: "Insights", path: "/insights" }
+    { name: "Eras", path: "/eras" }
   ], []);
 
   useEffect(() => {
@@ -35,7 +34,7 @@ const Navbar = () => {
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-md">
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center">
-          <Link to="/home" className="lowercase font-vibur text-2xl hover:text-primary transition-colors mr-8">
+          <Link to="/" className="lowercase font-vibur text-2xl hover:text-primary transition-colors mr-8">
             another day
           </Link>
 

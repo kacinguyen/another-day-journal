@@ -118,6 +118,10 @@ export default {
 				pulse: {
 					'0%, 100%': { opacity: '1' },
 					'50%': { opacity: '0.5' }
+				},
+				scroll: {
+					'0%': { transform: 'translateX(0)' },
+					'100%': { transform: 'translateX(-50%)' }
 				}
 			},
 			animation: {
@@ -128,7 +132,8 @@ export default {
 				'slide-in-right': 'slide-in-right 0.3s ease-out',
 				'slide-in-left': 'slide-in-left 0.3s ease-out',
 				'scale-in': 'scale-in 0.2s ease-out',
-				'pulse-slow': 'pulse 3s ease-in-out infinite'
+				'pulse-slow': 'pulse 3s ease-in-out infinite',
+				scroll: 'scroll 30s linear infinite'
 			}
 		}
 	},
