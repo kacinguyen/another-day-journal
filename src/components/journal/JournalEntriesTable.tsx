@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { getMoodEmoji } from "@/utils/journalUtils";
+import { surface, sizing } from "@/styles/tokens";
 import {
   PartyPopper,
   UtensilsCrossed,
@@ -111,12 +112,12 @@ export const JournalEntriesTable: React.FC<{
   };
 
   return (
-    <ScrollArea className="h-[500px] pr-4">
+    <ScrollArea className={`${sizing.entriesScroll} pr-4`}>
       <div className="space-y-4">
         {entries.map((entry) => (
           <Card 
             key={entry.id} 
-            className="p-4 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            className={`p-4 cursor-pointer ${surface.hover} transition-colors`}
             onClick={() => onEntryClick && onEntryClick(entry)}
           >
             <div className="space-y-3">

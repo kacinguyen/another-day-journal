@@ -4,6 +4,7 @@ import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { Battery, BatteryFull, BatteryMedium, BatteryLow, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { energyColors, getEnergyLevel } from "@/styles/tokens";
 
 interface EnergyTrackerProps {
   value: number | null;
@@ -19,31 +20,26 @@ const EnergyTracker: React.FC<EnergyTrackerProps> = ({ value, onChange }) => {
         text: "Not Set",
         color: "text-muted-foreground"
       };
-    } else if (value >= 75) {
-      return {
-        icon: <BatteryFull className="h-5 w-5 text-green-500" />,
-        text: "High Energy",
-        color: "text-green-500"
-      };
-    } else if (value >= 50) {
-      return {
-        icon: <BatteryMedium className="h-5 w-5 text-blue-500" />,
-        text: "Good Energy",
-        color: "text-blue-500"
-      };
-    } else if (value >= 25) {
-      return {
-        icon: <BatteryLow className="h-5 w-5 text-orange-500" />,
-        text: "Low Energy",
-        color: "text-orange-500"
-      };
-    } else {
-      return {
-        icon: <Battery className="h-5 w-5 text-red-500" />,
-        text: "Exhausted",
-        color: "text-red-500"
-      };
     }
+
+    const level = getEnergyLevel(value);
+    const color = energyColors[level];
+
+    const icons = {
+      high: <BatteryFull className={cn("h-5 w-5", color)} />,
+      good: <BatteryMedium className={cn("h-5 w-5", color)} />,
+      low: <BatteryLow className={cn("h-5 w-5", color)} />,
+      exhausted: <Battery className={cn("h-5 w-5", color)} />,
+    };
+
+    const labels = {
+      high: "High Energy",
+      good: "Good Energy",
+      low: "Low Energy",
+      exhausted: "Exhausted",
+    };
+
+    return { icon: icons[level], text: labels[level], color };
   };
 
   const energyInfo = getEnergyInfo();

@@ -2,6 +2,7 @@ import { useEras, useEraImageGeneration } from "@/hooks/useEras";
 import FilmStrip from "@/components/eras/FilmStrip";
 import { Button } from "@/components/ui/button";
 import { Loader2, ImageIcon } from "lucide-react";
+import { LoadingState } from "@/components/ui/loading-state";
 
 const Eras = () => {
   const { eras, isLoading } = useEras();
@@ -12,11 +13,7 @@ const Eras = () => {
   const allReady = eras.length > 0 && missingImages.length === 0;
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-      </div>
-    );
+    return <LoadingState />;
   }
 
   return (

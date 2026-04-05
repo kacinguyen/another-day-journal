@@ -6,6 +6,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { surface } from "@/styles/tokens";
 import {
   PartyPopper,
   UtensilsCrossed,
@@ -80,7 +81,7 @@ const ExampleJournalEntry: React.FC = () => {
   };
 
   return (
-    <Card className="overflow-hidden hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+    <Card className={`overflow-hidden ${surface.hover} transition-colors`}>
       <CardHeader className="p-4">
         <CardTitle className="text-lg">Example Entry</CardTitle>
         <CardDescription>Here's what your journal entries will look like</CardDescription>

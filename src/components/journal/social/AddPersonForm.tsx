@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { surface } from "@/styles/tokens";
 
 interface AddPersonFormProps {
   onAddPerson: (personName: string) => void;
@@ -41,7 +42,7 @@ const AddPersonForm: React.FC<AddPersonFormProps> = ({ onAddPerson, onCancel }) 
         onClick={handleAddPerson} 
         variant="outline"
         size="sm"
-        className="h-8 px-2 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-foreground"
+        className={`h-8 px-2 ${surface.hover} hover:text-foreground`}
       >
         Add
       </Button>

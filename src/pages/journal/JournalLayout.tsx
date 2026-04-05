@@ -24,7 +24,7 @@ const JournalLayout: React.FC<JournalLayoutProps> = ({
         <div className="inline-block">
           <span className="text-xs font-medium text-journal-accent-foreground bg-journal-accent/10 px-2 py-0.5 rounded-full">Write</span>
         </div>
-        <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
+        <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
         <p className="text-muted-foreground max-w-2xl">
           {description}
         </p>

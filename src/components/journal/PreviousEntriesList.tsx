@@ -5,7 +5,10 @@ import JournalEntriesTable from "@/components/journal/JournalEntriesTable";
 import ExampleJournalEntry from "@/components/journal/ExampleJournalEntry";
 import { JournalEntryData } from "@/components/journal/types/journal-types";
 import { Button } from "@/components/ui/button";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, BookOpen } from "lucide-react";
+import { surface } from "@/styles/tokens";
+import { LoadingState } from "@/components/ui/loading-state";
+import { EmptyState } from "@/components/ui/empty-state";
 
 interface PreviousEntriesListProps {
   entries: JournalEntryData[];
@@ -62,7 +65,7 @@ const PreviousEntriesList: React.FC<PreviousEntriesListProps> = ({
                 <Button 
                   variant="ghost" 
                   onClick={handleSeeMore}
-                  className="text-sm flex items-center gap-1 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-foreground"
+                  className={`text-sm flex items-center gap-1 ${surface.hover} hover:text-foreground`}
                 >
                   See more <ChevronDown className="h-4 w-4" />
                 </Button>
@@ -79,10 +82,14 @@ const PreviousEntriesList: React.FC<PreviousEntriesListProps> = ({
           <div>
             {showDummyEntry ? (
               <ExampleJournalEntry />
+            ) : loading ? (
+              <LoadingState text="Loading entries..." className="py-8" />
             ) : (
-              <div className="text-sm text-muted-foreground">
-                {loading ? "Loading entries..." : "Your previous journal entries will appear here."}
-              </div>
+              <EmptyState
+                icon={BookOpen}
+                title="No entries yet"
+                description="Your previous journal entries will appear here."
+              />
             )}
           </div>
         )}

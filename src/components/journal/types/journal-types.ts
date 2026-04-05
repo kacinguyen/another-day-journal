@@ -1,5 +1,5 @@
 
-import { MoodType } from "../MoodPicker";
+import { MoodType } from "./mood-types";
 import { EventType } from "../event/types";
 import { EmotionType } from "./emotion-types";
 

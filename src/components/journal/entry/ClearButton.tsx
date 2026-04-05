@@ -2,6 +2,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Eraser } from "lucide-react";
+import { surface } from "@/styles/tokens";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -31,7 +32,7 @@ const ClearButton: React.FC<ClearButtonProps> = ({ onClear, disabled = false }) 
         <Button 
           variant="outline" 
           size="sm"
-          className="gap-1 text-muted-foreground hover:text-gray-600 hover:bg-gray-100 hover:border-gray-300 dark:hover:text-gray-300 dark:hover:bg-gray-800 dark:hover:border-gray-700"
+          className={`gap-1 text-muted-foreground hover:text-foreground ${surface.hover} hover:border-muted-foreground/30`}
           disabled={disabled}
           id="clear-button"
         >
