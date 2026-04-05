@@ -7,6 +7,8 @@ import path from "path";
 import { notionRouter, getEntries } from "./notion";
 import { imageRouter } from "./image";
 import { erasRouter } from "./eras";
+import { reflectRouter } from "./reflect";
+import { pollenRouter } from "./pollen";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -48,6 +50,8 @@ app.use("/api", apiAuth);
 app.use("/api/notion", notionRouter);
 app.use("/api/image", imageRouter);
 app.use("/api/eras", erasRouter);
+app.use("/api/reflect", reflectRouter);
+app.use("/api/pollen", pollenRouter);
 
 // Serve generated era images
 app.use("/era-images", express.static(path.resolve(import.meta.dirname, "../public/era-images")));

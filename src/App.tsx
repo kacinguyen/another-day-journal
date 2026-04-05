@@ -9,6 +9,7 @@ import JournalLog from "./pages/JournalLog";
 import NotFound from "./pages/NotFound";
 import Settings from "./pages/Settings";
 import Eras from "./pages/Eras";
+import PromptedEntry from "./pages/PromptedEntry";
 
 // Create a client for React Query with better caching defaults
 const queryClient = new QueryClient({
@@ -30,6 +31,7 @@ const AppRoutes = () => {
           <Route path="/home" element={<JournalLog />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/eras" element={<Eras />} />
+          <Route path="/compose" element={<PromptedEntry />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

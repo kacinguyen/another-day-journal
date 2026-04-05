@@ -19,6 +19,8 @@ export interface JournalEntryDB {
     people?: string[];
     eventTypes?: string[];
   } | null;
+  mood_factors: string[] | null;
+  inline_tags: string | null; // JSON string of InlineTag[]
   created_at: string;
   updated_at: string;
 }

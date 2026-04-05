@@ -27,6 +27,8 @@ export const mapDbToJournalEntry = (dbEntry: any): JournalEntryData => {
     people: dbEntry.social_interactions?.people || [],
     eventTypes: dbEntry.social_interactions?.eventTypes || [],
     emotions: dbEntry.emotions || [],
+    moodFactors: dbEntry.mood_factors || [],
+    inlineTags: dbEntry.inline_tags ? JSON.parse(dbEntry.inline_tags) : [],
     createdAt: parseLocalDate(dbEntry.created_at),
     updatedAt: new Date(dbEntry.updated_at)
   };
@@ -55,5 +57,7 @@ export const mapJournalEntryToDb = (entry: JournalEntryData) => {
     emotions: entry.emotions,
     people: entry.people,
     event_types: entry.eventTypes,
+    mood_factors: entry.moodFactors || [],
+    inline_tags: entry.inlineTags ? JSON.stringify(entry.inlineTags) : null,
   };
 };

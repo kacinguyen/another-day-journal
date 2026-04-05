@@ -15,22 +15,10 @@ interface MoodPickerProps {
 const MoodPicker: React.FC<MoodPickerProps> = ({ value, onChange }) => {
   const moods = [
     {
-      value: "great" as MoodType,
-      label: "Great",
-      icon: <Heart className="h-5 w-5" />,
-      ...moodColors.great,
-    },
-    {
-      value: "good" as MoodType,
-      label: "Good",
-      icon: <Smile className="h-5 w-5" />,
-      ...moodColors.good,
-    },
-    {
-      value: "neutral" as MoodType,
-      label: "Neutral",
-      icon: <Meh className="h-5 w-5" />,
-      ...moodColors.neutral,
+      value: "awful" as MoodType,
+      label: "Awful",
+      icon: <Frown className="h-5 w-5 transform rotate-180" />,
+      ...moodColors.awful,
     },
     {
       value: "bad" as MoodType,
@@ -39,10 +27,22 @@ const MoodPicker: React.FC<MoodPickerProps> = ({ value, onChange }) => {
       ...moodColors.bad,
     },
     {
-      value: "awful" as MoodType,
-      label: "Awful",
-      icon: <Frown className="h-5 w-5 transform rotate-180" />,
-      ...moodColors.awful,
+      value: "neutral" as MoodType,
+      label: "Neutral",
+      icon: <Meh className="h-5 w-5" />,
+      ...moodColors.neutral,
+    },
+    {
+      value: "good" as MoodType,
+      label: "Good",
+      icon: <Smile className="h-5 w-5" />,
+      ...moodColors.good,
+    },
+    {
+      value: "great" as MoodType,
+      label: "Great",
+      icon: <Heart className="h-5 w-5" />,
+      ...moodColors.great,
     },
   ];
 
@@ -55,12 +55,12 @@ const MoodPicker: React.FC<MoodPickerProps> = ({ value, onChange }) => {
             key={mood.value}
             onClick={() => onChange(mood.value)}
             className={cn(
-              "flex flex-col items-center justify-center p-2 rounded-lg transition-all duration-300 transform hover:scale-105",
+              "flex flex-col items-center justify-center p-2 rounded-lg transition-all duration-300",
               sizing.moodButton,
               mood.text,
               mood.textHover,
               value === mood.value ?
-                cn("ring-2 ring-offset-1 scale-105", mood.bg) :
+                cn("border-2 border-current", mood.bg) :
                 "bg-muted/50"
             )}
           >

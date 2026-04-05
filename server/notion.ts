@@ -32,6 +32,8 @@ interface JournalEntryDB {
     people?: string[];
     eventTypes?: string[];
   } | null;
+  mood_factors: string[] | null;
+  inline_tags: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -158,6 +160,8 @@ function pageToEntry(page: any, content?: string): JournalEntryDB {
   const emotionsText = richTextToString(props.emotions?.rich_text || []);
   const peopleText = richTextToString(props.people?.rich_text || []);
   const eventTypesText = richTextToString(props.eventTypes?.rich_text || []);
+  const moodFactorsText = richTextToString(props.mood_factors?.rich_text || []);
+  const inlineTagsText = richTextToString(props.inline_tags?.rich_text || []);
 
   return {
     id: page.id,
@@ -170,6 +174,8 @@ function pageToEntry(page: any, content?: string): JournalEntryDB {
       people: parseRichTextList(peopleText),
       eventTypes: parseRichTextList(eventTypesText),
     },
+    mood_factors: parseRichTextList(moodFactorsText),
+    inline_tags: inlineTagsText || null,
     created_at: props.date?.date?.start || page.created_time,
     updated_at: page.last_edited_time,
   };
@@ -221,6 +227,18 @@ function entryToNotionProperties(data: any) {
   if (data.event_types !== undefined) {
     properties["eventTypes"] = {
       rich_text: [{ text: { content: (data.event_types || []).join(", ") } }],
+    };
+  }
+
+  if (data.mood_factors !== undefined) {
+    properties["mood_factors"] = {
+      rich_text: [{ text: { content: (data.mood_factors || []).join(", ") } }],
+    };
+  }
+
+  if (data.inline_tags !== undefined) {
+    properties["inline_tags"] = {
+      rich_text: [{ text: { content: data.inline_tags || "" } }],
     };
   }
 
