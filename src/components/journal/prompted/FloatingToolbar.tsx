@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, Mic, Sparkles, CheckCircle } from "lucide-react";
+import { Image, Mic, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -72,8 +72,7 @@ const FloatingToolbar: React.FC<FloatingToolbarProps> = ({
               : "bg-muted text-muted-foreground cursor-not-allowed"
           )}
         >
-          <CheckCircle className="h-4 w-4" />
-          {isSaving ? "Saving..." : "Finish entry"}
+          {isSaving ? "Saving..." : "Save entry"}
         </button>
       </div>
     </div>

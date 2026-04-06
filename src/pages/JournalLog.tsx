@@ -14,7 +14,7 @@ import {
   isToday,
 } from "date-fns";
 import { useNavigate } from "react-router-dom";
-import { Plus, Pencil } from "lucide-react";
+import { PenLine, Pencil } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useJournalEntries } from "@/hooks/journal/useJournalEntries";
@@ -297,7 +297,7 @@ const JournalLog: React.FC = () => {
             onClick={() => navigate("/compose")}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-foreground text-background text-sm font-medium hover:bg-foreground/90 transition-colors"
           >
-            <Plus className="h-4 w-4" />
+            <PenLine className="h-4 w-4" />
             Compose
           </button>
         </div>

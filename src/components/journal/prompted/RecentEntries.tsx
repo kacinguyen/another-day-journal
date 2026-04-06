@@ -97,12 +97,13 @@ const RecentEntries: React.FC<RecentEntriesProps> = ({
 
                   {/* Content preview */}
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm text-foreground line-clamp-2 leading-snug">
-                      {entry.content || (
-                        <span className="text-muted-foreground italic">
-                          No content
-                        </span>
-                      )}
+                    <p className="text-sm text-muted-foreground line-clamp-2 leading-snug">
+                      {[
+                        entry.mood,
+                        ...(entry.emotions?.slice(0, 2) || []),
+                      ]
+                        .filter(Boolean)
+                        .join(" · ") || "No content"}
                     </p>
                   </div>
                 </div>
