@@ -15,6 +15,7 @@ import {
 } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { Plus, Pencil } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useJournalEntries } from "@/hooks/journal/useJournalEntries";
 import { apiGet } from "@/services/api";
@@ -276,7 +277,7 @@ const JournalLog: React.FC = () => {
       </div>
 
       {/* Main calendar area */}
-      <div ref={calendarRef} className="flex-1 px-6 lg:px-10 pt-8 pb-4 flex flex-col min-h-0">
+      <div ref={calendarRef} className="flex-1 px-6 lg:px-10 pt-8 pb-4 flex flex-col min-h-0 transition-all duration-[450ms] ease-in-out">
         {/* Greeting */}
         <div className="mb-4 shrink-0">
           <p className="text-sm text-muted-foreground">
@@ -360,8 +361,16 @@ const JournalLog: React.FC = () => {
       </div>
 
       {/* Right sidebar: Entry preview */}
+      <AnimatePresence>
       {selectedEntry && (
-        <div className="w-72 shrink-0 border-l pt-8 pr-6 pl-5 pb-4 overflow-y-auto hidden lg:block">
+        <motion.div
+          key={selectedEntry.date}
+          initial={{ opacity: 0, width: 0 }}
+          animate={{ opacity: 1, width: 288 }}
+          exit={{ opacity: 0, width: 0 }}
+          transition={{ duration: 0.45, ease: "easeInOut" }}
+          className="shrink-0 border-l pt-8 pr-6 pl-5 pb-4 overflow-y-auto overflow-x-hidden hidden lg:block"
+        >
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="font-semibold text-sm">
@@ -452,8 +461,9 @@ const JournalLog: React.FC = () => {
               Edit in Compose
             </button>
           </div>
-        </div>
+        </motion.div>
       )}
+      </AnimatePresence>
     </div>
   );
 };
