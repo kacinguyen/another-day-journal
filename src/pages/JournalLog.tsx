@@ -34,6 +34,20 @@ const JournalLog: React.FC = () => {
   const [entryContent, setEntryContent] = useState<string | null>(null);
   const [loadingContent, setLoadingContent] = useState(false);
   const [transitionClass, setTransitionClass] = useState("");
+  const [now, setNow] = useState(new Date());
+
+  // Update clock every minute
+  useEffect(() => {
+    const timer = setInterval(() => setNow(new Date()), 60_000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const greeting = useMemo(() => {
+    const hour = now.getHours();
+    if (hour < 12) return "Good morning";
+    if (hour < 17) return "Good afternoon";
+    return "Good evening";
+  }, [now]);
 
   // Build entry lookup map
   const dateEntryMap = useMemo(() => {
@@ -242,7 +256,7 @@ const JournalLog: React.FC = () => {
                 onClick={() => handleMonthSelect(month)}
                 className={cn(
                   "w-full text-left px-3 py-1.5 rounded-md text-sm",
-                  "flex items-center gap-2 transition-all duration-200",
+                  "flex items-center gap-2 transition-all duration-200 whitespace-nowrap",
                   isActive
                     ? "font-semibold text-foreground"
                     : "text-muted-foreground hover:text-foreground"
@@ -263,11 +277,21 @@ const JournalLog: React.FC = () => {
 
       {/* Main calendar area */}
       <div ref={calendarRef} className="flex-1 px-6 lg:px-10 pt-8 pb-4 flex flex-col min-h-0">
+        {/* Greeting */}
+        <div className="mb-4 shrink-0">
+          <p className="text-sm text-muted-foreground">
+            {format(now, "h:mm a · EEEE, MMMM d, yyyy")}
+          </p>
+          <h1 className="text-3xl font-semibold tracking-tight">
+            {greeting}, Kaci
+          </h1>
+        </div>
+
         {/* Month title */}
         <div className="flex items-center justify-between mb-4 shrink-0">
-          <h1 className={cn("text-3xl font-semibold tracking-tight", transitionClass)}>
+          <h2 className={cn("text-xl font-semibold tracking-tight", transitionClass)}>
             {format(currentMonth, "MMMM yyyy")}
-          </h1>
+          </h2>
           <button
             onClick={() => navigate("/compose")}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-foreground text-background text-sm font-medium hover:bg-foreground/90 transition-colors"
