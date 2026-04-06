@@ -354,11 +354,11 @@ notionRouter.patch("/entries/:id", validateId, async (req: Request, res: Respons
     });
 
     // Update page body content if provided
-    if (req.body.content !== undefined) {
-      await updatePageContent(req.params.id, req.body.content || "");
+    const content = req.body.content ?? undefined;
+    if (content !== undefined) {
+      await updatePageContent(req.params.id, content || "");
     }
 
-    const content = await fetchPageContent(req.params.id);
     const entry = pageToEntry(page, content);
     invalidateEntriesCache();
     res.json(entry);

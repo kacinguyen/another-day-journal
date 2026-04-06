@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { toast } from "sonner";
 import { Separator } from "@/components/ui/separator";
@@ -24,6 +25,7 @@ function getGreeting(): string {
 
 const PromptedEntry: React.FC = () => {
   const location = useLocation();
+  const queryClient = useQueryClient();
   const { entries, loading, saveEntry } = useJournalEntries();
   const [digDeeperQuestions, setDigDeeperQuestions] = useState<string[]>([]);
   const [isDiggingDeeper, setIsDiggingDeeper] = useState(false);
@@ -39,6 +41,7 @@ const PromptedEntry: React.FC = () => {
     isSaving,
     editingEntryId,
     editingEntryDate,
+    editingCreatedAt,
     setMood,
     setContent,
     setIsSaving,
@@ -73,13 +76,17 @@ const PromptedEntry: React.FC = () => {
 
       let entryContent = entry.content;
 
-      // Lazy-load content if not present
+      // Lazy-load content if not present — cached by React Query
       if (!entryContent && entry.id) {
         try {
-          const data = await apiGet<{ content: string }>(
-            `/notion/entries/${entry.id}/content`
-          );
-          entryContent = data.content;
+          entryContent = await queryClient.fetchQuery({
+            queryKey: ["entry-content", entry.id],
+            queryFn: () =>
+              apiGet<{ content: string }>(
+                `/notion/entries/${entry.id}/content`
+              ).then((d) => d.content),
+            staleTime: 5 * 60 * 1000, // 5 minutes
+          });
         } catch {
           toast.error("Failed to load entry content");
           return;
@@ -91,7 +98,7 @@ const PromptedEntry: React.FC = () => {
       setEditorKey((k) => k + 1);
       setDigDeeperQuestions([]);
     },
-    [editingEntryId, loadEntry]
+    [editingEntryId, loadEntry, queryClient]
   );
 
   const handleFinish = useCallback(async () => {
@@ -131,9 +138,10 @@ const PromptedEntry: React.FC = () => {
         // saveEntry already showed an error toast via the service layer
         return;
       }
-      toast.success(
-        editingEntryId ? "Entry updated" : "Journal entry saved"
-      );
+      // Update content cache so switching back to this entry is instant
+      if (saved?.id) {
+        queryClient.setQueryData(["entry-content", saved.id], content);
+      }
       // Stay on compose — update editingEntryId so future saves are updates
       if (saved?.id && !editingEntryId) {
         loadEntry({ ...entryData, id: saved.id }, content);
@@ -154,6 +162,7 @@ const PromptedEntry: React.FC = () => {
     saveEntry,
     setIsSaving,
     loadEntry,
+    queryClient,
   ]);
 
   const handleDigDeeper = useCallback(async () => {
@@ -179,8 +188,9 @@ const PromptedEntry: React.FC = () => {
     }
   }, [content, mood, emotions, moodFactors]);
 
-  const today = new Date();
-  const displayDate = editingEntryDate ? new Date(editingEntryDate) : today;
+  const now = new Date();
+  const displayDate = editingEntryDate ? new Date(editingEntryDate) : now;
+  const displayTime = editingCreatedAt ? new Date(editingCreatedAt) : now;
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -202,7 +212,7 @@ const PromptedEntry: React.FC = () => {
             {/* Header */}
             <div className="mb-6">
               <p className="text-sm text-muted-foreground">
-                {format(displayDate, "h:mm a")} &middot;{" "}
+                {format(displayTime, "h:mm a")} &middot;{" "}
                 {format(displayDate, "EEEE, MMMM d, yyyy")}
               </p>
               <h1 className="text-3xl font-semibold tracking-tight mt-1">

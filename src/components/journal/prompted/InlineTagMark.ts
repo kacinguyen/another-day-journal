@@ -14,6 +14,14 @@ export const InlineTagMark = Mark.create({
           "data-category": attributes.category,
         }),
       },
+      displayName: {
+        default: null,
+        parseHTML: (element) => element.getAttribute("data-display-name"),
+        renderHTML: (attributes) => {
+          if (!attributes.displayName) return {};
+          return { "data-display-name": attributes.displayName };
+        },
+      },
     };
   },
 

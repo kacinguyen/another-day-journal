@@ -21,11 +21,12 @@ function extractTags(json: Record<string, unknown>): InlineTag[] {
   function walk(node: Record<string, unknown>) {
     if (node.type === "text") {
       const text = node.text as string;
-      const marks = (node.marks as Array<{ type: string; attrs?: { category: string } }>) || [];
+      const marks = (node.marks as Array<{ type: string; attrs?: { category: string; displayName?: string } }>) || [];
       const tagMark = marks.find((m) => m.type === "inlineTag");
       if (tagMark) {
         tags.push({
           text,
+          displayName: tagMark.attrs?.displayName || undefined,
           category: tagMark.attrs?.category as TagCategory,
           startOffset: offset,
           endOffset: offset + text.length,
@@ -126,10 +127,16 @@ const TaggableEditor: React.FC<TaggableEditorProps> = ({
     }
   }, [content, editor]);
 
+  const getSelectedText = useCallback(() => {
+    if (!editor) return "";
+    const { from, to } = editor.state.selection;
+    return editor.state.doc.textBetween(from, to);
+  }, [editor]);
+
   const handleTagSelect = useCallback(
-    (category: TagCategory) => {
+    (category: TagCategory, displayName?: string) => {
       if (!editor) return;
-      editor.chain().focus().setMark("inlineTag", { category }).run();
+      editor.chain().focus().setMark("inlineTag", { category, displayName: displayName || null }).run();
       setHasSelection(false);
       setPickerPos(null);
     },
@@ -150,7 +157,7 @@ const TaggableEditor: React.FC<TaggableEditorProps> = ({
             transform: "translateX(-50%)",
           }}
         >
-          <TagCategoryPicker onSelect={handleTagSelect} />
+          <TagCategoryPicker onSelect={handleTagSelect} selectedText={getSelectedText()} />
         </div>
       )}
     </div>

@@ -1,6 +1,6 @@
 import React from "react";
 import { Badge } from "@/components/ui/badge";
-import { User, MapPin, Calendar, Dumbbell } from "lucide-react";
+import { User, MapPin, Calendar, Activity } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { InlineTag } from "./usePromptedEntry";
 
@@ -32,7 +32,7 @@ const categoryConfig = {
   },
   activity: {
     label: "Activities",
-    icon: Dumbbell,
+    icon: Activity,
     bg: "bg-orange-100 dark:bg-orange-950",
     text: "text-orange-700 dark:text-orange-300",
     border: "border-orange-200 dark:border-orange-800",
@@ -43,9 +43,10 @@ const TagsSidebar: React.FC<TagsSidebarProps> = ({ tags }) => {
   const grouped = tags.reduce(
     (acc, tag) => {
       if (!acc[tag.category]) acc[tag.category] = [];
-      // Deduplicate by text (case-insensitive)
+      // Deduplicate by display name or text (case-insensitive)
+      const tagLabel = (tag.displayName || tag.text).toLowerCase();
       const exists = acc[tag.category].some(
-        (t) => t.text.toLowerCase() === tag.text.toLowerCase()
+        (t) => (t.displayName || t.text).toLowerCase() === tagLabel
       );
       if (!exists) acc[tag.category].push(tag);
       return acc;
@@ -96,7 +97,7 @@ const TagsSidebar: React.FC<TagsSidebarProps> = ({ tags }) => {
                       config.border
                     )}
                   >
-                    {tag.text}
+                    {tag.displayName || tag.text}
                   </Badge>
                 ))}
               </div>

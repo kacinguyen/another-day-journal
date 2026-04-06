@@ -5,6 +5,7 @@ import { EmotionType } from "./emotion-types";
 
 export interface InlineTag {
   text: string;
+  displayName?: string;
   category: "person" | "place" | "event" | "activity";
   startOffset: number;
   endOffset: number;

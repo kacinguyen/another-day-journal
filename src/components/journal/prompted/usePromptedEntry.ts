@@ -14,6 +14,7 @@ export interface PromptedEntryState {
   isSaving: boolean;
   editingEntryId: string | null;
   editingEntryDate: Date | null;
+  editingCreatedAt: Date | null;
 }
 
 export function usePromptedEntry() {
@@ -25,6 +26,7 @@ export function usePromptedEntry() {
   const [isSaving, setIsSaving] = useState(false);
   const [editingEntryId, setEditingEntryId] = useState<string | null>(null);
   const [editingEntryDate, setEditingEntryDate] = useState<Date | null>(null);
+  const [editingCreatedAt, setEditingCreatedAt] = useState<Date | null>(null);
 
   const toggleEmotion = useCallback((emotion: EmotionType) => {
     setEmotions((prev) =>
@@ -69,11 +71,13 @@ export function usePromptedEntry() {
     setInlineTags([]);
     setEditingEntryId(null);
     setEditingEntryDate(null);
+    setEditingCreatedAt(null);
   }, []);
 
   const loadEntry = useCallback((entry: JournalEntryData, loadedContent?: string) => {
     setEditingEntryId(entry.id ?? null);
     setEditingEntryDate(entry.date);
+    setEditingCreatedAt(entry.updatedAt ?? entry.createdAt);
     setMood(entry.mood ?? null);
     setEmotions(entry.emotions ?? []);
     setMoodFactors(entry.moodFactors ?? []);
@@ -90,6 +94,7 @@ export function usePromptedEntry() {
     isSaving,
     editingEntryId,
     editingEntryDate,
+    editingCreatedAt,
     setMood,
     setEmotions,
     setContent,
