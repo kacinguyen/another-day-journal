@@ -53,14 +53,6 @@ const Navbar = () => {
 
   const year = format(new Date(), "yyyy");
 
-  const pollenLower = pollen?.level?.toLowerCase() ?? "";
-  const pollenColor =
-    pollenLower.includes("high")
-      ? "text-red-500"
-      : pollenLower === "moderate"
-        ? "text-orange-500"
-        : "text-green-500";
-
   return (
     <header className="sticky top-0 z-50 w-full px-6 pt-3">
       <div className="rounded-xl bg-muted/60 backdrop-blur-md px-6 py-3">
@@ -74,22 +66,22 @@ const Navbar = () => {
           </Link>
 
           {/* Right: Pollen + Weather + Location */}
-          <div className="flex items-center gap-4 text-sm">
-            {pollen && (
-              <div className="flex items-center gap-1.5">
-                <Flower2 className={`h-3.5 w-3.5 ${pollenColor}`} />
-                <span className={pollenColor}>{pollen.level}</span>
-              </div>
-            )}
+          <div className="flex flex-col items-end gap-0.5">
             {weather ? (
-              <div className="flex items-center gap-2">
-                <span className="font-medium">{weather.temp}</span>
-                <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
-                <span className="text-muted-foreground">{weather.location}</span>
+              <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                <MapPin className="h-3.5 w-3.5" />
+                <span>{weather.location}</span>
               </div>
             ) : (
               <span className="text-muted-foreground text-xs">Loading...</span>
             )}
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground/70">
+              {weather && <span>{weather.temp}</span>}
+              {weather && pollen && <span>·</span>}
+              {pollen && (
+                <span>{pollen.level.toLowerCase()} pollen</span>
+              )}
+            </div>
           </div>
         </div>
       </div>

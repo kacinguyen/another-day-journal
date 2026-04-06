@@ -277,7 +277,7 @@ const JournalLog: React.FC = () => {
       </div>
 
       {/* Main calendar area */}
-      <div ref={calendarRef} className="flex-1 px-6 lg:px-10 pt-8 pb-4 flex flex-col min-h-0 transition-all duration-[450ms] ease-in-out">
+      <div ref={calendarRef} className="flex-1 px-6 lg:px-10 pt-8 pb-8 flex flex-col min-h-0 transition-all duration-[450ms] ease-in-out">
         {/* Greeting */}
         <div className="mb-4 shrink-0">
           <p className="text-sm text-muted-foreground">
@@ -304,8 +304,8 @@ const JournalLog: React.FC = () => {
 
         {/* Calendar grid — fills remaining height (includes day headers) */}
         <div
-          className={cn("grid grid-cols-7 gap-1.5 flex-1 min-h-0", transitionClass)}
-          style={{ gridTemplateRows: `auto repeat(${numRows}, 1fr)` }}
+          className={cn("grid grid-cols-7 gap-1.5 min-h-0", transitionClass)}
+          style={{ gridTemplateRows: `auto repeat(${numRows}, minmax(0, 80px))` }}
         >
           {/* Day-of-week headers */}
           {weekDays.map((day) => (
@@ -364,14 +364,22 @@ const JournalLog: React.FC = () => {
       <AnimatePresence>
       {selectedEntry && (
         <motion.div
-          key={selectedEntry.date}
+          key="sidebar"
           initial={{ opacity: 0, width: 0 }}
           animate={{ opacity: 1, width: 288 }}
           exit={{ opacity: 0, width: 0 }}
           transition={{ duration: 0.45, ease: "easeInOut" }}
           className="shrink-0 border-l pt-8 pr-6 pl-5 pb-4 overflow-y-auto overflow-x-hidden hidden lg:block"
         >
-          <div className="space-y-4">
+          <AnimatePresence mode="wait">
+          <motion.div
+            key={selectedEntry.date}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="space-y-4"
+          >
             <div className="flex items-center justify-between">
               <h3 className="font-semibold text-sm">
                 {format(new Date(selectedEntry.date), "EEE, MMM d")}
@@ -460,7 +468,8 @@ const JournalLog: React.FC = () => {
               <Pencil className="h-3.5 w-3.5" />
               Edit in Compose
             </button>
-          </div>
+          </motion.div>
+          </AnimatePresence>
         </motion.div>
       )}
       </AnimatePresence>
