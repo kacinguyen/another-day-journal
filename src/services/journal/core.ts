@@ -37,9 +37,10 @@ export const saveJournalEntry = async (entry: JournalEntryData): Promise<Journal
 
     return mapDbToJournalEntry(result);
   } catch (error) {
-    console.error("Error in saveJournalEntry:", error);
-    toast("An error occurred", {
-      description: "Please try again later",
+    const message = error instanceof Error ? error.message : "Unknown error";
+    console.error("Error in saveJournalEntry:", message);
+    toast("Failed to save entry", {
+      description: message,
     });
     return null;
   }

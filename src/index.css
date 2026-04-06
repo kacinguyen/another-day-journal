@@ -144,6 +144,46 @@
   background: hsl(var(--muted-foreground) / 0.5);
 }
 
+/* Hide scrollbar but keep scrolling */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Calendar month transition animations */
+.calendar-exit-up {
+  animation: calExitUp 150ms ease-in forwards;
+}
+.calendar-exit-down {
+  animation: calExitDown 150ms ease-in forwards;
+}
+.calendar-enter-up {
+  animation: calEnterUp 250ms ease-out forwards;
+}
+.calendar-enter-down {
+  animation: calEnterDown 250ms ease-out forwards;
+}
+
+@keyframes calExitUp {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-12px); }
+}
+@keyframes calExitDown {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(12px); }
+}
+@keyframes calEnterUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes calEnterDown {
+  from { opacity: 0; transform: translateY(-12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 /* TipTap inline tag styles */
 .inline-tag {
   padding: 1px 4px;

@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useCallback, useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { format } from "date-fns";
 import { toast } from "sonner";
 import { Separator } from "@/components/ui/separator";
@@ -23,7 +23,7 @@ function getGreeting(): string {
 }
 
 const PromptedEntry: React.FC = () => {
-  const navigate = useNavigate();
+  const location = useLocation();
   const { entries, loading, saveEntry } = useJournalEntries();
   const [digDeeperQuestions, setDigDeeperQuestions] = useState<string[]>([]);
   const [isDiggingDeeper, setIsDiggingDeeper] = useState(false);
@@ -48,6 +48,17 @@ const PromptedEntry: React.FC = () => {
     loadEntry,
     handleClear,
   } = usePromptedEntry();
+
+  // Load entry from calendar navigation state
+  useEffect(() => {
+    const navEntry = (location.state as { entry?: JournalEntryData })?.entry;
+    if (navEntry) {
+      loadEntry(navEntry, navEntry.content ?? "");
+      setEditorKey((k) => k + 1);
+      // Clear navigation state so it doesn't reload on re-render
+      history.replaceState({}, document.title);
+    }
+  }, [location.state, loadEntry]);
 
   const handleNewEntry = useCallback(() => {
     handleClear();
@@ -115,11 +126,18 @@ const PromptedEntry: React.FC = () => {
     };
 
     try {
-      await saveEntry(entryData);
+      const saved = await saveEntry(entryData);
+      if (!saved) {
+        // saveEntry already showed an error toast via the service layer
+        return;
+      }
       toast.success(
         editingEntryId ? "Entry updated" : "Journal entry saved"
       );
-      navigate("/");
+      // Stay on compose — update editingEntryId so future saves are updates
+      if (saved?.id && !editingEntryId) {
+        loadEntry({ ...entryData, id: saved.id }, content);
+      }
     } catch {
       toast.error("Failed to save entry");
     } finally {
@@ -134,8 +152,8 @@ const PromptedEntry: React.FC = () => {
     editingEntryId,
     editingEntryDate,
     saveEntry,
-    navigate,
     setIsSaving,
+    loadEntry,
   ]);
 
   const handleDigDeeper = useCallback(async () => {

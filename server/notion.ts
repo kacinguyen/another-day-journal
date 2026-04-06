@@ -337,8 +337,9 @@ notionRouter.post("/entries", async (req: Request, res: Response) => {
     invalidateEntriesCache();
     res.json(entry);
   } catch (error: any) {
-    console.error("Error creating entry:", error);
-    res.status(500).json({ error: "Internal server error" });
+    const message = error?.message || error?.body?.message || String(error);
+    console.error("Error creating entry:", message);
+    res.status(500).json({ error: message });
   }
 });
 

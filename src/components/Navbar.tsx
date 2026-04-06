@@ -62,8 +62,8 @@ const Navbar = () => {
         : "text-green-500";
 
   return (
-    <header className="sticky top-0 z-50 w-full px-4 sm:px-6 pt-3">
-      <div className="mx-auto max-w-7xl rounded-xl bg-muted/60 backdrop-blur-md px-6 py-3">
+    <header className="sticky top-0 z-50 w-full px-6 pt-3">
+      <div className="rounded-xl bg-muted/60 backdrop-blur-md px-6 py-3">
         <div className="flex items-center justify-between">
           {/* Left: Year */}
           <Link
