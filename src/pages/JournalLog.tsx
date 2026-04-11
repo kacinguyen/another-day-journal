@@ -294,7 +294,7 @@ const JournalLog: React.FC = () => {
             {format(currentMonth, "MMMM yyyy")}
           </h2>
           <button
-            onClick={() => navigate("/compose")}
+            onClick={() => navigate("/compose", { state: { date: selectedDate?.toISOString() } })}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-foreground text-background text-sm font-medium hover:bg-foreground/90 transition-colors"
           >
             <PenLine className="h-4 w-4" />

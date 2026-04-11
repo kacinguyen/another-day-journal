@@ -106,5 +106,6 @@ export function usePromptedEntry() {
     updateInlineTags,
     handleClear,
     loadEntry,
+    setEditingEntryDate,
   };
 }

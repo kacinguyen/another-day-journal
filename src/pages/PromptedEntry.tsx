@@ -2,8 +2,11 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
 import { toast } from "sonner";
 import { Separator } from "@/components/ui/separator";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
 import PromptedCarousel from "@/components/journal/prompted/PromptedCarousel";
 import TaggableEditor from "@/components/journal/prompted/TaggableEditor";
 import TagsSidebar from "@/components/journal/prompted/TagsSidebar";
@@ -50,18 +53,21 @@ const PromptedEntry: React.FC = () => {
     updateInlineTags,
     loadEntry,
     handleClear,
+    setEditingEntryDate,
   } = usePromptedEntry();
 
-  // Load entry from calendar navigation state
+  // Load entry or date from calendar navigation state
   useEffect(() => {
-    const navEntry = (location.state as { entry?: JournalEntryData })?.entry;
-    if (navEntry) {
-      loadEntry(navEntry, navEntry.content ?? "");
+    const navState = location.state as { entry?: JournalEntryData; date?: string } | null;
+    if (navState?.entry) {
+      loadEntry(navState.entry, navState.entry.content ?? "");
       setEditorKey((k) => k + 1);
-      // Clear navigation state so it doesn't reload on re-render
+      history.replaceState({}, document.title);
+    } else if (navState?.date) {
+      setEditingEntryDate(new Date(navState.date));
       history.replaceState({}, document.title);
     }
-  }, [location.state, loadEntry]);
+  }, [location.state, loadEntry, setEditingEntryDate]);
 
   const handleNewEntry = useCallback(() => {
     handleClear();
@@ -211,10 +217,28 @@ const PromptedEntry: React.FC = () => {
           <div className="lg:col-span-7 order-1 lg:order-2">
             {/* Header */}
             <div className="mb-6">
-              <p className="text-sm text-muted-foreground">
-                {format(displayTime, "h:mm a")} &middot;{" "}
-                {format(displayDate, "EEEE, MMMM d, yyyy")}
-              </p>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                    {format(displayTime, "h:mm a")} &middot;{" "}
+                    {format(displayDate, "EEEE, MMMM d, yyyy")}
+                    <CalendarIcon className="h-3.5 w-3.5" />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    className="p-3"
+                    mode="single"
+                    selected={displayDate}
+                    onSelect={(date) => date && setEditingEntryDate(date)}
+                    initialFocus
+                    classNames={{
+                      month: "space-y-4 w-[320px]",
+                      day: "h-10 w-10 rounded-lg p-0 font-normal aria-selected:opacity-100",
+                    }}
+                  />
+                </PopoverContent>
+              </Popover>
               <h1 className="text-3xl font-semibold tracking-tight mt-1">
                 {editingEntryId ? format(displayDate, "MMMM d") : `${getGreeting()}, Kaci`}
               </h1>
