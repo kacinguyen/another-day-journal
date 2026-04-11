@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
@@ -198,6 +198,43 @@ const PromptedEntry: React.FC = () => {
   const displayDate = editingEntryDate ? new Date(editingEntryDate) : now;
   const displayTime = editingCreatedAt ? new Date(editingCreatedAt) : now;
 
+  // Build mood modifiers for the date picker calendar
+  const { moodModifiers, moodModifiersClassNames } = useMemo(() => {
+    const dateMoodMap = new Map<string, string>();
+    entries.forEach((entry) => {
+      if (entry.mood) {
+        dateMoodMap.set(new Date(entry.date).toDateString(), entry.mood);
+      }
+    });
+
+    const datesWithEntries = [...dateMoodMap.keys()].map((d) => new Date(d));
+    const byMood = (mood: string) =>
+      datesWithEntries.filter((d) => dateMoodMap.get(d.toDateString()) === mood);
+
+    const moodModifiers = {
+      greatDay: byMood("great"),
+      goodDay: byMood("good"),
+      neutralDay: byMood("neutral"),
+      badDay: byMood("bad"),
+      awfulDay: byMood("awful"),
+    };
+
+    const moodModifiersClassNames = {
+      greatDay:
+        "bg-pink-100 dark:bg-pink-950 text-pink-800 dark:text-pink-200 hover:bg-pink-200 dark:hover:bg-pink-900 aria-selected:!bg-pink-100 dark:aria-selected:!bg-pink-950 aria-selected:!text-pink-800 dark:aria-selected:!text-pink-200 aria-selected:!border-2 aria-selected:!border-pink-800 dark:aria-selected:!border-pink-200",
+      goodDay:
+        "bg-green-100 dark:bg-green-950 text-green-800 dark:text-green-200 hover:bg-green-200 dark:hover:bg-green-900 aria-selected:!bg-green-100 dark:aria-selected:!bg-green-950 aria-selected:!text-green-800 dark:aria-selected:!text-green-200 aria-selected:!border-2 aria-selected:!border-green-800 dark:aria-selected:!border-green-200",
+      neutralDay:
+        "bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-200 hover:bg-blue-200 dark:hover:bg-blue-900 aria-selected:!bg-blue-100 dark:aria-selected:!bg-blue-950 aria-selected:!text-blue-800 dark:aria-selected:!text-blue-200 aria-selected:!border-2 aria-selected:!border-blue-800 dark:aria-selected:!border-blue-200",
+      badDay:
+        "bg-orange-100 dark:bg-orange-950 text-orange-800 dark:text-orange-200 hover:bg-orange-200 dark:hover:bg-orange-900 aria-selected:!bg-orange-100 dark:aria-selected:!bg-orange-950 aria-selected:!text-orange-800 dark:aria-selected:!text-orange-200 aria-selected:!border-2 aria-selected:!border-orange-800 dark:aria-selected:!border-orange-200",
+      awfulDay:
+        "bg-red-100 dark:bg-red-950 text-red-800 dark:text-red-200 hover:bg-red-200 dark:hover:bg-red-900 aria-selected:!bg-red-100 dark:aria-selected:!bg-red-950 aria-selected:!text-red-800 dark:aria-selected:!text-red-200 aria-selected:!border-2 aria-selected:!border-red-800 dark:aria-selected:!border-red-200",
+    };
+
+    return { moodModifiers, moodModifiersClassNames };
+  }, [entries]);
+
   return (
     <div className="min-h-screen flex flex-col">
       <div className="flex-1 w-full px-6 py-8">
@@ -232,6 +269,8 @@ const PromptedEntry: React.FC = () => {
                     selected={displayDate}
                     onSelect={(date) => date && setEditingEntryDate(date)}
                     initialFocus
+                    modifiers={moodModifiers}
+                    modifiersClassNames={moodModifiersClassNames}
                     classNames={{
                       month: "space-y-4 w-[320px]",
                       day: "h-10 w-10 rounded-lg p-0 font-normal aria-selected:opacity-100",
